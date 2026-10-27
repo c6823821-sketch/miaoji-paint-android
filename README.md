@@ -14,6 +14,12 @@
 
 ![主界面](docs/screenshot-main.png)
 
+| 生成设置与结果 | 设置与更新 |
+| --- | --- |
+| ![工作区](docs/screenshot-workspace.png) | ![设置](docs/screenshot-settings.png) |
+
+![开源模型说明](docs/screenshot-open-source.png)
+
 ## 开源模型说明
 
 开源不等于免费。它表示模型的代码和权重公开，通常可以下载、修改或自行部署；实际生成仍需要 GPU，云端算力可能消耗免费额度或按量计费。
