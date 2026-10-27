@@ -968,7 +968,6 @@
       .reference-preview { grid-template-columns: 78px minmax(0, 1fr); }
       .reference-preview img { width: 78px; height: 78px; }
       .action-dock { min-height: 68px; padding: 9px; }
-      .price-copy span { display: none; }
       #generateButton { min-width: 122px; }
       .modal-mask { padding: 8px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
       .modal { max-height: 94vh; border-radius: 20px; }
@@ -1538,11 +1537,11 @@
       const cents = estimateCents();
       if (currentModel.model === "gpt-image-2.5-flare"
           && qualitySelect.value === "low" && resolutionSelect.value === "1k") {
-        priceTitle.textContent = "官网预扣约 ¥0.24";
-        priceDetail.textContent = "近期实扣约 ¥0.05–0.06，最终以任务结算为准";
+        priceTitle.textContent = "预扣 ¥0.24｜近期实扣 ¥0.05–0.06";
+        priceDetail.textContent = "预扣只是冻结金额，完成任务后多退少补";
       } else if (cents > 0) {
-        priceTitle.textContent = `官网预扣约 ¥${(cents / 100).toFixed(2)}`;
-        priceDetail.textContent = "任务完成后按实际费用多退少补";
+        priceTitle.textContent = `预扣 ¥${(cents / 100).toFixed(2)}`;
+        priceDetail.textContent = "完成后的实扣金额可能低于预扣，多退少补";
       } else {
         priceTitle.textContent = "价格以提交任务时为准";
       }
