@@ -1,0 +1,1808 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3ed">
+  <title>妙极画图</title>
+  <style>
+    :root {
+      --page: #f5f3ed;
+      --surface: #fffefa;
+      --surface-soft: #f0eee7;
+      --ink: #17201e;
+      --muted: #68736e;
+      --line: rgba(23, 32, 30, .12);
+      --green: #0d766e;
+      --green-dark: #075c56;
+      --green-soft: #dcf0eb;
+      --orange: #ed7b4d;
+      --red: #b43e35;
+      --shadow: 0 13px 38px rgba(31, 42, 37, .09);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 100% 0, rgba(237, 123, 77, .12), transparent 28rem),
+        radial-gradient(circle at 0 35%, rgba(13, 118, 110, .08), transparent 30rem),
+        var(--page);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+
+    .appbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: 68px;
+      padding: max(10px, env(safe-area-inset-top)) 18px 10px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(245, 243, 237, .9);
+      border-bottom: 1px solid rgba(23, 32, 30, .08);
+      backdrop-filter: blur(20px);
+    }
+
+    .brand {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--green);
+      box-shadow: 0 9px 22px rgba(13, 118, 110, .22);
+      font-size: 17px;
+      font-weight: 900;
+      flex: none;
+    }
+    .brand-copy { min-width: 0; }
+    .brand-copy strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+    }
+    .brand-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .app-actions { display: flex; align-items: center; gap: 7px; }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      color: #436159;
+      background: rgba(255, 254, 250, .78);
+      border: 1px solid rgba(13, 118, 110, .11);
+      font-size: 9px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .status-pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3aa477;
+    }
+    .status-pill.offline { color: #90523b; background: #fff6ef; }
+    .status-pill.offline::before { background: var(--orange); }
+
+    .icon-button,
+    .login-button,
+    .primary-button,
+    .secondary-button,
+    .text-button {
+      border: 0;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease, background .15s ease;
+    }
+    .icon-button:active,
+    .login-button:active,
+    .primary-button:active,
+    .secondary-button:active { transform: translateY(1px); }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--ink);
+      background: rgba(255, 254, 250, .82);
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .login-button {
+      height: 38px;
+      padding: 0 13px;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: 0 8px 19px rgba(23, 32, 30, .16);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px 18px 122px;
+    }
+    .page-heading { margin-bottom: 18px; }
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--green-dark);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .page-heading h1 {
+      margin: 0;
+      font-size: clamp(27px, 5vw, 39px);
+      line-height: 1.08;
+      letter-spacing: -.055em;
+    }
+    .page-heading p {
+      max-width: 620px;
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+      align-items: start;
+      gap: 16px;
+    }
+    .stack { display: grid; gap: 14px; min-width: 0; }
+
+    .card {
+      border: 1px solid rgba(23, 32, 30, .09);
+      border-radius: var(--radius);
+      background: rgba(255, 254, 250, .92);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-head {
+      min-height: 52px;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(23, 32, 30, .08);
+    }
+    .card-title {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: -.01em;
+    }
+    .card-subtitle {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+    }
+    .card-body { padding: 16px; }
+
+    .prompt-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .prompt-label strong { font-size: 12px; }
+    .prompt-label span { color: var(--muted); font-size: 9px; }
+    #prompt {
+      width: 100%;
+      min-height: 142px;
+      resize: vertical;
+      border: 1px solid rgba(23, 32, 30, .12);
+      border-radius: 15px;
+      outline: 0;
+      padding: 14px 15px;
+      color: var(--ink);
+      background: #faf8f2;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    #prompt:focus {
+      border-color: rgba(13, 118, 110, .55);
+      box-shadow: 0 0 0 4px rgba(13, 118, 110, .08);
+      background: #fff;
+    }
+    #prompt::placeholder { color: #9a9e99; }
+    .prompt-footer {
+      margin-top: 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prompt-footer .hint {
+      flex: 1;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+    .text-button {
+      padding: 5px 7px;
+      color: var(--green-dark);
+      background: transparent;
+      font-size: 10px;
+      font-weight: 750;
+    }
+
+    .upload-zone {
+      position: relative;
+      min-height: 132px;
+      padding: 18px;
+      border: 1.5px dashed rgba(13, 118, 110, .3);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-align: center;
+      background: linear-gradient(145deg, #f7fbf9, #faf8f2);
+      cursor: pointer;
+    }
+    .upload-zone:hover { border-color: rgba(13, 118, 110, .55); }
+    .upload-icon {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--green-dark);
+      background: var(--green-soft);
+      font-size: 21px;
+      font-weight: 500;
+    }
+    .upload-zone strong { font-size: 12px; }
+    .upload-zone span { color: var(--muted); font-size: 9px; }
+
+    .reference-preview {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      align-items: center;
+      gap: 13px;
+      padding: 10px;
+      border-radius: 15px;
+      background: #f4f1e9;
+    }
+    .reference-preview img {
+      width: 92px;
+      height: 92px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #e6e1d6;
+    }
+    .reference-copy strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+    .reference-copy p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .inline-actions { display: flex; gap: 7px; }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr 1fr;
+      gap: 12px;
+    }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      display: block;
+      margin: 0 2px 6px;
+      color: #4f5b56;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .field select {
+      width: 100%;
+      height: 43px;
+      border: 1px solid rgba(23, 32, 30, .13);
+      border-radius: 12px;
+      outline: 0;
+      padding: 0 34px 0 11px;
+      color: var(--ink);
+      background:
+        linear-gradient(45deg, transparent 50%, #52605b 50%) calc(100% - 16px) 18px / 5px 5px no-repeat,
+        linear-gradient(135deg, #52605b 50%, transparent 50%) calc(100% - 11px) 18px / 5px 5px no-repeat,
+        #f8f6f0;
+      appearance: none;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .field select:focus {
+      border-color: rgba(13, 118, 110, .55);
+      box-shadow: 0 0 0 3px rgba(13, 118, 110, .07);
+    }
+    .model-note {
+      margin: 10px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.6;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: #365c52;
+      background: var(--green-soft);
+      font-size: 8px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    .badge.paid { color: #8b5439; background: #f9e9df; }
+    .badge.neutral { color: #59635f; background: #ece9e1; }
+
+    .result-card { min-height: 448px; }
+    .result-body {
+      min-height: 396px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .result-empty {
+      flex: 1;
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 10px;
+      border-radius: 16px;
+      color: var(--muted);
+      background:
+        linear-gradient(135deg, rgba(220, 240, 235, .62), rgba(248, 246, 240, .8)),
+        repeating-linear-gradient(45deg, transparent 0 13px, rgba(13, 118, 110, .025) 13px 14px);
+      text-align: center;
+    }
+    .result-empty-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 17px;
+      color: var(--green-dark);
+      background: rgba(255, 254, 250, .78);
+      box-shadow: 0 9px 24px rgba(13, 118, 110, .09);
+      font-size: 24px;
+    }
+    .result-empty strong { color: var(--ink); font-size: 13px; }
+    .result-empty p { max-width: 230px; margin: 0; font-size: 10px; line-height: 1.55; }
+
+    .generating {
+      flex: 1;
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 12px;
+      border-radius: 16px;
+      background: #f8f7f2;
+      text-align: center;
+    }
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid var(--green-soft);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    .generating strong { font-size: 13px; }
+    .generating p { margin: 0; color: var(--muted); font-size: 10px; }
+    .progress-track {
+      width: min(70%, 250px);
+      height: 5px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e5e2da;
+    }
+    .progress-track span {
+      display: block;
+      width: 38%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+      animation: progress 1.4s ease-in-out infinite;
+    }
+
+    .result-image {
+      width: 100%;
+      max-height: 68vh;
+      object-fit: contain;
+      border-radius: 15px;
+      background: #ece9e1;
+      display: block;
+    }
+    .result-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .result-meta strong { color: var(--ink); font-size: 11px; }
+    .result-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .primary-button {
+      min-height: 45px;
+      padding: 0 18px;
+      border-radius: 13px;
+      color: #fff;
+      background: var(--green);
+      box-shadow: 0 9px 23px rgba(13, 118, 110, .2);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .primary-button:disabled { opacity: .5; box-shadow: none; }
+    .secondary-button {
+      min-height: 41px;
+      padding: 0 14px;
+      border: 1px solid rgba(13, 118, 110, .13);
+      border-radius: 12px;
+      color: var(--green-dark);
+      background: var(--green-soft);
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .result-actions .primary-button { flex: 1; }
+    .result-actions .secondary-button { flex: none; }
+
+    .error-panel {
+      flex: 1;
+      min-height: 360px;
+      padding: 25px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 10px;
+      border-radius: 16px;
+      color: #7f332d;
+      background: #fbefeb;
+      text-align: center;
+    }
+    .error-panel strong { font-size: 13px; }
+    .error-panel p { max-width: 280px; margin: 0; font-size: 10px; line-height: 1.65; }
+
+    .action-dock {
+      position: fixed;
+      z-index: 18;
+      left: 50%;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      width: min(calc(100% - 24px), 860px);
+      min-height: 72px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(23, 32, 30, .11);
+      border-radius: 20px;
+      background: rgba(255, 254, 250, .94);
+      box-shadow: 0 18px 52px rgba(23, 32, 30, .16);
+      backdrop-filter: blur(20px);
+    }
+    .price-copy { flex: 1; min-width: 0; padding-left: 5px; }
+    .price-copy strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .price-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+    #generateButton { min-width: 142px; }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 12px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      background: rgba(18, 27, 24, .45);
+      backdrop-filter: blur(7px);
+    }
+    .modal-mask.show { display: flex; }
+    .modal {
+      width: min(100%, 520px);
+      max-height: 91vh;
+      overflow: auto;
+      border-radius: 24px;
+      background: var(--surface);
+      box-shadow: 0 32px 90px rgba(18, 27, 24, .3);
+      animation: rise .22s ease both;
+    }
+    .modal-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 17px 19px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(23, 32, 30, .08);
+      background: rgba(255, 254, 250, .96);
+      backdrop-filter: blur(14px);
+    }
+    .modal-head h2 { flex: 1; margin: 0; font-size: 18px; letter-spacing: -.03em; }
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .modal-body { padding: 18px 19px 22px; }
+    .section-divider {
+      height: 1px;
+      margin: 18px 0;
+      background: rgba(23, 32, 30, .09);
+    }
+    .field-label {
+      display: block;
+      margin: 0 0 6px;
+      color: #41504a;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .text-field {
+      width: 100%;
+      height: 44px;
+      border: 1px solid rgba(23, 32, 30, .13);
+      border-radius: 12px;
+      outline: 0;
+      padding: 0 12px;
+      color: var(--ink);
+      background: #f8f6f0;
+      font-size: 12px;
+    }
+    .text-field:focus {
+      border-color: rgba(13, 118, 110, .55);
+      box-shadow: 0 0 0 3px rgba(13, 118, 110, .07);
+    }
+    .field-gap { margin-top: 12px; }
+    .help-copy {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.6;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .connection-box {
+      margin-top: 11px;
+      padding: 9px 10px;
+      border-radius: 11px;
+      color: #416052;
+      background: #edf7f3;
+      font-size: 9px;
+      line-height: 1.5;
+    }
+    .connection-box.off {
+      color: #7d5748;
+      background: #faf0e8;
+    }
+    details.config-group {
+      margin-top: 18px;
+      border: 1px solid rgba(23, 32, 30, .09);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    details.config-group summary {
+      padding: 13px 14px;
+      cursor: pointer;
+      color: var(--green-dark);
+      background: #f8f7f2;
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .config-body { padding: 14px; }
+
+    .update-box {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid rgba(23, 32, 30, .09);
+      border-radius: 14px;
+      background: #f8f7f2;
+    }
+    .update-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .update-head strong { flex: 1; font-size: 11px; }
+    .version-text { color: var(--muted); font-size: 9px; }
+    .update-message {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.55;
+    }
+
+    .open-source-intro {
+      padding: 15px;
+      border-radius: 16px;
+      color: #fff;
+      background: var(--ink);
+    }
+    .open-source-intro strong { display: block; font-size: 16px; letter-spacing: -.02em; }
+    .open-source-intro p { margin: 7px 0 0; color: #ced9d5; font-size: 10px; line-height: 1.65; }
+    .model-guide {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .guide-item {
+      padding: 12px;
+      border: 1px solid rgba(23, 32, 30, .09);
+      border-radius: 14px;
+      background: #faf9f5;
+    }
+    .guide-title {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .guide-title strong { flex: 1; min-width: 120px; font-size: 11px; }
+    .guide-item p { margin: 7px 0 0; color: var(--muted); font-size: 9px; line-height: 1.6; }
+
+    .toast {
+      position: fixed;
+      z-index: 60;
+      left: 50%;
+      bottom: 100px;
+      transform: translate(-50%, 12px);
+      max-width: 88vw;
+      padding: 9px 13px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(23, 32, 30, .94);
+      box-shadow: 0 12px 32px rgba(23, 32, 30, .26);
+      font-size: 10px;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes progress {
+      0% { transform: translateX(-110%); }
+      55% { transform: translateX(120%); }
+      100% { transform: translateX(280%); }
+    }
+
+    @media (max-width: 820px) {
+      .workspace { grid-template-columns: 1fr; }
+      .result-card { min-height: auto; }
+      .result-body, .result-empty, .generating, .error-panel { min-height: 300px; }
+      .action-dock { width: calc(100% - 18px); }
+    }
+
+    @media (max-width: 560px) {
+      .appbar { min-height: 61px; padding-left: 12px; padding-right: 12px; }
+      .brand-copy span, .status-pill { display: none; }
+      .brand-mark { width: 33px; height: 33px; border-radius: 11px; }
+      .login-button { padding: 0 10px; }
+      .page { padding: 18px 11px 118px; }
+      .page-heading h1 { font-size: 27px; }
+      .page-heading p { font-size: 11px; }
+      .card { border-radius: 17px; }
+      .card-head { min-height: 48px; padding: 12px 13px; }
+      .card-body { padding: 13px; }
+      #prompt { min-height: 155px; font-size: 14px; }
+      .settings-grid { grid-template-columns: 1fr 1fr; }
+      .settings-grid .field:first-child { grid-column: 1 / -1; }
+      .reference-preview { grid-template-columns: 78px minmax(0, 1fr); }
+      .reference-preview img { width: 78px; height: 78px; }
+      .action-dock { min-height: 68px; padding: 9px; }
+      .price-copy span { display: none; }
+      #generateButton { min-width: 122px; }
+      .modal-mask { padding: 8px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+      .modal { max-height: 94vh; border-radius: 20px; }
+      .modal-body { padding: 15px 15px 19px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <div class="brand">
+      <div class="brand-mark">妙</div>
+      <div class="brand-copy">
+        <strong>妙极画图</strong>
+        <span>妙极 API 图像工作台</span>
+      </div>
+    </div>
+    <div class="app-actions">
+      <span class="status-pill offline" id="connectionState">未连接</span>
+      <button class="icon-button" id="helpBtn" type="button" aria-label="开源模型说明">?</button>
+      <button class="icon-button" id="settingsBtn" type="button" aria-label="设置">⚙</button>
+      <button class="login-button" id="loginBtn" type="button">登录 / 充值</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="page-heading">
+      <p class="eyebrow">Image generation</p>
+      <h1>图像生成</h1>
+      <p>把画面写清楚，选择模型与比例；需要改图时上传参考图。生成完成后由你决定是否保存到相册。</p>
+    </section>
+
+    <div class="workspace">
+      <div class="stack">
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">提示词</div>
+            <div class="card-subtitle">描述主体、环境、光线和构图</div>
+          </div>
+          <div class="card-body">
+            <div class="prompt-label">
+              <strong>你希望生成什么？</strong>
+              <span id="charCount">0 / 10000</span>
+            </div>
+            <textarea id="prompt" maxlength="10000"
+              placeholder="例如：清晨的山谷，薄雾穿过松林，远处有雪山，写实摄影，柔和逆光，画面中央留出标题空间"></textarea>
+            <div class="prompt-footer">
+              <span class="hint">写的细节越多，画面越接近你的想法。使用参考图时可以写“保留原图人物，改成水彩风格”。</span>
+              <button class="text-button" id="clearPromptBtn" type="button">清空</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">参考图</div>
+            <div class="card-subtitle">可选 · 用于图生图或风格参考</div>
+          </div>
+          <div class="card-body">
+            <div class="upload-zone" id="uploadZone" role="button" tabindex="0">
+              <div class="upload-icon">＋</div>
+              <strong>上传参考图</strong>
+              <span>点击从相册选择 PNG、JPG 或 WEBP</span>
+            </div>
+            <div class="reference-preview" id="referencePreview" hidden>
+              <img id="referenceImage" alt="参考图预览">
+              <div class="reference-copy">
+                <strong>已添加参考图</strong>
+                <p id="referenceName">reference.jpg</p>
+                <div class="inline-actions">
+                  <button class="secondary-button" id="replaceReferenceBtn" type="button">更换图片</button>
+                  <button class="secondary-button" id="removeReferenceBtn" type="button">移除</button>
+                </div>
+              </div>
+            </div>
+            <input id="referenceInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">生成设置</div>
+            <div class="card-subtitle">模型、画面比例和附加风格</div>
+          </div>
+          <div class="card-body">
+            <div class="settings-grid">
+              <div class="field full">
+                <label for="modelSelect">模型</label>
+                <select id="modelSelect"></select>
+              </div>
+              <div class="field">
+                <label for="styleSelect">附加风格</label>
+                <select id="styleSelect">
+                  <option value="none">不加额外风格</option>
+                  <option value="photoreal">真实摄影</option>
+                  <option value="cinematic">电影感</option>
+                  <option value="anime">动漫插画</option>
+                  <option value="poster">商业海报</option>
+                  <option value="ink">国风水墨</option>
+                  <option value="clay">3D 黏土</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="sizeSelect">画面比例</label>
+                <select id="sizeSelect"></select>
+              </div>
+              <div class="field" id="qualityField">
+                <label for="qualitySelect">质量档位</label>
+                <select id="qualitySelect"></select>
+              </div>
+              <div class="field">
+                <label for="resolutionSelect">清晰度</label>
+                <select id="resolutionSelect"></select>
+              </div>
+            </div>
+            <p class="model-note" id="modelNote"></p>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card result-card">
+          <div class="card-head">
+            <div class="card-title">生成结果</div>
+            <div class="card-subtitle" id="resultStatus">等待生成</div>
+          </div>
+          <div class="result-body" id="resultBody">
+            <div class="result-empty">
+              <div class="result-empty-icon">▧</div>
+              <strong>图片会显示在这里</strong>
+              <p>填写提示词后，点击下方“生成图片”。结果不会自动保存到手机。</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="action-dock">
+    <div class="price-copy">
+      <strong id="priceTitle">正在读取价格…</strong>
+      <span id="priceDetail">实际费用以服务端结算为准</span>
+    </div>
+    <button class="primary-button" id="generateButton" type="button">生成图片</button>
+  </div>
+
+  <div class="modal-mask" id="settingsModal">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <header class="modal-head">
+        <h2 id="settingsTitle">设置</h2>
+        <button class="modal-close" data-close="settingsModal" type="button" aria-label="关闭">×</button>
+      </header>
+      <div class="modal-body">
+        <label class="field-label" for="apiKeyInput">妙极 API Key</label>
+        <input class="text-field" id="apiKeyInput" type="password" autocomplete="off"
+          placeholder="粘贴妙极 API Key">
+        <p class="help-copy">用于妙极图像模型。密钥仅保存在当前手机的应用私有目录。</p>
+        <div class="button-row">
+          <button class="primary-button" id="saveMiaojiBtn" type="button">保存妙极密钥</button>
+          <button class="secondary-button" id="clearMiaojiBtn" type="button">清除</button>
+          <button class="secondary-button" id="openDeveloperBtn" type="button">获取密钥</button>
+        </div>
+        <div class="connection-box off" id="miaojiState">妙极未配置</div>
+
+        <details class="config-group">
+          <summary>开源模型账户</summary>
+          <div class="config-body">
+            <p class="help-copy" style="margin-top:0">开源模型不等于免费。Cloudflare 先用账户免费额度，Pollinations 使用 Pollen 余额。密钥也只保存在本机。</p>
+
+            <label class="field-label field-gap" for="cfAccountInput">Cloudflare Account ID</label>
+            <input class="text-field" id="cfAccountInput" type="text" autocomplete="off"
+              placeholder="Account ID">
+            <label class="field-label field-gap" for="cfTokenInput">Cloudflare API Token</label>
+            <input class="text-field" id="cfTokenInput" type="password" autocomplete="off"
+              placeholder="Workers AI API Token">
+            <div class="button-row">
+              <button class="primary-button" id="saveCloudflareBtn" type="button">保存 Cloudflare</button>
+              <button class="secondary-button" id="openCloudflareBtn" type="button">打开 Cloudflare</button>
+            </div>
+            <div class="connection-box off" id="cloudflareState">Cloudflare 未配置</div>
+
+            <label class="field-label field-gap" for="pollinationsInput">Pollinations API Key</label>
+            <input class="text-field" id="pollinationsInput" type="password" autocomplete="off"
+              placeholder="用于开源图生图">
+            <div class="button-row">
+              <button class="primary-button" id="savePollinationsBtn" type="button">保存 Pollinations</button>
+              <button class="secondary-button" id="openPollinationsBtn" type="button">打开 Pollinations</button>
+            </div>
+            <div class="connection-box off" id="pollinationsState">Pollinations 未配置</div>
+          </div>
+        </details>
+
+        <div class="update-box">
+          <div class="update-head">
+            <strong>应用更新</strong>
+            <span class="version-text" id="versionText">当前版本 1.2.0</span>
+          </div>
+          <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
+          <div class="button-row">
+            <button class="primary-button" id="checkUpdateBtn" type="button">检查更新</button>
+            <button class="secondary-button" id="openGithubBtn" type="button">GitHub 项目</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-mask" id="helpModal">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <header class="modal-head">
+        <h2 id="helpTitle">开源模型说明</h2>
+        <button class="modal-close" data-close="helpModal" type="button" aria-label="关闭">×</button>
+      </header>
+      <div class="modal-body">
+        <div class="open-source-intro">
+          <strong>开源 ≠ 免费</strong>
+          <p>“开源”是指模型的代码和权重公开，通常可以下载、修改或自己部署。生成图片仍需要 GPU，租用云端算力会产生费用。本应用里的开源模型都在云端运行，手机只是控制台。</p>
+        </div>
+
+        <div class="model-guide">
+          <div class="guide-item">
+            <div class="guide-title">
+              <strong>FLUX.1 Schnell</strong>
+              <span class="badge">开源</span><span class="badge neutral">文生图</span>
+            </div>
+            <p>Black Forest Labs 的快速模型，擅长写实、摄影和复杂细节。Cloudflare 渠道先用账户免费额度，超额后计费。</p>
+          </div>
+          <div class="guide-item">
+            <div class="guide-title">
+              <strong>Stable Diffusion XL / DreamShaper</strong>
+              <span class="badge">开源</span><span class="badge neutral">文生图</span>
+            </div>
+            <p>SDXL 生态成熟，通用性强；DreamShaper 更偏写实和插画。它们并不天然免费，本应用使用 Cloudflare 的额度。</p>
+          </div>
+          <div class="guide-item">
+            <div class="guide-title">
+              <strong>FLUX Kontext</strong>
+              <span class="badge">开源</span><span class="badge neutral">图生图</span>
+            </div>
+            <p>按提示词修改上传的图片，例如换背景、改服装或转换画风。通过 Pollinations 使用 Pollen 余额。</p>
+          </div>
+          <div class="guide-item">
+            <div class="guide-title">
+              <strong>Qwen Image 2.1 Turbo</strong>
+              <span class="badge">开源</span><span class="badge neutral">文生图 / 参考图</span>
+            </div>
+            <p>阿里 Qwen 图像模型，中文语义和文字排版能力较好。通过 Pollinations 使用 Pollen 余额。</p>
+          </div>
+        </div>
+
+        <p class="help-copy">附加风格只会在你的提示词末尾追加摄影、电影感、动漫等要求，不会改变模型本身。想按自己的方式写，就选择“不加额外风格”。</p>
+        <div class="button-row">
+          <button class="secondary-button" id="helpSettingsBtn" type="button">去配置开源模型</button>
+          <button class="secondary-button" id="helpMiaojiBtn" type="button">只用妙极模型</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    "use strict";
+
+    const MIAOJI_MODELS = [
+      {
+        providerGroup: "miaoji", provider: "apimart_gpt_image_2_5_flare",
+        model: "gpt-image-2.5-flare", display_name: "GPT Image 2.5 Flare",
+        allowed_resolutions: ["1k", "2k", "4k"],
+        allowed_qualities: ["low", "medium", "high", "xhigh", "max"],
+        default_quality: "medium", supportsReference: true, isOpenSource: false,
+        estimate_cents: {
+          low: {"1k":24,"2k":36,"4k":36},
+          medium: {"1k":36,"2k":60,"4k":60},
+          high: {"1k":96,"2k":179,"4k":179},
+          xhigh: {"1k":167,"2k":310,"4k":310},
+          max: {"1k":346,"2k":679,"4k":679}
+        }
+      },
+      {
+        providerGroup: "miaoji", provider: "apimart_gpt_image_2_5_sunburst",
+        model: "gpt-image-2.5-sunburst", display_name: "GPT Image 2.5 Sunburst",
+        allowed_resolutions: ["1k", "2k", "4k"],
+        allowed_qualities: ["low", "medium", "high", "xhigh", "max"],
+        default_quality: "medium", supportsReference: true, isOpenSource: false,
+        estimate_cents: {
+          low: {"1k":24,"2k":36,"4k":36},
+          medium: {"1k":36,"2k":60,"4k":60},
+          high: {"1k":96,"2k":179,"4k":179},
+          xhigh: {"1k":167,"2k":310,"4k":310},
+          max: {"1k":346,"2k":679,"4k":679}
+        }
+      },
+      {
+        providerGroup: "miaoji", provider: "apimart_gpt_image_2",
+        model: "gpt-image-2", display_name: "GPT Image 2",
+        allowed_resolutions: ["1k", "2k", "4k"], allowed_qualities: [],
+        default_quality: "", supportsReference: true, isOpenSource: false,
+        estimate_cents: {"": {"1k":24,"2k":48,"4k":96}}
+      },
+      {
+        providerGroup: "miaoji", provider: "apimart_gemini_3_pro",
+        model: "gemini-3-pro-image-preview", display_name: "Nano Banana Pro",
+        allowed_resolutions: ["1k", "2k", "4k"], allowed_qualities: [],
+        default_quality: "", supportsReference: true, isOpenSource: false,
+        estimate_cents: {"": {"1k":60,"2k":60,"4k":84}}
+      },
+      {
+        providerGroup: "miaoji", provider: "apimart_gemini_3_1_flash",
+        model: "gemini-3.1-flash-image-preview", display_name: "Nano Banana 2",
+        allowed_resolutions: ["0.5k", "1k", "2k", "4k"], allowed_qualities: [],
+        default_quality: "", supportsReference: true, isOpenSource: false,
+        estimate_cents: {"": {"0.5k":48,"1k":60,"2k":60,"4k":84}}
+      }
+    ];
+
+    const OPEN_MODELS = [
+      {
+        providerGroup: "cloudflare", provider: "@cf/black-forest-labs/flux-1-schnell",
+        model: "@cf/black-forest-labs/flux-1-schnell", display_name: "FLUX.1 Schnell",
+        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
+        supportsReference: false, isOpenSource: true,
+        badges: ["开源", "文生图", "Cloudflare 免费额度"],
+        note: "快速写实模型；不加参考图时使用。",
+        estimate_cents: {"": {"1k":0}}
+      },
+      {
+        providerGroup: "cloudflare", provider: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+        model: "@cf/stabilityai/stable-diffusion-xl-base-1.0", display_name: "Stable Diffusion XL 1.0",
+        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
+        supportsReference: false, isOpenSource: true,
+        badges: ["开源", "文生图", "Cloudflare 免费额度"],
+        note: "成熟通用模型，适合插画、概念图和多种风格。",
+        estimate_cents: {"": {"1k":0}}
+      },
+      {
+        providerGroup: "cloudflare", provider: "@cf/lykon/dreamshaper-8-lcm",
+        model: "@cf/lykon/dreamshaper-8-lcm", display_name: "DreamShaper 8 LCM",
+        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
+        supportsReference: false, isOpenSource: true,
+        badges: ["开源", "文生图", "Cloudflare 免费额度"],
+        note: "偏写实和插画的 Stable Diffusion 衍生模型。",
+        estimate_cents: {"": {"1k":0}}
+      },
+      {
+        providerGroup: "pollinations", provider: "black-forest-labs/flux.1-kontext-pro",
+        model: "black-forest-labs/flux.1-kontext-pro", display_name: "FLUX Kontext",
+        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
+        supportsReference: true, isOpenSource: true,
+        badges: ["开源", "图生图", "约 0.03 Pollen"],
+        note: "必须上传参考图；按提示词修改原图。",
+        estimate_cents: {"": {"1k":0}}
+      },
+      {
+        providerGroup: "pollinations", provider: "black-forest-labs/flux.2-klein-4b",
+        model: "black-forest-labs/flux.2-klein-4b", display_name: "FLUX.2 Klein 4B",
+        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
+        supportsReference: true, isOpenSource: true,
+        badges: ["开源", "文生图 / 参考图", "约 0.005 Pollen"],
+        note: "轻量全能模型，可写新图，也可带参考图。",
+        estimate_cents: {"": {"1k":0}}
+      },
+      {
+        providerGroup: "pollinations", provider: "qwen/qwen-image-2.1-turbo",
+        model: "qwen/qwen-image-2.1-turbo", display_name: "Qwen Image 2.1 Turbo",
+        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
+        supportsReference: true, isOpenSource: true,
+        badges: ["开源", "文生图 / 参考图", "约 0.016 Pollen"],
+        note: "中文语义和文字排版较强的轻量版本。",
+        estimate_cents: {"": {"1k":0}}
+      }
+    ];
+
+    const STYLE_PROMPTS = {
+      none: "",
+      photoreal: "写实摄影风格，真实镜头光影，自然材质与清晰细节，避免插画感。",
+      cinematic: "电影剧照风格，电影级构图，戏剧性光影，丰富层次，轻微胶片颗粒。",
+      anime: "高质量动漫插画风格，干净线稿，鲜明色彩，精致背景，高完成度。",
+      poster: "商业视觉海报风格，强主次关系，醒目视觉中心，精致材质，高级留白。",
+      ink: "中国水墨国风，宣纸质感，墨色浓淡变化，留白构图，克制有意境。",
+      clay: "3D 黏土定格动画风格，柔和材质，圆润造型，棚拍布光，精致可爱。"
+    };
+
+    const SIZE_OPTIONS = [
+      ["1:1", "1:1 正方形"], ["3:4", "3:4 竖图"], ["4:3", "4:3 横图"],
+      ["9:16", "9:16 竖屏"], ["16:9", "16:9 宽屏"], ["2:3", "2:3 竖图"],
+      ["3:2", "3:2 横图"], ["4:5", "4:5 竖图"], ["5:4", "5:4 横图"]
+    ];
+    const QUALITY_LABELS = {low:"低档 · 省钱",medium:"中档",high:"高档",xhigh:"超高",max:"极致"};
+    const RESOLUTION_LABELS = {"0.5k":"0.5K 预览","1k":"1K 标准","2k":"2K 高清","4k":"4K 超清"};
+
+    const $ = (id) => document.getElementById(id);
+    const promptInput = $("prompt");
+    const modelSelect = $("modelSelect");
+    const styleSelect = $("styleSelect");
+    const sizeSelect = $("sizeSelect");
+    const qualityField = $("qualityField");
+    const qualitySelect = $("qualitySelect");
+    const resolutionSelect = $("resolutionSelect");
+    const modelNote = $("modelNote");
+    const priceTitle = $("priceTitle");
+    const priceDetail = $("priceDetail");
+    const generateButton = $("generateButton");
+    const resultBody = $("resultBody");
+    const resultStatus = $("resultStatus");
+    const settingsModal = $("settingsModal");
+    const helpModal = $("helpModal");
+    const referenceInput = $("referenceInput");
+    const referencePreview = $("referencePreview");
+    const referenceImage = $("referenceImage");
+    const referenceName = $("referenceName");
+    const referenceZone = $("uploadZone");
+    const toastEl = $("toast");
+
+    const isPreview = new URLSearchParams(location.search).has("preview");
+    let models = MIAOJI_MODELS.concat(OPEN_MODELS);
+    let currentModel = models[0];
+    let referenceDataUrl = "";
+    let busy = false;
+    let toastTimer = null;
+    let currentResult = null;
+    let generationCallId = "";
+    let updateCallId = "";
+    const modelCalls = new Set();
+    const saveCalls = new Map();
+
+    function bridge() {
+      return window.Android || null;
+    }
+
+    function id(prefix) {
+      return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2400);
+    }
+
+    function openModal(modal) {
+      modal.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove("show");
+      if (!document.querySelector(".modal-mask.show")) document.body.style.overflow = "";
+    }
+
+    function fillSelect(select, options, selected) {
+      select.replaceChildren();
+      for (const [value, label] of options) {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = label;
+        if (value === selected) option.selected = true;
+        select.appendChild(option);
+      }
+    }
+
+    function renderModels(preferred) {
+      modelSelect.replaceChildren();
+      const groups = [
+        ["妙极模型", "miaoji"],
+        ["开源 · Cloudflare", "cloudflare"],
+        ["开源 · Pollinations", "pollinations"]
+      ];
+      for (const [label, groupKey] of groups) {
+        const groupModels = models.filter((item) => item.providerGroup === groupKey);
+        if (!groupModels.length) continue;
+        const group = document.createElement("optgroup");
+        group.label = label;
+        for (const model of groupModels) {
+          const option = document.createElement("option");
+          option.value = model.model;
+          option.textContent = model.display_name;
+          group.appendChild(option);
+        }
+        modelSelect.appendChild(group);
+      }
+
+      const wanted = preferred || "gpt-image-2.5-flare";
+      currentModel = models.find((model) => model.model === wanted) || models[0];
+      modelSelect.value = currentModel.model;
+      renderModelControls();
+    }
+
+    function preferredQuality(model) {
+      if (!model.allowed_qualities.length) return "";
+      if (model.model === "gpt-image-2.5-flare" && model.allowed_qualities.includes("low")) return "low";
+      return model.default_quality || model.allowed_qualities[0];
+    }
+
+    function renderModelControls() {
+      qualityField.hidden = currentModel.allowed_qualities.length === 0;
+      fillSelect(
+        qualitySelect,
+        currentModel.allowed_qualities.map((value) => [value, QUALITY_LABELS[value] || value]),
+        preferredQuality(currentModel)
+      );
+      const preferredResolution = currentModel.allowed_resolutions.includes("1k")
+        ? "1k" : currentModel.allowed_resolutions[0];
+      const lastResolution = resolutionSelect.value;
+      const resolution = currentModel.allowed_resolutions.includes(lastResolution)
+        ? lastResolution : preferredResolution;
+      fillSelect(
+        resolutionSelect,
+        currentModel.allowed_resolutions.map((value) => [value, RESOLUTION_LABELS[value] || value]),
+        resolution
+      );
+      fillSelect(sizeSelect, SIZE_OPTIONS, sizeSelect.value || "1:1");
+      renderModelNote();
+      updatePrice();
+    }
+
+    function renderModelNote() {
+      const badges = currentModel.isOpenSource
+        ? (currentModel.badges || ["开源"])
+        : ["妙极 API", "文生图 / 参考图", "按实扣结算"];
+      modelNote.replaceChildren();
+      for (const text of badges) {
+        const badge = document.createElement("span");
+        badge.className = "badge" + (text.includes("Pollen") ? " paid" : "");
+        badge.textContent = text;
+        modelNote.appendChild(badge);
+      }
+      const note = document.createElement("span");
+      note.textContent = currentModel.note || "官网预扣金额会先冻结，任务完成后按实际费用结算。";
+      modelNote.appendChild(note);
+      modelNote.hidden = false;
+    }
+
+    function estimateCents() {
+      const quality = qualityField.hidden ? "" : qualitySelect.value;
+      const resolution = resolutionSelect.value || "1k";
+      const values = currentModel.estimate_cents || {};
+      return Number((values[quality] || values[""] || {})[resolution] || 0);
+    }
+
+    function updatePrice() {
+      if (currentModel.isOpenSource) {
+        if (currentModel.providerGroup === "cloudflare") {
+          priceTitle.textContent = "使用 Cloudflare 免费额度";
+          priceDetail.textContent = "超额费用按 Cloudflare 套餐结算";
+        } else {
+          const pollen = currentModel.model.includes("kontext") ? "0.03"
+            : currentModel.model.includes("qwen") ? "0.016" : "0.005";
+          priceTitle.textContent = `约 ${pollen} Pollen / 张`;
+          priceDetail.textContent = "需要 Pollinations 余额，换算金额以官网为准";
+        }
+        return;
+      }
+      const cents = estimateCents();
+      if (currentModel.model === "gpt-image-2.5-flare"
+          && qualitySelect.value === "low" && resolutionSelect.value === "1k") {
+        priceTitle.textContent = "官网预扣约 ¥0.24";
+        priceDetail.textContent = "近期实扣约 ¥0.05–0.06，最终以任务结算为准";
+      } else if (cents > 0) {
+        priceTitle.textContent = `官网预扣约 ¥${(cents / 100).toFixed(2)}`;
+        priceDetail.textContent = "任务完成后按实际费用多退少补";
+      } else {
+        priceTitle.textContent = "价格以提交任务时为准";
+      }
+    }
+
+    function updateCharCount() {
+      $("charCount").textContent = `${promptInput.value.length} / 10000`;
+    }
+
+    function updateConnectionState() {
+      const hasMiaoji = !!(bridge() && bridge().hasKey());
+      const hasCloudflare = !!(bridge() && bridge().hasCloudflare());
+      const hasPollinations = !!(bridge() && bridge().hasPollinations());
+      const any = hasMiaoji || hasCloudflare || hasPollinations;
+      const state = $("connectionState");
+      state.classList.toggle("offline", !any);
+      state.textContent = any ? "已连接" : "未连接";
+
+      $("miaojiState").classList.toggle("off", !hasMiaoji);
+      $("miaojiState").textContent = hasMiaoji ? "妙极 API Key 已配置" : "妙极未配置";
+      $("cloudflareState").classList.toggle("off", !hasCloudflare);
+      $("cloudflareState").textContent = hasCloudflare ? "Cloudflare 已配置" : "Cloudflare 未配置";
+      $("pollinationsState").classList.toggle("off", !hasPollinations);
+      $("pollinationsState").textContent = hasPollinations ? "Pollinations 已配置" : "Pollinations 未配置";
+    }
+
+    function resetReference() {
+      referenceDataUrl = "";
+      referenceInput.value = "";
+      referenceImage.removeAttribute("src");
+      referencePreview.hidden = true;
+      referenceZone.hidden = false;
+    }
+
+    function setReferenceFromFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showToast("请选择图片文件");
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        showToast("参考图不能超过 15 MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.onload = () => {
+          const scale = Math.min(1, 1536 / Math.max(image.width, image.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+          referenceDataUrl = canvas.toDataURL("image/jpeg", .86);
+          referenceImage.src = referenceDataUrl;
+          referenceName.textContent = file.name || "reference.jpg";
+          referencePreview.hidden = false;
+          referenceZone.hidden = true;
+          if (!currentModel.supportsReference) {
+            const imageModel = models.find((model) => model.supportsReference
+              && model.providerGroup === "pollinations");
+            if (imageModel) {
+              currentModel = imageModel;
+              modelSelect.value = imageModel.model;
+              renderModelControls();
+              showToast("已切换到支持参考图的开源模型");
+            }
+          }
+        };
+        image.onerror = () => showToast("图片读取失败，请换一张");
+        image.src = String(reader.result || "");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function showEmptyResult() {
+      resultStatus.textContent = "等待生成";
+      resultBody.innerHTML = `
+        <div class="result-empty">
+          <div class="result-empty-icon">▧</div>
+          <strong>图片会显示在这里</strong>
+          <p>填写提示词后，点击下方“生成图片”。结果不会自动保存到手机。</p>
+        </div>`;
+    }
+
+    function showGenerating() {
+      resultStatus.textContent = "正在生成";
+      resultBody.innerHTML = `
+        <div class="generating">
+          <div class="spinner"></div>
+          <strong id="generatingText">正在提交任务…</strong>
+          <p>通常需要几十秒到几分钟，请保持网络畅通。</p>
+          <div class="progress-track"><span></span></div>
+        </div>`;
+    }
+
+    function updateGeneratingText(text) {
+      const element = $("generatingText");
+      if (element) element.textContent = text || "正在生成…";
+    }
+
+    function showError(message, data) {
+      resultStatus.textContent = "生成失败";
+      resultBody.innerHTML = "";
+      const panel = document.createElement("div");
+      panel.className = "error-panel";
+      const title = document.createElement("strong");
+      title.textContent = "这次没有生成成功";
+      const copy = document.createElement("p");
+      copy.textContent = message || "请稍后重试";
+      panel.append(title, copy);
+      if (data && (data.openRecharge || data.openPollinations)) {
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "primary-button";
+        action.textContent = data.openPollinations ? "打开余额页面" : "打开登录 / 充值";
+        action.addEventListener("click", () => {
+          if (!bridge()) return;
+          if (data.openPollinations) bridge().openPollinations();
+          else bridge().openLogin();
+        });
+        panel.appendChild(action);
+      }
+      resultBody.appendChild(panel);
+    }
+
+    function showResult(data) {
+      currentResult = data;
+      resultStatus.textContent = "生成完成";
+      resultBody.replaceChildren();
+
+      const image = document.createElement("img");
+      image.className = "result-image";
+      image.alt = "生成的图片";
+      image.referrerPolicy = "no-referrer";
+      image.src = data.imageUrl;
+
+      const meta = document.createElement("div");
+      meta.className = "result-meta";
+      const cost = document.createElement("strong");
+      cost.textContent = data.provider
+        ? (data.costLabel || "开源平台额度内")
+        : `本次实扣 ${formatMoney(data.chargedCents)}`;
+      const info = document.createElement("span");
+      info.textContent = `${data.size || ""} · ${String(data.resolution || "").toUpperCase()}`;
+      meta.append(cost, info);
+
+      const actions = document.createElement("div");
+      actions.className = "result-actions";
+      const save = document.createElement("button");
+      save.type = "button";
+      save.className = "primary-button";
+      save.textContent = "保存到手机";
+      const again = document.createElement("button");
+      again.type = "button";
+      again.className = "secondary-button";
+      again.textContent = "再生成一次";
+      again.addEventListener("click", startGeneration);
+      actions.append(save, again);
+
+      save.addEventListener("click", () => {
+        if (!bridge()) return;
+        const callId = id("save");
+        saveCalls.set(callId, { save });
+        save.disabled = true;
+        save.textContent = "保存中…";
+        bridge().saveImage(
+          data.imageUrl,
+          data.mimeType || "image/png",
+          "妙极画图_" + timestampName(),
+          callId
+        );
+      });
+
+      resultBody.append(image, meta, actions);
+    }
+
+    function formatMoney(cents) {
+      return "¥" + (Number(cents || 0) / 100).toFixed(2);
+    }
+
+    function timestampName() {
+      const now = new Date();
+      const pad = (value) => String(value).padStart(2, "0");
+      return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_`
+        + `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+    }
+
+    function requiredProviderReady() {
+      if (!bridge()) return isPreview;
+      if (currentModel.providerGroup === "miaoji") return bridge().hasKey();
+      if (currentModel.providerGroup === "cloudflare") return bridge().hasCloudflare();
+      return bridge().hasPollinations();
+    }
+
+    function startGeneration() {
+      if (busy) return;
+      const prompt = promptInput.value.trim();
+      if (!prompt) {
+        promptInput.focus();
+        showToast("请先填写提示词");
+        return;
+      }
+      if (referenceDataUrl && !currentModel.supportsReference) {
+        showToast("当前模型不支持参考图，请换一个带“参考图/图生图”的模型");
+        return;
+      }
+      if (!requiredProviderReady()) {
+        openModal(settingsModal);
+        updateConnectionState();
+        showToast(currentModel.providerGroup === "miaoji"
+          ? "请先配置妙极 API Key" : "请先配置开源模型账户");
+        return;
+      }
+
+      const style = STYLE_PROMPTS[styleSelect.value] || "";
+      const referencePrefix = referenceDataUrl
+        ? "请以参考图为核心，保留原图最重要的主体、构图和身份特征，再按提示词修改。"
+        : "";
+      const fullPrompt = [referencePrefix, prompt, style].filter(Boolean).join("\n\n");
+      const cents = estimateCents();
+      if (!currentModel.isOpenSource && cents > 6) {
+        if (!window.confirm(`当前档位官网预扣约 ¥${(cents / 100).toFixed(2)}，超过平时设定的 0.06 元低价红线。确定继续吗？`)) {
+          return;
+        }
+      }
+
+      busy = true;
+      generateButton.disabled = true;
+      generateButton.textContent = "生成中…";
+      showGenerating();
+      generationCallId = id("gen");
+
+      if (isPreview && !bridge()) {
+        setTimeout(() => {
+          const errorData = { openRecharge: false };
+          showError("这是界面预览，不会调用接口或消耗余额。", errorData);
+          finishBusy();
+        }, 1200);
+        return;
+      }
+
+      if (currentModel.providerGroup === "cloudflare") {
+        bridge().generateCloudflare(
+          fullPrompt, currentModel.model, sizeSelect.value, referenceDataUrl, generationCallId
+        );
+      } else if (currentModel.providerGroup === "pollinations") {
+        bridge().generatePollinations(
+          fullPrompt, currentModel.model, sizeSelect.value, referenceDataUrl, generationCallId
+        );
+      } else {
+        bridge().generate(
+          fullPrompt,
+          currentModel.model,
+          sizeSelect.value,
+          resolutionSelect.value,
+          qualityField.hidden ? "" : qualitySelect.value,
+          1,
+          referenceDataUrl,
+          generationCallId
+        );
+      }
+    }
+
+    function finishBusy() {
+      busy = false;
+      generateButton.disabled = false;
+      generateButton.textContent = "生成图片";
+    }
+
+    window.__miaoNative = function(raw) {
+      let event;
+      try { event = JSON.parse(raw); } catch { return; }
+
+      if (modelCalls.has(event.callId)) {
+        modelCalls.delete(event.callId);
+        if (event.event === "models" && event.data && Array.isArray(event.data.items)) {
+          event.data.items.forEach((model) => {
+            model.providerGroup = "miaoji";
+            model.supportsReference = true;
+            model.isOpenSource = false;
+          });
+          models = event.data.items.concat(OPEN_MODELS);
+          renderModels("gpt-image-2.5-flare");
+        }
+        return;
+      }
+
+      if (saveCalls.has(event.callId)) {
+        const state = saveCalls.get(event.callId);
+        if (event.event === "saved") {
+          state.save.textContent = "已保存到手机";
+          state.save.disabled = false;
+          showToast(event.message || "已保存到相册");
+          saveCalls.delete(event.callId);
+        } else if (event.event === "save_error") {
+          state.save.textContent = "重新保存";
+          state.save.disabled = false;
+          showToast(event.message || "保存失败");
+          saveCalls.delete(event.callId);
+        }
+        return;
+      }
+
+      if (event.callId === updateCallId) {
+        if (event.event === "update_available") {
+          $("updateMessage").textContent = `发现新版本 ${event.data.version}：${event.data.notes || "包含功能更新"}`;
+          const row = $("checkUpdateBtn").parentElement;
+          let download = $("downloadUpdateBtn");
+          if (!download) {
+            download = document.createElement("button");
+            download.id = "downloadUpdateBtn";
+            download.type = "button";
+            download.className = "primary-button";
+            download.textContent = "下载更新";
+            download.addEventListener("click", () => {
+              if (bridge()) bridge().openUpdate(event.data.downloadUrl);
+            });
+            row.appendChild(download);
+          }
+          download.dataset.url = event.data.downloadUrl;
+          $("checkUpdateBtn").textContent = "重新检查";
+        } else if (event.event === "update_none") {
+          $("updateMessage").textContent = "已经是最新版本。";
+          $("checkUpdateBtn").textContent = "再检查一次";
+        } else if (event.event === "update_error") {
+          $("updateMessage").textContent = event.message || "检查更新失败，请稍后重试。";
+          $("checkUpdateBtn").textContent = "重新检查";
+        }
+        updateCallId = "";
+        return;
+      }
+
+      if (event.callId !== generationCallId) return;
+      if (event.event === "status") {
+        updateGeneratingText(event.message);
+      } else if (event.event === "result") {
+        showResult(event.data || {});
+        finishBusy();
+        generationCallId = "";
+      } else if (event.event === "error") {
+        showError(event.message, event.data);
+        finishBusy();
+        generationCallId = "";
+      }
+    };
+
+    modelSelect.addEventListener("change", () => {
+      currentModel = models.find((model) => model.model === modelSelect.value) || models[0];
+      renderModelControls();
+    });
+    qualitySelect.addEventListener("change", updatePrice);
+    resolutionSelect.addEventListener("change", updatePrice);
+    sizeSelect.addEventListener("change", updatePrice);
+    promptInput.addEventListener("input", updateCharCount);
+    $("clearPromptBtn").addEventListener("click", () => {
+      promptInput.value = "";
+      updateCharCount();
+      promptInput.focus();
+    });
+    generateButton.addEventListener("click", startGeneration);
+
+    referenceZone.addEventListener("click", () => referenceInput.click());
+    referenceZone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        referenceInput.click();
+      }
+    });
+    $("replaceReferenceBtn").addEventListener("click", () => referenceInput.click());
+    $("removeReferenceBtn").addEventListener("click", resetReference);
+    referenceInput.addEventListener("change", () => setReferenceFromFile(referenceInput.files[0]));
+
+    $("loginBtn").addEventListener("click", () => {
+      if (bridge()) bridge().openLogin();
+    });
+    $("settingsBtn").addEventListener("click", () => {
+      openModal(settingsModal);
+      updateConnectionState();
+    });
+    $("helpBtn").addEventListener("click", () => openModal(helpModal));
+    document.querySelectorAll(".modal-close").forEach((button) => {
+      button.addEventListener("click", () => closeModal($(button.dataset.close)));
+    });
+    document.querySelectorAll(".modal-mask").forEach((mask) => {
+      mask.addEventListener("click", (event) => {
+        if (event.target === mask) closeModal(mask);
+      });
+    });
+
+    $("saveMiaojiBtn").addEventListener("click", () => {
+      const value = $("apiKeyInput").value.trim();
+      if (!bridge() || !value) {
+        showToast("请填写妙极 API Key");
+        return;
+      }
+      bridge().saveKey(value);
+      $("apiKeyInput").value = "";
+      updateConnectionState();
+      showToast("妙极密钥已保存");
+    });
+    $("clearMiaojiBtn").addEventListener("click", () => {
+      if (!bridge()) return;
+      bridge().clearKey();
+      updateConnectionState();
+      showToast("妙极密钥已清除");
+    });
+    $("openDeveloperBtn").addEventListener("click", () => bridge() && bridge().openDeveloper());
+
+    $("saveCloudflareBtn").addEventListener("click", () => {
+      const account = $("cfAccountInput").value.trim();
+      const token = $("cfTokenInput").value.trim();
+      if (!bridge() || !account || !token) {
+        showToast("Account ID 和 API Token 都要填写");
+        return;
+      }
+      bridge().saveCloudflare(account, token);
+      $("cfAccountInput").value = "";
+      $("cfTokenInput").value = "";
+      updateConnectionState();
+      showToast("Cloudflare 账户已保存");
+    });
+    $("openCloudflareBtn").addEventListener("click", () => bridge() && bridge().openCloudflare());
+
+    $("savePollinationsBtn").addEventListener("click", () => {
+      if (!bridge()) return;
+      const key = $("pollinationsInput").value.trim();
+      if (key) bridge().savePollinationsKey(key);
+      else bridge().clearPollinationsKey();
+      $("pollinationsInput").value = "";
+      updateConnectionState();
+      showToast(key ? "Pollinations 密钥已保存" : "Pollinations 密钥已清除");
+    });
+    $("openPollinationsBtn").addEventListener("click", () => bridge() && bridge().openPollinations());
+
+    $("checkUpdateBtn").addEventListener("click", () => {
+      if (!bridge()) return;
+      updateCallId = id("update");
+      $("updateMessage").textContent = "正在检查 GitHub Releases…";
+      $("checkUpdateBtn").disabled = true;
+      bridge().checkForUpdate(updateCallId);
+      setTimeout(() => { $("checkUpdateBtn").disabled = false; }, 800);
+    });
+    $("openGithubBtn").addEventListener("click", () => bridge() && bridge().openGithub());
+    $("helpSettingsBtn").addEventListener("click", () => {
+      closeModal(helpModal);
+      openModal(settingsModal);
+      document.querySelector("details.config-group").open = true;
+    });
+    $("helpMiaojiBtn").addEventListener("click", () => {
+      closeModal(helpModal);
+      currentModel = models.find((model) => model.model === "gpt-image-2.5-flare") || models[0];
+      modelSelect.value = currentModel.model;
+      renderModelControls();
+      showToast("已切换到妙极模型");
+    });
+
+    function initialize() {
+      fillSelect(sizeSelect, SIZE_OPTIONS, "1:1");
+      renderModels("gpt-image-2.5-flare");
+      updateCharCount();
+      updateConnectionState();
+      $("versionText").textContent = bridge()
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.2.0";
+
+      if (!isPreview && bridge() && !bridge().hasKey()
+          && !bridge().hasCloudflare() && !bridge().hasPollinations()) {
+        openModal(settingsModal);
+      }
+
+      if (bridge()) {
+        const callId = id("models");
+        modelCalls.add(callId);
+        bridge().loadModels(callId);
+      }
+    }
+
+    initialize();
+  </script>
+</body>
+</html>

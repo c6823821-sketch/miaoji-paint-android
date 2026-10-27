@@ -1,0 +1,36 @@
+# Android build output
+android/build/
+android/**/build/
+*.apk
+*.aab
+*.idsig
+
+# Signing material
+*.jks
+*.keystore
+
+# Local browser profiles and downloaded API references
+edge-mobile-profile/
+/ApiDocs.js
+/ImageGenerate.js
+/ImageRechargeModal.js
+/RechargeModal.js
+/bootstrap_home.json
+/cf_*
+/docs_flare.html
+/hf_*.html
+/imageOptions.js
+/image_pollinations_models.json
+/index-Dh8tfY0u.js
+/mask_white.png
+/poll_*
+/pollinations_*
+/pricing.html
+/shot*.png
+/website-mobile.png
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
