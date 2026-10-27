@@ -50,8 +50,6 @@ public class MainActivity extends Activity {
     private static final String SITE_HOME = "https://omnidoc.com.cn/";
     private static final String SITE_LOGIN = "https://omnidoc.com.cn/?auth=login&ret=/";
     private static final String SITE_DEVELOPER = "https://omnidoc.com.cn/developer";
-    private static final String CLOUDFLARE_DASHBOARD = "https://dash.cloudflare.com/";
-    private static final String POLLINATIONS_HOME = "https://enter.pollinations.ai/";
     private static final String GITHUB_REPO = "c6823821-sketch/miaoji-paint-android";
     private static final String GITHUB_REPO_URL = "https://github.com/" + GITHUB_REPO;
     private static final String GITHUB_LATEST_RELEASE =
@@ -59,9 +57,6 @@ public class MainActivity extends Activity {
     private static final String API_ROOT = "https://omnidoc.com.cn/api/v1";
     private static final String APP_PREFS = "miaoji_paint";
     private static final String KEY_API = "api_key";
-    private static final String KEY_CF_ACCOUNT = "cf_account_id";
-    private static final String KEY_CF_TOKEN = "cf_api_token";
-    private static final String KEY_POLLINATIONS = "pollinations_api_key";
     private static final int SAVE_PERMISSION_REQUEST = 41;
     private static final int FILE_CHOOSER_REQUEST = 42;
     private static final int MAX_POLL_MILLIS = 15 * 60 * 1000;
@@ -198,18 +193,6 @@ public class MainActivity extends Activity {
         return preferences.getString(KEY_API, "");
     }
 
-    private String cloudflareAccount() {
-        return preferences.getString(KEY_CF_ACCOUNT, "");
-    }
-
-    private String cloudflareToken() {
-        return preferences.getString(KEY_CF_TOKEN, "");
-    }
-
-    private String pollinationsKey() {
-        return preferences.getString(KEY_POLLINATIONS, "");
-    }
-
     private void showToast(String text) {
         runOnUiThread(() -> Toast.makeText(this, text, Toast.LENGTH_SHORT).show());
     }
@@ -221,17 +204,6 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
-        public boolean hasCloudflare() {
-            return !cloudflareAccount().trim().isEmpty()
-                    && !cloudflareToken().trim().isEmpty();
-        }
-
-        @JavascriptInterface
-        public boolean hasPollinations() {
-            return !pollinationsKey().trim().isEmpty();
-        }
-
-        @JavascriptInterface
         public void saveKey(String key) {
             String clean = key == null ? "" : key.trim();
             preferences.edit().putString(KEY_API, clean).apply();
@@ -240,31 +212,6 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void clearKey() {
             preferences.edit().remove(KEY_API).apply();
-        }
-
-        @JavascriptInterface
-        public void saveCloudflare(String accountId, String token) {
-            preferences.edit()
-                    .putString(KEY_CF_ACCOUNT, accountId == null ? "" : accountId.trim())
-                    .putString(KEY_CF_TOKEN, token == null ? "" : token.trim())
-                    .apply();
-        }
-
-        @JavascriptInterface
-        public void clearCloudflare() {
-            preferences.edit().remove(KEY_CF_ACCOUNT).remove(KEY_CF_TOKEN).apply();
-        }
-
-        @JavascriptInterface
-        public void savePollinationsKey(String key) {
-            preferences.edit()
-                    .putString(KEY_POLLINATIONS, key == null ? "" : key.trim())
-                    .apply();
-        }
-
-        @JavascriptInterface
-        public void clearPollinationsKey() {
-            preferences.edit().remove(KEY_POLLINATIONS).apply();
         }
 
         @JavascriptInterface
@@ -287,7 +234,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.2.0";
+                return "1.3.0";
             }
         }
 
@@ -319,16 +266,6 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void openApiDocs() {
             openExternal(Uri.parse(SITE_HOME + "docs/api"));
-        }
-
-        @JavascriptInterface
-        public void openCloudflare() {
-            openExternal(Uri.parse(CLOUDFLARE_DASHBOARD));
-        }
-
-        @JavascriptInterface
-        public void openPollinations() {
-            openExternal(Uri.parse(POLLINATIONS_HOME));
         }
 
         @JavascriptInterface
@@ -390,54 +327,6 @@ public class MainActivity extends Activity {
                     safe(resolution, "1k"),
                     quality == null ? "" : quality.trim(),
                     Math.max(1, count),
-                    referenceDataUrl == null ? "" : referenceDataUrl.trim(),
-                    callId
-            ));
-        }
-
-        @JavascriptInterface
-        public void generateCloudflare(String prompt, String model, String size,
-                                       String referenceDataUrl, String callId) {
-            String account = cloudflareAccount().trim();
-            String token = cloudflareToken().trim();
-            if (account.isEmpty() || token.isEmpty()) {
-                emit(callId, "error", "请先配置 Cloudflare Account ID 和 API Token",
-                        errorData("NO_CLOUDFLARE_KEY", false));
-                return;
-            }
-            if (prompt == null || prompt.trim().isEmpty()) {
-                emit(callId, "error", "请先输入要生成的内容", null);
-                return;
-            }
-            executor.execute(() -> runCloudflareGeneration(
-                    account,
-                    token,
-                    prompt.trim(),
-                    safe(model, "@cf/black-forest-labs/flux-1-schnell"),
-                    safe(size, "1:1"),
-                    referenceDataUrl == null ? "" : referenceDataUrl.trim(),
-                    callId
-            ));
-        }
-
-        @JavascriptInterface
-        public void generatePollinations(String prompt, String model, String size,
-                                         String referenceDataUrl, String callId) {
-            String key = pollinationsKey().trim();
-            if (key.isEmpty()) {
-                emit(callId, "error", "请先配置 Pollinations API Key",
-                        errorData("NO_POLLINATIONS_KEY", false));
-                return;
-            }
-            if (prompt == null || prompt.trim().isEmpty()) {
-                emit(callId, "error", "请先输入要生成的内容", null);
-                return;
-            }
-            executor.execute(() -> runPollinationsGeneration(
-                    key,
-                    prompt.trim(),
-                    safe(model, "black-forest-labs/flux.1-kontext-pro"),
-                    safe(size, "1:1"),
                     referenceDataUrl == null ? "" : referenceDataUrl.trim(),
                     callId
             ));
@@ -584,231 +473,6 @@ public class MainActivity extends Activity {
         } finally {
             if (connection != null) connection.disconnect();
         }
-    }
-
-    private void runCloudflareGeneration(String accountId, String token, String prompt,
-                                         String model, String size,
-                                         String referenceDataUrl, String callId) {
-        if (!referenceDataUrl.isEmpty()) {
-            emit(callId, "error",
-                    "当前 Cloudflare 开源模型只支持文生图。要图生图，请选择“FLUX Kontext（开源图生图）”，或改用妙极模型。",
-                    errorData("OPEN_MODEL_TEXT_ONLY", false));
-            return;
-        }
-
-        HttpURLConnection connection = null;
-        try {
-            JSONObject request = new JSONObject();
-            request.put("prompt", prompt);
-            if ("@cf/black-forest-labs/flux-1-schnell".equals(model)) {
-                request.put("steps", 4);
-            } else {
-                int[] dimensions = dimensionsFor(size);
-                request.put("width", dimensions[0]);
-                request.put("height", dimensions[1]);
-                request.put("num_steps", 8);
-                request.put("guidance", 7.5);
-                request.put("negative_prompt", "low quality, blurry, distorted, watermark");
-            }
-
-            emit(callId, "status", "正在调用开源模型…", null);
-            URL url = new URL("https://api.cloudflare.com/client/v4/accounts/"
-                    + accountId + "/ai/run/" + model);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(180000);
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Authorization", "Bearer " + token);
-            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            connection.setRequestProperty("Accept", "application/json, image/*");
-            connection.setRequestProperty("User-Agent", "MiaoJiPaint/1.0");
-
-            byte[] body = request.toString().getBytes(StandardCharsets.UTF_8);
-            connection.setFixedLengthStreamingMode(body.length);
-            try (OutputStream output = connection.getOutputStream()) {
-                output.write(body);
-            }
-
-            int status = connection.getResponseCode();
-            String contentType = safe(connection.getContentType(), "application/json");
-            if (status < 200 || status >= 300) {
-                String message = cloudflareError(readResponse(connection), status);
-                emit(callId, "error", message, errorData("CLOUDFLARE_" + status, false));
-                return;
-            }
-
-            String imageUrl;
-            String mime = "image/jpeg";
-            double neurons = 0;
-            if (contentType.toLowerCase(Locale.ROOT).startsWith("image/")) {
-                byte[] imageBytes = readBytes(connection.getInputStream());
-                mime = contentType.split(";")[0].trim();
-                imageUrl = "data:" + mime + ";base64,"
-                        + android.util.Base64.encodeToString(imageBytes, android.util.Base64.NO_WRAP);
-            } else {
-                JSONObject root = new JSONObject(readResponse(connection));
-                if (!root.optBoolean("success", true)) {
-                    throw new IllegalStateException(cloudflareError(root.toString(), status));
-                }
-                JSONObject resultData = root.optJSONObject("result");
-                String imageBase64 = resultData == null ? "" : resultData.optString("image", "");
-                if (imageBase64.isEmpty()) {
-                    throw new IllegalStateException("开源模型没有返回图片");
-                }
-                JSONObject usage = resultData.optJSONObject("usage");
-                if (usage == null) usage = root.optJSONObject("usage");
-                neurons = usage == null ? 0 : usage.optDouble("neurons", 0);
-                imageUrl = "data:image/jpeg;base64," + imageBase64;
-            }
-
-            JSONObject result = new JSONObject();
-            result.put("imageUrl", imageUrl);
-            result.put("mimeType", mime);
-            result.put("chargedCents", 0);
-            result.put("estimatedCents", 0);
-            result.put("model", model);
-            result.put("size", size);
-            result.put("resolution", "1k");
-            result.put("quality", "");
-            result.put("provider", "cloudflare");
-            result.put("neurons", neurons);
-            result.put("costLabel", "Cloudflare 免费额度内");
-            emit(callId, "result", "开源模型生成完成", result);
-        } catch (Exception error) {
-            emit(callId, "error", friendlyError(error), null);
-        } finally {
-            if (connection != null) connection.disconnect();
-        }
-    }
-
-    private void runPollinationsGeneration(String key, String prompt, String model,
-                                           String size, String referenceDataUrl,
-                                           String callId) {
-        HttpURLConnection connection = null;
-        try {
-            if (referenceDataUrl.isEmpty() && model.contains("kontext")) {
-                throw new IllegalStateException("图生图模型需要先选择一张参考图片");
-            }
-            JSONObject request = new JSONObject();
-            request.put("model", model);
-            request.put("prompt", prompt);
-            request.put("n", 1);
-            request.put("response_format", "url");
-            request.put("safe", "privacy,secrets");
-            if (!referenceDataUrl.isEmpty()) request.put("image", referenceDataUrl);
-            int[] dimensions = dimensionsFor(size);
-            request.put("size", dimensions[0] + "x" + dimensions[1]);
-
-            String endpoint = referenceDataUrl.isEmpty()
-                    ? "https://gen.pollinations.ai/v1/images/generations"
-                    : "https://gen.pollinations.ai/v1/images/edits";
-            emit(callId, "status",
-                    referenceDataUrl.isEmpty() ? "正在调用 FLUX 开源模型…" : "正在读取参考图并改图…",
-                    null);
-            URL url = new URL(endpoint);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(180000);
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Authorization", "Bearer " + key);
-            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("User-Agent", "MiaoJiPaint/1.0");
-
-            byte[] body = request.toString().getBytes(StandardCharsets.UTF_8);
-            connection.setFixedLengthStreamingMode(body.length);
-            try (OutputStream output = connection.getOutputStream()) {
-                output.write(body);
-            }
-
-            int status = connection.getResponseCode();
-            String responseText = readResponse(connection);
-            JSONObject root = responseText.isEmpty() ? new JSONObject() : new JSONObject(responseText);
-            if (status < 200 || status >= 300) {
-                String message = pollinationsError(root, status);
-                JSONObject data = errorData("POLLINATIONS_" + status,
-                        "PAYMENT_REQUIRED".equals(root.optString("code")));
-                data.put("openPollinations", status == 402);
-                emit(callId, "error", message, data);
-                return;
-            }
-
-            JSONArray items = root.optJSONArray("data");
-            JSONObject first = items == null || items.length() == 0
-                    ? null : items.optJSONObject(0);
-            String imageUrl = first == null ? "" : first.optString("url", "");
-            String mime = first == null ? "image/jpeg" : first.optString("media_type", "image/jpeg");
-            if (imageUrl.isEmpty() && first != null && !first.optString("b64_json", "").isEmpty()) {
-                imageUrl = "data:" + mime + ";base64," + first.optString("b64_json");
-            }
-            if (imageUrl.isEmpty()) throw new IllegalStateException("Pollinations 没有返回图片");
-
-            JSONObject result = new JSONObject();
-            result.put("imageUrl", imageUrl);
-            result.put("mimeType", mime);
-            result.put("chargedCents", 0);
-            result.put("estimatedCents", 0);
-            result.put("model", model);
-            result.put("size", size);
-            result.put("resolution", "1k");
-            result.put("quality", "");
-            result.put("provider", "pollinations");
-            result.put("costLabel", "Pollen 额度内");
-            emit(callId, "result", "开源模型生成完成", result);
-        } catch (Exception error) {
-            emit(callId, "error", friendlyError(error), null);
-        } finally {
-            if (connection != null) connection.disconnect();
-        }
-    }
-
-    private static int[] dimensionsFor(String size) {
-        switch (size) {
-            case "3:4":
-                return new int[]{896, 1152};
-            case "4:3":
-                return new int[]{1152, 896};
-            case "9:16":
-                return new int[]{768, 1344};
-            case "16:9":
-                return new int[]{1344, 768};
-            case "2:3":
-                return new int[]{832, 1248};
-            case "3:2":
-                return new int[]{1248, 832};
-            case "4:5":
-                return new int[]{896, 1120};
-            case "5:4":
-                return new int[]{1120, 896};
-            default:
-                return new int[]{1024, 1024};
-        }
-    }
-
-    private static String cloudflareError(String response, int status) {
-        try {
-            JSONObject root = new JSONObject(response);
-            JSONArray errors = root.optJSONArray("errors");
-            if (errors != null && errors.length() > 0) {
-                JSONObject first = errors.optJSONObject(0);
-                if (first != null && !first.optString("message").isEmpty()) {
-                    return first.optString("message");
-                }
-            }
-        } catch (JSONException ignored) {
-        }
-        return "Cloudflare 请求失败（HTTP " + status + "）";
-    }
-
-    private static String pollinationsError(JSONObject root, int status) {
-        JSONObject error = root.optJSONObject("error");
-        if (error != null && !error.optString("message").isEmpty()) {
-            return error.optString("message");
-        }
-        String message = root.optString("message", "");
-        return message.isEmpty() ? "Pollinations 请求失败（HTTP " + status + "）" : message;
     }
 
     private void runUpdateCheck(String callId) {

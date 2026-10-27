@@ -378,6 +378,209 @@
     .badge.paid { color: #8b5439; background: #f9e9df; }
     .badge.neutral { color: #59635f; background: #ece9e1; }
 
+    .style-library { padding-bottom: 14px; }
+    .style-filters {
+      padding: 12px 13px 0;
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .style-filters::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      min-height: 31px;
+      padding: 0 11px;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 999px;
+      color: var(--muted);
+      background: #f7f5ef;
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      color: #fff;
+      border-color: var(--green);
+      background: var(--green);
+    }
+    .style-grid {
+      padding: 12px 13px 2px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .style-card {
+      position: relative;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 15px;
+      color: var(--ink);
+      background: #f8f6f0;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .style-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(13, 118, 110, .35);
+      box-shadow: 0 8px 20px rgba(23, 32, 30, .07);
+    }
+    .style-card.selected {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(13, 118, 110, .14);
+    }
+    .style-preview {
+      position: relative;
+      height: 86px;
+      overflow: hidden;
+      background: #ddd8cd;
+    }
+    .style-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(23, 32, 30, .18), transparent 60%);
+    }
+    .style-preview.oil {
+      background:
+        radial-gradient(ellipse at 28% 65%, #e6a845 0 18%, transparent 19%),
+        radial-gradient(ellipse at 68% 40%, #f3cf8b 0 19%, transparent 20%),
+        linear-gradient(135deg, #213b4b 0 36%, #386476 36% 58%, #cf733f 58% 75%, #743928 75%);
+    }
+    .style-preview.watercolor {
+      background:
+        radial-gradient(circle at 75% 23%, rgba(95, 169, 193, .95) 0 22%, transparent 39%),
+        radial-gradient(circle at 22% 70%, rgba(237, 169, 134, .9) 0 24%, transparent 44%),
+        radial-gradient(circle at 55% 55%, rgba(130, 183, 134, .8) 0 25%, transparent 53%),
+        #f7f3e9;
+    }
+    .style-preview.ink {
+      background:
+        linear-gradient(155deg, transparent 0 43%, rgba(24, 34, 31, .8) 44% 51%, transparent 52%),
+        radial-gradient(ellipse at 67% 63%, rgba(24, 34, 31, .9) 0 11%, transparent 12%),
+        linear-gradient(145deg, #f4efe4, #dcd5c5);
+    }
+    .style-preview.anime {
+      background:
+        linear-gradient(158deg, transparent 0 56%, #2e617c 57% 72%, transparent 73%),
+        radial-gradient(circle at 70% 26%, #ffd762 0 14%, transparent 15%),
+        linear-gradient(135deg, #a8dbe4, #f7bcc9 56%, #b9dfbd);
+    }
+    .style-preview.manga {
+      background:
+        repeating-linear-gradient(135deg, transparent 0 9px, rgba(20, 27, 25, .12) 9px 10px),
+        linear-gradient(90deg, #f8f7f2 0 45%, #1e2724 46% 54%, #f8f7f2 55%);
+    }
+    .style-preview.pixel {
+      background-image:
+        linear-gradient(45deg, #315c64 25%, transparent 25%),
+        linear-gradient(-45deg, #315c64 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #d58753 75%),
+        linear-gradient(-45deg, transparent 75%, #d58753 75%);
+      background-size: 18px 18px;
+      background-position: 0 0, 0 9px, 9px -9px, -9px 0;
+      background-color: #eee7d8;
+    }
+    .style-preview.film {
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,.08) 0 11%, transparent 11% 88%, rgba(255,255,255,.08) 88%),
+        radial-gradient(circle at 52% 50%, #dbb780 0 11%, transparent 31%),
+        linear-gradient(135deg, #2d3b35, #876f4f 55%, #d3aa72);
+    }
+    .style-preview.editorial {
+      background:
+        linear-gradient(120deg, transparent 0 60%, rgba(208, 171, 100, .9) 61% 66%, transparent 67%),
+        radial-gradient(circle at 33% 48%, #d6b676 0 19%, transparent 20%),
+        #1f2825;
+    }
+    .style-preview.storybook {
+      background:
+        radial-gradient(ellipse at 50% 100%, #7dad78 0 34%, transparent 35%),
+        radial-gradient(circle at 76% 23%, #f1cc67 0 10%, transparent 11%),
+        linear-gradient(145deg, #ebe2c8, #f8f4e9);
+    }
+    .style-preview.papercard {
+      background:
+        linear-gradient(135deg, transparent 0 31%, #e9c2a0 32% 42%, transparent 43%),
+        linear-gradient(45deg, transparent 0 40%, #b85e53 41% 56%, transparent 57%),
+        radial-gradient(circle at 70% 58%, #3b786e 0 18%, transparent 19%),
+        #f2dfc9;
+    }
+    .style-preview.poster {
+      background:
+        radial-gradient(circle at 50% 48%, #f3c14b 0 22%, transparent 23%),
+        linear-gradient(160deg, transparent 0 46%, #bd4d3e 47% 59%, transparent 60%),
+        #1e383a;
+    }
+    .style-preview.clay {
+      background:
+        radial-gradient(circle at 33% 64%, #f3b6a2 0 18%, transparent 19%),
+        radial-gradient(circle at 66% 38%, #9dcfd0 0 21%, transparent 22%),
+        linear-gradient(145deg, #f7eee7, #ead9cd);
+    }
+    .style-preview.blindbox {
+      background:
+        radial-gradient(circle at 50% 45%, #f3d1ba 0 18%, transparent 19%),
+        linear-gradient(to top, #8a9fbb 0 29%, transparent 30%),
+        linear-gradient(145deg, #f7dfeb, #d7e9ef);
+    }
+    .style-preview.fantasy {
+      background:
+        radial-gradient(circle at 70% 30%, #e8c06e 0 10%, transparent 33%),
+        linear-gradient(155deg, transparent 0 47%, rgba(143, 113, 190, .75) 48% 62%, transparent 63%),
+        linear-gradient(135deg, #171c34, #443961 58%, #151a27);
+    }
+    .style-preview.none {
+      background:
+        linear-gradient(135deg, rgba(13, 118, 110, .12), transparent 58%),
+        #f7f5ef;
+    }
+    .style-meta { padding: 8px 9px 9px; }
+    .style-meta strong {
+      display: block;
+      font-size: 10px;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .style-meta span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .style-check {
+      position: absolute;
+      z-index: 2;
+      top: 7px;
+      right: 7px;
+      width: 21px;
+      height: 21px;
+      display: none;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--green);
+      box-shadow: 0 3px 8px rgba(13, 118, 110, .25);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .style-card.selected .style-check { display: grid; }
+    .style-note {
+      margin: 2px 13px 0;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.55;
+    }
+
     .result-card { min-height: 448px; }
     .result-body {
       min-height: 396px;
@@ -683,14 +886,14 @@
       line-height: 1.55;
     }
 
-    .open-source-intro {
+    .style-intro {
       padding: 15px;
       border-radius: 16px;
       color: #fff;
       background: var(--ink);
     }
-    .open-source-intro strong { display: block; font-size: 16px; letter-spacing: -.02em; }
-    .open-source-intro p { margin: 7px 0 0; color: #ced9d5; font-size: 10px; line-height: 1.65; }
+    .style-intro strong { display: block; font-size: 16px; letter-spacing: -.02em; }
+    .style-intro p { margin: 7px 0 0; color: #ced9d5; font-size: 10px; line-height: 1.65; }
     .model-guide {
       display: grid;
       gap: 9px;
@@ -760,6 +963,8 @@
       #prompt { min-height: 155px; font-size: 14px; }
       .settings-grid { grid-template-columns: 1fr 1fr; }
       .settings-grid .field:first-child { grid-column: 1 / -1; }
+      .style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .style-preview { height: 92px; }
       .reference-preview { grid-template-columns: 78px minmax(0, 1fr); }
       .reference-preview img { width: 78px; height: 78px; }
       .action-dock { min-height: 68px; padding: 9px; }
@@ -782,7 +987,7 @@
     </div>
     <div class="app-actions">
       <span class="status-pill offline" id="connectionState">未连接</span>
-      <button class="icon-button" id="helpBtn" type="button" aria-label="开源模型说明">?</button>
+      <button class="icon-button" id="helpBtn" type="button" aria-label="风格卡片说明">?</button>
       <button class="icon-button" id="settingsBtn" type="button" aria-label="设置">⚙</button>
       <button class="login-button" id="loginBtn" type="button">登录 / 充值</button>
     </div>
@@ -790,7 +995,7 @@
 
   <main class="page">
     <section class="page-heading">
-      <p class="eyebrow">Image generation</p>
+      <p class="eyebrow">AI 图像创作</p>
       <h1>图像生成</h1>
       <p>把画面写清楚，选择模型与比例；需要改图时上传参考图。生成完成后由你决定是否保存到相册。</p>
     </section>
@@ -814,6 +1019,22 @@
               <button class="text-button" id="clearPromptBtn" type="button">清空</button>
             </div>
           </div>
+        </section>
+
+        <section class="card style-library">
+          <div class="card-head">
+            <div class="card-title">风格卡片</div>
+            <div class="card-subtitle">点选后只追加提示词，不切换模型</div>
+          </div>
+          <div class="style-filters" id="styleFilters">
+            <button class="filter-chip active" type="button" data-category="popular">热门</button>
+            <button class="filter-chip" type="button" data-category="art">绘画插画</button>
+            <button class="filter-chip" type="button" data-category="photo">摄影质感</button>
+            <button class="filter-chip" type="button" data-category="design">卡片设计</button>
+            <button class="filter-chip" type="button" data-category="3d">3D 手办</button>
+          </div>
+          <div class="style-grid" id="styleGrid"></div>
+          <p class="style-note">这些是社区常见、收藏较多的风格类型，不是额外模型。每次只选一个主风格；需要混合风格时可直接写进提示词。</p>
         </section>
 
         <section class="card">
@@ -852,18 +1073,6 @@
               <div class="field full">
                 <label for="modelSelect">模型</label>
                 <select id="modelSelect"></select>
-              </div>
-              <div class="field">
-                <label for="styleSelect">附加风格</label>
-                <select id="styleSelect">
-                  <option value="none">不加额外风格</option>
-                  <option value="photoreal">真实摄影</option>
-                  <option value="cinematic">电影感</option>
-                  <option value="anime">动漫插画</option>
-                  <option value="poster">商业海报</option>
-                  <option value="ink">国风水墨</option>
-                  <option value="clay">3D 黏土</option>
-                </select>
               </div>
               <div class="field">
                 <label for="sizeSelect">画面比例</label>
@@ -927,34 +1136,6 @@
         </div>
         <div class="connection-box off" id="miaojiState">妙极未配置</div>
 
-        <details class="config-group">
-          <summary>开源模型账户</summary>
-          <div class="config-body">
-            <p class="help-copy" style="margin-top:0">开源模型不等于免费。Cloudflare 先用账户免费额度，Pollinations 使用 Pollen 余额。密钥也只保存在本机。</p>
-
-            <label class="field-label field-gap" for="cfAccountInput">Cloudflare Account ID</label>
-            <input class="text-field" id="cfAccountInput" type="text" autocomplete="off"
-              placeholder="Account ID">
-            <label class="field-label field-gap" for="cfTokenInput">Cloudflare API Token</label>
-            <input class="text-field" id="cfTokenInput" type="password" autocomplete="off"
-              placeholder="Workers AI API Token">
-            <div class="button-row">
-              <button class="primary-button" id="saveCloudflareBtn" type="button">保存 Cloudflare</button>
-              <button class="secondary-button" id="openCloudflareBtn" type="button">打开 Cloudflare</button>
-            </div>
-            <div class="connection-box off" id="cloudflareState">Cloudflare 未配置</div>
-
-            <label class="field-label field-gap" for="pollinationsInput">Pollinations API Key</label>
-            <input class="text-field" id="pollinationsInput" type="password" autocomplete="off"
-              placeholder="用于开源图生图">
-            <div class="button-row">
-              <button class="primary-button" id="savePollinationsBtn" type="button">保存 Pollinations</button>
-              <button class="secondary-button" id="openPollinationsBtn" type="button">打开 Pollinations</button>
-            </div>
-            <div class="connection-box off" id="pollinationsState">Pollinations 未配置</div>
-          </div>
-        </details>
-
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
@@ -973,50 +1154,50 @@
   <div class="modal-mask" id="helpModal">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
       <header class="modal-head">
-        <h2 id="helpTitle">开源模型说明</h2>
+        <h2 id="helpTitle">风格卡片怎么用</h2>
         <button class="modal-close" data-close="helpModal" type="button" aria-label="关闭">×</button>
       </header>
       <div class="modal-body">
-        <div class="open-source-intro">
-          <strong>开源 ≠ 免费</strong>
-          <p>“开源”是指模型的代码和权重公开，通常可以下载、修改或自己部署。生成图片仍需要 GPU，租用云端算力会产生费用。本应用里的开源模型都在云端运行，手机只是控制台。</p>
+        <div class="style-intro">
+          <strong>选风格，不改模型</strong>
+          <p>风格卡片只是把一套成熟的画面描述追加到你的提示词里。它不会启用额外收费模型，也不会下载 LoRA 文件。</p>
         </div>
 
         <div class="model-guide">
           <div class="guide-item">
             <div class="guide-title">
-              <strong>FLUX.1 Schnell</strong>
-              <span class="badge">开源</span><span class="badge neutral">文生图</span>
+              <strong>热门风格</strong>
+              <span class="badge neutral">已整理</span>
             </div>
-            <p>Black Forest Labs 的快速模型，擅长写实、摄影和复杂细节。Cloudflare 渠道先用账户免费额度，超额后计费。</p>
+            <p>参考社区高收藏类型整理：油画厚涂、动漫插画、电影胶片、高级卡片。重点放在构图、材质、光线和色彩控制。</p>
           </div>
           <div class="guide-item">
             <div class="guide-title">
-              <strong>Stable Diffusion XL / DreamShaper</strong>
-              <span class="badge">开源</span><span class="badge neutral">文生图</span>
+              <strong>绘画与插画</strong>
+              <span class="badge neutral">提示词风格</span>
             </div>
-            <p>SDXL 生态成熟，通用性强；DreamShaper 更偏写实和插画。它们并不天然免费，本应用使用 Cloudflare 的额度。</p>
+            <p>水彩、水墨、动漫线稿、漫画赛璐璐、像素游戏和奇幻史诗。每个卡片都可直接点选。</p>
           </div>
           <div class="guide-item">
             <div class="guide-title">
-              <strong>FLUX Kontext</strong>
-              <span class="badge">开源</span><span class="badge neutral">图生图</span>
+              <strong>设计卡片</strong>
+              <span class="badge neutral">海报 / 卡片</span>
             </div>
-            <p>按提示词修改上传的图片，例如换背景、改服装或转换画风。通过 Pollinations 使用 Pollen 余额。</p>
+            <p>故事绘本、纸艺卡片、复古海报和高级编辑设计。适合封面、配图和社交媒体卡片。</p>
           </div>
           <div class="guide-item">
             <div class="guide-title">
-              <strong>Qwen Image 2.1 Turbo</strong>
-              <span class="badge">开源</span><span class="badge neutral">文生图 / 参考图</span>
+              <strong>3D 与手办</strong>
+              <span class="badge neutral">材质风格</span>
             </div>
-            <p>阿里 Qwen 图像模型，中文语义和文字排版能力较好。通过 Pollinations 使用 Pollen 余额。</p>
+            <p>3D 黏土和盲盒手办，强调圆润造型、柔软材质和棚拍布光。</p>
           </div>
         </div>
 
-        <p class="help-copy">附加风格只会在你的提示词末尾追加摄影、电影感、动漫等要求，不会改变模型本身。想按自己的方式写，就选择“不加额外风格”。</p>
+        <p class="help-copy">每次只选一个主风格。需要混搭时，直接在提示词里补充，例如“油画厚涂 + 电影逆光”。选择“不加额外风格”就完全按你写的生成。</p>
         <div class="button-row">
-          <button class="secondary-button" id="helpSettingsBtn" type="button">去配置开源模型</button>
-          <button class="secondary-button" id="helpMiaojiBtn" type="button">只用妙极模型</button>
+          <button class="secondary-button" id="helpCloseBtn" type="button">去选择风格</button>
+          <button class="secondary-button" id="helpPromptBtn" type="button">去写提示词</button>
         </div>
       </div>
     </section>
@@ -1029,11 +1210,10 @@
 
     const MIAOJI_MODELS = [
       {
-        providerGroup: "miaoji", provider: "apimart_gpt_image_2_5_flare",
         model: "gpt-image-2.5-flare", display_name: "GPT Image 2.5 Flare",
         allowed_resolutions: ["1k", "2k", "4k"],
         allowed_qualities: ["low", "medium", "high", "xhigh", "max"],
-        default_quality: "medium", supportsReference: true, isOpenSource: false,
+        default_quality: "medium",
         estimate_cents: {
           low: {"1k":24,"2k":36,"4k":36},
           medium: {"1k":36,"2k":60,"4k":60},
@@ -1043,11 +1223,10 @@
         }
       },
       {
-        providerGroup: "miaoji", provider: "apimart_gpt_image_2_5_sunburst",
         model: "gpt-image-2.5-sunburst", display_name: "GPT Image 2.5 Sunburst",
         allowed_resolutions: ["1k", "2k", "4k"],
         allowed_qualities: ["low", "medium", "high", "xhigh", "max"],
-        default_quality: "medium", supportsReference: true, isOpenSource: false,
+        default_quality: "medium",
         estimate_cents: {
           low: {"1k":24,"2k":36,"4k":36},
           medium: {"1k":36,"2k":60,"4k":60},
@@ -1057,94 +1236,106 @@
         }
       },
       {
-        providerGroup: "miaoji", provider: "apimart_gpt_image_2",
         model: "gpt-image-2", display_name: "GPT Image 2",
         allowed_resolutions: ["1k", "2k", "4k"], allowed_qualities: [],
-        default_quality: "", supportsReference: true, isOpenSource: false,
+        default_quality: "",
         estimate_cents: {"": {"1k":24,"2k":48,"4k":96}}
       },
       {
-        providerGroup: "miaoji", provider: "apimart_gemini_3_pro",
         model: "gemini-3-pro-image-preview", display_name: "Nano Banana Pro",
         allowed_resolutions: ["1k", "2k", "4k"], allowed_qualities: [],
-        default_quality: "", supportsReference: true, isOpenSource: false,
+        default_quality: "",
         estimate_cents: {"": {"1k":60,"2k":60,"4k":84}}
       },
       {
-        providerGroup: "miaoji", provider: "apimart_gemini_3_1_flash",
         model: "gemini-3.1-flash-image-preview", display_name: "Nano Banana 2",
         allowed_resolutions: ["0.5k", "1k", "2k", "4k"], allowed_qualities: [],
-        default_quality: "", supportsReference: true, isOpenSource: false,
+        default_quality: "",
         estimate_cents: {"": {"0.5k":48,"1k":60,"2k":60,"4k":84}}
       }
     ];
 
-    const OPEN_MODELS = [
+    const STYLE_CARDS = [
       {
-        providerGroup: "cloudflare", provider: "@cf/black-forest-labs/flux-1-schnell",
-        model: "@cf/black-forest-labs/flux-1-schnell", display_name: "FLUX.1 Schnell",
-        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
-        supportsReference: false, isOpenSource: true,
-        badges: ["开源", "文生图", "Cloudflare 免费额度"],
-        note: "快速写实模型；不加参考图时使用。",
-        estimate_cents: {"": {"1k":0}}
+        id: "none", name: "不加额外风格", category: "popular", preview: "none",
+        desc: "完全按你的文字生成", prompt: ""
       },
       {
-        providerGroup: "cloudflare", provider: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
-        model: "@cf/stabilityai/stable-diffusion-xl-base-1.0", display_name: "Stable Diffusion XL 1.0",
-        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
-        supportsReference: false, isOpenSource: true,
-        badges: ["开源", "文生图", "Cloudflare 免费额度"],
-        note: "成熟通用模型，适合插画、概念图和多种风格。",
-        estimate_cents: {"": {"1k":0}}
+        id: "oil", name: "油画厚涂", category: "popular", preview: "oil",
+        desc: "笔触、油彩与厚涂质感",
+        prompt: "经典油画风格，明显而有层次的厚涂笔触，丰富油彩质感，博物馆级画面，戏剧性明暗和深邃色彩"
       },
       {
-        providerGroup: "cloudflare", provider: "@cf/lykon/dreamshaper-8-lcm",
-        model: "@cf/lykon/dreamshaper-8-lcm", display_name: "DreamShaper 8 LCM",
-        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
-        supportsReference: false, isOpenSource: true,
-        badges: ["开源", "文生图", "Cloudflare 免费额度"],
-        note: "偏写实和插画的 Stable Diffusion 衍生模型。",
-        estimate_cents: {"": {"1k":0}}
+        id: "illustration", name: "精品插画", category: "popular", preview: "storybook",
+        desc: "出版级构图与配色",
+        prompt: "高质量出版级插画，精致构图，和谐高级配色，丰富手绘细节，画面完整，具有叙事感"
       },
       {
-        providerGroup: "pollinations", provider: "black-forest-labs/flux.1-kontext-pro",
-        model: "black-forest-labs/flux.1-kontext-pro", display_name: "FLUX Kontext",
-        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
-        supportsReference: true, isOpenSource: true,
-        badges: ["开源", "图生图", "约 0.03 Pollen"],
-        note: "必须上传参考图；按提示词修改原图。",
-        estimate_cents: {"": {"1k":0}}
+        id: "cinematic", name: "电影剧照", category: "photo", preview: "film",
+        desc: "逆光、景深与电影色彩",
+        prompt: "电影剧照风格，电影摄影机质感，戏剧性逆光，自然景深，电影调色，真实皮肤与材质细节"
       },
       {
-        providerGroup: "pollinations", provider: "black-forest-labs/flux.2-klein-4b",
-        model: "black-forest-labs/flux.2-klein-4b", display_name: "FLUX.2 Klein 4B",
-        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
-        supportsReference: true, isOpenSource: true,
-        badges: ["开源", "文生图 / 参考图", "约 0.005 Pollen"],
-        note: "轻量全能模型，可写新图，也可带参考图。",
-        estimate_cents: {"": {"1k":0}}
+        id: "papercard", name: "纸艺卡片", category: "design", preview: "papercard",
+        desc: "纸雕层次与精致留白",
+        prompt: "高级纸艺拼贴卡片风格，分层纸雕结构，细纸纹理与柔和阴影，精致留白，杂志级平面构图"
       },
       {
-        providerGroup: "pollinations", provider: "qwen/qwen-image-2.1-turbo",
-        model: "qwen/qwen-image-2.1-turbo", display_name: "Qwen Image 2.1 Turbo",
-        allowed_resolutions: ["1k"], allowed_qualities: [], default_quality: "",
-        supportsReference: true, isOpenSource: true,
-        badges: ["开源", "文生图 / 参考图", "约 0.016 Pollen"],
-        note: "中文语义和文字排版较强的轻量版本。",
-        estimate_cents: {"": {"1k":0}}
+        id: "watercolor", name: "水彩手绘", category: "art", preview: "watercolor",
+        desc: "水色晕染与纸张纹理",
+        prompt: "高级水彩手绘风格，自然水色晕染，透明叠色，纸张纤维纹理，边缘轻松，画面通透有呼吸感"
+      },
+      {
+        id: "ink", name: "水墨国风", category: "art", preview: "ink",
+        desc: "宣纸、墨韵与大留白",
+        prompt: "中国水墨画风格，宣纸质感，墨色浓淡与飞白变化，写意笔触，大面积留白，东方审美构图"
+      },
+      {
+        id: "anime", name: "动漫插画", category: "art", preview: "anime",
+        desc: "清爽色彩与精细背景",
+        prompt: "高质量动漫插画风格，干净线稿，通透色彩，精致背景，自然光影，完成度高的商业动画视觉"
+      },
+      {
+        id: "manga", name: "漫画线稿", category: "art", preview: "manga",
+        desc: "黑白网点与强烈线条",
+        prompt: "漫画线稿风格，粗细变化的墨线，网点阴影，强烈黑白构图，动感分镜感，纸张印刷质感"
+      },
+      {
+        id: "pixel", name: "像素游戏", category: "art", preview: "pixel",
+        desc: "复古游戏像素画面",
+        prompt: "精致复古像素游戏美术，清晰的像素边缘，有限色板，立体光影，场景层次丰富，怀旧游戏画面"
+      },
+      {
+        id: "film", name: "胶片写真", category: "photo", preview: "film",
+        desc: "自然颗粒与胶片色调",
+        prompt: "真实胶片摄影风格，柔和自然光，细腻皮肤与材质，轻微颗粒，胶片色彩，浅景深，纪实感"
+      },
+      {
+        id: "editorial", name: "高端画册", category: "design", preview: "editorial",
+        desc: "极简排版与高级质感",
+        prompt: "高端时尚画册视觉，极简编辑设计，克制配色，大块留白，精致材质，杂志封面级灯光和构图"
+      },
+      {
+        id: "poster", name: "复古海报", category: "design", preview: "poster",
+        desc: "几何构图与印刷颗粒",
+        prompt: "复古艺术海报风格，大胆几何构图，有限高对比色板，丝网印刷颗粒，强烈视觉中心，经典平面设计"
+      },
+      {
+        id: "clay", name: "3D 黏土", category: "3d", preview: "clay",
+        desc: "柔软材质与棚拍布光",
+        prompt: "3D 黏土定格动画风格，柔软细腻的黏土材质，圆润造型，可爱比例，柔和棚拍灯光，精致微缩场景"
+      },
+      {
+        id: "blindbox", name: "盲盒手办", category: "3d", preview: "blindbox",
+        desc: "潮玩手办与精致展台",
+        prompt: "高端潮玩盲盒手办风格，精细 3D 造型，光滑树脂与柔软搪胶材质，精致底座和展台，棚拍产品光"
+      },
+      {
+        id: "fantasy", name: "奇幻史诗", category: "art", preview: "fantasy",
+        desc: "宏大场景与神秘光效",
+        prompt: "奇幻史诗艺术风格，宏大场景，神秘魔法光效，精细服饰与建筑，电影概念设计，丰富层次和空气透视"
       }
     ];
-
-    const STYLE_PROMPTS = {
-      none: "",
-      photoreal: "写实摄影风格，真实镜头光影，自然材质与清晰细节，避免插画感。",
-      cinematic: "电影剧照风格，电影级构图，戏剧性光影，丰富层次，轻微胶片颗粒。",
-      anime: "高质量动漫插画风格，干净线稿，鲜明色彩，精致背景，高完成度。",
-      poster: "商业视觉海报风格，强主次关系，醒目视觉中心，精致材质，高级留白。",
-      ink: "中国水墨国风，宣纸质感，墨色浓淡变化，留白构图，克制有意境。",
-      clay: "3D 黏土定格动画风格，柔和材质，圆润造型，棚拍布光，精致可爱。"
-    };
 
     const SIZE_OPTIONS = [
       ["1:1", "1:1 正方形"], ["3:4", "3:4 竖图"], ["4:3", "4:3 横图"],
@@ -1157,7 +1348,8 @@
     const $ = (id) => document.getElementById(id);
     const promptInput = $("prompt");
     const modelSelect = $("modelSelect");
-    const styleSelect = $("styleSelect");
+    const styleGrid = $("styleGrid");
+    const styleFilters = $("styleFilters");
     const sizeSelect = $("sizeSelect");
     const qualityField = $("qualityField");
     const qualitySelect = $("qualitySelect");
@@ -1178,8 +1370,10 @@
     const toastEl = $("toast");
 
     const isPreview = new URLSearchParams(location.search).has("preview");
-    let models = MIAOJI_MODELS.concat(OPEN_MODELS);
+    let models = MIAOJI_MODELS;
     let currentModel = models[0];
+    let selectedStyleId = "none";
+    let selectedStyleCategory = "popular";
     let referenceDataUrl = "";
     let busy = false;
     let toastTimer = null;
@@ -1225,32 +1419,76 @@
       }
     }
 
+    function renderStyleCards() {
+      styleFilters.querySelectorAll(".filter-chip").forEach((button) => {
+        button.classList.toggle("active", button.dataset.category === selectedStyleCategory);
+      });
+
+      const popularIds = [
+        "none", "oil", "illustration", "cinematic",
+        "papercard", "watercolor", "anime", "blindbox"
+      ];
+      const cards = selectedStyleCategory === "popular"
+        ? STYLE_CARDS.filter((style) => popularIds.includes(style.id))
+        : STYLE_CARDS.filter((style) => style.category === selectedStyleCategory);
+
+      styleGrid.replaceChildren();
+      for (const style of cards) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "style-card" + (style.id === selectedStyleId ? " selected" : "");
+        button.setAttribute("aria-pressed", style.id === selectedStyleId ? "true" : "false");
+
+        const preview = document.createElement("div");
+        preview.className = `style-preview ${style.preview}`;
+        const check = document.createElement("span");
+        check.className = "style-check";
+        check.textContent = "✓";
+        preview.appendChild(check);
+
+        const meta = document.createElement("div");
+        meta.className = "style-meta";
+        const name = document.createElement("strong");
+        name.textContent = style.name;
+        const desc = document.createElement("span");
+        desc.textContent = style.desc;
+        meta.append(name, desc);
+        button.append(preview, meta);
+
+        button.addEventListener("click", () => {
+          selectedStyleId = style.id;
+          renderStyleCards();
+          if (style.id !== "none") showToast(`已选择风格：${style.name}`);
+        });
+        styleGrid.appendChild(button);
+      }
+    }
+
     function renderModels(preferred) {
       modelSelect.replaceChildren();
-      const groups = [
-        ["妙极模型", "miaoji"],
-        ["开源 · Cloudflare", "cloudflare"],
-        ["开源 · Pollinations", "pollinations"]
-      ];
-      for (const [label, groupKey] of groups) {
-        const groupModels = models.filter((item) => item.providerGroup === groupKey);
-        if (!groupModels.length) continue;
-        const group = document.createElement("optgroup");
-        group.label = label;
-        for (const model of groupModels) {
-          const option = document.createElement("option");
-          option.value = model.model;
-          option.textContent = model.display_name;
-          group.appendChild(option);
-        }
-        modelSelect.appendChild(group);
+      const group = document.createElement("optgroup");
+      group.label = "妙极模型";
+      for (const model of models) {
+        const option = document.createElement("option");
+        option.value = model.model;
+        option.textContent = model.display_name;
+        group.appendChild(option);
       }
+      modelSelect.appendChild(group);
 
       const wanted = preferred || "gpt-image-2.5-flare";
       currentModel = models.find((model) => model.model === wanted) || models[0];
       modelSelect.value = currentModel.model;
       renderModelControls();
     }
+
+    const MODEL_DESCRIPTIONS = {
+      "gpt-image-2.5-flare": "综合效果与价格较平衡，适合日常写实、插画和海报。",
+      "gpt-image-2.5-sunburst": "画面色彩和光影更丰富，适合需要更强氛围感的图片。",
+      "gpt-image-2": "通用模型，适合稳定生成常见题材和构图。",
+      "gemini-3-pro-image-preview": "擅长中文内容、复杂排版和多元素画面。",
+      "gemini-3.1-flash-image-preview": "生成速度较快，适合日常草稿和快速出图。"
+    };
 
     function preferredQuality(model) {
       if (!model.allowed_qualities.length) return "";
@@ -1281,18 +1519,10 @@
     }
 
     function renderModelNote() {
-      const badges = currentModel.isOpenSource
-        ? (currentModel.badges || ["开源"])
-        : ["妙极 API", "文生图 / 参考图", "按实扣结算"];
       modelNote.replaceChildren();
-      for (const text of badges) {
-        const badge = document.createElement("span");
-        badge.className = "badge" + (text.includes("Pollen") ? " paid" : "");
-        badge.textContent = text;
-        modelNote.appendChild(badge);
-      }
       const note = document.createElement("span");
-      note.textContent = currentModel.note || "官网预扣金额会先冻结，任务完成后按实际费用结算。";
+      note.textContent = MODEL_DESCRIPTIONS[currentModel.model]
+        || "官网预扣金额会先冻结，任务完成后按实际费用结算。";
       modelNote.appendChild(note);
       modelNote.hidden = false;
     }
@@ -1305,18 +1535,6 @@
     }
 
     function updatePrice() {
-      if (currentModel.isOpenSource) {
-        if (currentModel.providerGroup === "cloudflare") {
-          priceTitle.textContent = "使用 Cloudflare 免费额度";
-          priceDetail.textContent = "超额费用按 Cloudflare 套餐结算";
-        } else {
-          const pollen = currentModel.model.includes("kontext") ? "0.03"
-            : currentModel.model.includes("qwen") ? "0.016" : "0.005";
-          priceTitle.textContent = `约 ${pollen} Pollen / 张`;
-          priceDetail.textContent = "需要 Pollinations 余额，换算金额以官网为准";
-        }
-        return;
-      }
       const cents = estimateCents();
       if (currentModel.model === "gpt-image-2.5-flare"
           && qualitySelect.value === "low" && resolutionSelect.value === "1k") {
@@ -1336,19 +1554,12 @@
 
     function updateConnectionState() {
       const hasMiaoji = !!(bridge() && bridge().hasKey());
-      const hasCloudflare = !!(bridge() && bridge().hasCloudflare());
-      const hasPollinations = !!(bridge() && bridge().hasPollinations());
-      const any = hasMiaoji || hasCloudflare || hasPollinations;
       const state = $("connectionState");
-      state.classList.toggle("offline", !any);
-      state.textContent = any ? "已连接" : "未连接";
+      state.classList.toggle("offline", !hasMiaoji);
+      state.textContent = hasMiaoji ? "已连接" : "未连接";
 
       $("miaojiState").classList.toggle("off", !hasMiaoji);
       $("miaojiState").textContent = hasMiaoji ? "妙极 API Key 已配置" : "妙极未配置";
-      $("cloudflareState").classList.toggle("off", !hasCloudflare);
-      $("cloudflareState").textContent = hasCloudflare ? "Cloudflare 已配置" : "Cloudflare 未配置";
-      $("pollinationsState").classList.toggle("off", !hasPollinations);
-      $("pollinationsState").textContent = hasPollinations ? "Pollinations 已配置" : "Pollinations 未配置";
     }
 
     function resetReference() {
@@ -1383,16 +1594,6 @@
           referenceName.textContent = file.name || "reference.jpg";
           referencePreview.hidden = false;
           referenceZone.hidden = true;
-          if (!currentModel.supportsReference) {
-            const imageModel = models.find((model) => model.supportsReference
-              && model.providerGroup === "pollinations");
-            if (imageModel) {
-              currentModel = imageModel;
-              modelSelect.value = imageModel.model;
-              renderModelControls();
-              showToast("已切换到支持参考图的开源模型");
-            }
-          }
         };
         image.onerror = () => showToast("图片读取失败，请换一张");
         image.src = String(reader.result || "");
@@ -1436,15 +1637,13 @@
       const copy = document.createElement("p");
       copy.textContent = message || "请稍后重试";
       panel.append(title, copy);
-      if (data && (data.openRecharge || data.openPollinations)) {
+      if (data && data.openRecharge) {
         const action = document.createElement("button");
         action.type = "button";
         action.className = "primary-button";
-        action.textContent = data.openPollinations ? "打开余额页面" : "打开登录 / 充值";
+        action.textContent = "打开登录 / 充值";
         action.addEventListener("click", () => {
-          if (!bridge()) return;
-          if (data.openPollinations) bridge().openPollinations();
-          else bridge().openLogin();
+          if (bridge()) bridge().openLogin();
         });
         panel.appendChild(action);
       }
@@ -1465,9 +1664,7 @@
       const meta = document.createElement("div");
       meta.className = "result-meta";
       const cost = document.createElement("strong");
-      cost.textContent = data.provider
-        ? (data.costLabel || "开源平台额度内")
-        : `本次实扣 ${formatMoney(data.chargedCents)}`;
+      cost.textContent = `本次实扣 ${formatMoney(data.chargedCents)}`;
       const info = document.createElement("span");
       info.textContent = `${data.size || ""} · ${String(data.resolution || "").toUpperCase()}`;
       meta.append(cost, info);
@@ -1515,9 +1712,7 @@
 
     function requiredProviderReady() {
       if (!bridge()) return isPreview;
-      if (currentModel.providerGroup === "miaoji") return bridge().hasKey();
-      if (currentModel.providerGroup === "cloudflare") return bridge().hasCloudflare();
-      return bridge().hasPollinations();
+      return bridge().hasKey();
     }
 
     function startGeneration() {
@@ -1528,25 +1723,21 @@
         showToast("请先填写提示词");
         return;
       }
-      if (referenceDataUrl && !currentModel.supportsReference) {
-        showToast("当前模型不支持参考图，请换一个带“参考图/图生图”的模型");
-        return;
-      }
       if (!requiredProviderReady()) {
         openModal(settingsModal);
         updateConnectionState();
-        showToast(currentModel.providerGroup === "miaoji"
-          ? "请先配置妙极 API Key" : "请先配置开源模型账户");
+        showToast("请先配置妙极 API Key");
         return;
       }
 
-      const style = STYLE_PROMPTS[styleSelect.value] || "";
+      const selectedStyle = STYLE_CARDS.find((style) => style.id === selectedStyleId);
+      const style = selectedStyle ? selectedStyle.prompt : "";
       const referencePrefix = referenceDataUrl
         ? "请以参考图为核心，保留原图最重要的主体、构图和身份特征，再按提示词修改。"
         : "";
       const fullPrompt = [referencePrefix, prompt, style].filter(Boolean).join("\n\n");
       const cents = estimateCents();
-      if (!currentModel.isOpenSource && cents > 6) {
+      if (cents > 6) {
         if (!window.confirm(`当前档位官网预扣约 ¥${(cents / 100).toFixed(2)}，超过平时设定的 0.06 元低价红线。确定继续吗？`)) {
           return;
         }
@@ -1567,26 +1758,16 @@
         return;
       }
 
-      if (currentModel.providerGroup === "cloudflare") {
-        bridge().generateCloudflare(
-          fullPrompt, currentModel.model, sizeSelect.value, referenceDataUrl, generationCallId
-        );
-      } else if (currentModel.providerGroup === "pollinations") {
-        bridge().generatePollinations(
-          fullPrompt, currentModel.model, sizeSelect.value, referenceDataUrl, generationCallId
-        );
-      } else {
-        bridge().generate(
-          fullPrompt,
-          currentModel.model,
-          sizeSelect.value,
-          resolutionSelect.value,
-          qualityField.hidden ? "" : qualitySelect.value,
-          1,
-          referenceDataUrl,
-          generationCallId
-        );
-      }
+      bridge().generate(
+        fullPrompt,
+        currentModel.model,
+        sizeSelect.value,
+        resolutionSelect.value,
+        qualityField.hidden ? "" : qualitySelect.value,
+        1,
+        referenceDataUrl,
+        generationCallId
+      );
     }
 
     function finishBusy() {
@@ -1602,12 +1783,7 @@
       if (modelCalls.has(event.callId)) {
         modelCalls.delete(event.callId);
         if (event.event === "models" && event.data && Array.isArray(event.data.items)) {
-          event.data.items.forEach((model) => {
-            model.providerGroup = "miaoji";
-            model.supportsReference = true;
-            model.isOpenSource = false;
-          });
-          models = event.data.items.concat(OPEN_MODELS);
+          models = event.data.items;
           renderModels("gpt-image-2.5-flare");
         }
         return;
@@ -1676,6 +1852,12 @@
       currentModel = models.find((model) => model.model === modelSelect.value) || models[0];
       renderModelControls();
     });
+    styleFilters.addEventListener("click", (event) => {
+      const button = event.target.closest(".filter-chip");
+      if (!button) return;
+      selectedStyleCategory = button.dataset.category;
+      renderStyleCards();
+    });
     qualitySelect.addEventListener("change", updatePrice);
     resolutionSelect.addEventListener("change", updatePrice);
     sizeSelect.addEventListener("change", updatePrice);
@@ -1734,32 +1916,6 @@
     });
     $("openDeveloperBtn").addEventListener("click", () => bridge() && bridge().openDeveloper());
 
-    $("saveCloudflareBtn").addEventListener("click", () => {
-      const account = $("cfAccountInput").value.trim();
-      const token = $("cfTokenInput").value.trim();
-      if (!bridge() || !account || !token) {
-        showToast("Account ID 和 API Token 都要填写");
-        return;
-      }
-      bridge().saveCloudflare(account, token);
-      $("cfAccountInput").value = "";
-      $("cfTokenInput").value = "";
-      updateConnectionState();
-      showToast("Cloudflare 账户已保存");
-    });
-    $("openCloudflareBtn").addEventListener("click", () => bridge() && bridge().openCloudflare());
-
-    $("savePollinationsBtn").addEventListener("click", () => {
-      if (!bridge()) return;
-      const key = $("pollinationsInput").value.trim();
-      if (key) bridge().savePollinationsKey(key);
-      else bridge().clearPollinationsKey();
-      $("pollinationsInput").value = "";
-      updateConnectionState();
-      showToast(key ? "Pollinations 密钥已保存" : "Pollinations 密钥已清除");
-    });
-    $("openPollinationsBtn").addEventListener("click", () => bridge() && bridge().openPollinations());
-
     $("checkUpdateBtn").addEventListener("click", () => {
       if (!bridge()) return;
       updateCallId = id("update");
@@ -1769,29 +1925,26 @@
       setTimeout(() => { $("checkUpdateBtn").disabled = false; }, 800);
     });
     $("openGithubBtn").addEventListener("click", () => bridge() && bridge().openGithub());
-    $("helpSettingsBtn").addEventListener("click", () => {
+    $("helpCloseBtn").addEventListener("click", () => {
       closeModal(helpModal);
-      openModal(settingsModal);
-      document.querySelector("details.config-group").open = true;
+      document.querySelector(".style-library").scrollIntoView({ behavior: "smooth", block: "start" });
     });
-    $("helpMiaojiBtn").addEventListener("click", () => {
+    $("helpPromptBtn").addEventListener("click", () => {
       closeModal(helpModal);
-      currentModel = models.find((model) => model.model === "gpt-image-2.5-flare") || models[0];
-      modelSelect.value = currentModel.model;
-      renderModelControls();
-      showToast("已切换到妙极模型");
+      promptInput.focus();
+      promptInput.scrollIntoView({ behavior: "smooth", block: "center" });
     });
 
     function initialize() {
       fillSelect(sizeSelect, SIZE_OPTIONS, "1:1");
       renderModels("gpt-image-2.5-flare");
+      renderStyleCards();
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.2.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.0";
 
-      if (!isPreview && bridge() && !bridge().hasKey()
-          && !bridge().hasCloudflare() && !bridge().hasPollinations()) {
+      if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
       }
 
