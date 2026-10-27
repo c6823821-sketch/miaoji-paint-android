@@ -1138,7 +1138,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.3.1</span>
+            <span class="version-text" id="versionText">当前版本 1.3.2</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1538,8 +1538,13 @@
       const cents = estimateCents();
       if (currentModel.model === "gpt-image-2.5-flare"
           && qualitySelect.value === "low" && resolutionSelect.value === "1k") {
-        priceTitle.textContent = "预扣 ¥0.24｜近期实扣 ¥0.05–0.06";
-        priceDetail.textContent = "预扣只是冻结金额，完成任务后多退少补";
+        if (referenceDataUrl) {
+          priceTitle.textContent = "图生图预扣 ¥0.24｜近期实扣约 ¥0.11–0.14";
+          priceDetail.textContent = "参考图会计算输入成本，所以比纯文生图贵";
+        } else {
+          priceTitle.textContent = "文生图预扣 ¥0.24｜近期实扣 ¥0.05–0.06";
+          priceDetail.textContent = "同参数无参考图试片实扣 ¥0.06";
+        }
       } else if (cents > 0) {
         priceTitle.textContent = `预扣 ¥${(cents / 100).toFixed(2)}`;
         priceDetail.textContent = "完成后的实扣金额可能低于预扣，多退少补";
@@ -1562,6 +1567,7 @@
       $("promptHint").textContent = canGenerateFromReference
         ? "已上传参考图并选择风格，直接点“生成图片”即可；这里的文字只用于补充细节。"
         : "文生图请写清楚主体、环境和光线。上传参考图并选择风格后，这里可以不写。";
+      updatePrice();
     }
 
     function updateConnectionState() {
@@ -1962,7 +1968,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.1";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.2";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
