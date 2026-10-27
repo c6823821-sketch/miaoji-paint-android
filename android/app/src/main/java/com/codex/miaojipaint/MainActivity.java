@@ -234,7 +234,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.3.3";
+                return "1.3.4";
             }
         }
 
@@ -374,7 +374,16 @@ public class MainActivity extends Activity {
             request.put("n", count);
             if (!quality.isEmpty()) request.put("quality", quality);
             if (!referenceDataUrl.isEmpty()) {
-                request.put("images", new JSONArray().put(referenceDataUrl));
+                String referenceId = "";
+                try {
+                    emit(callId, "status", "正在压缩并上传参考图…", null);
+                    referenceId = uploadReferenceImage(key, referenceDataUrl);
+                } catch (Exception uploadError) {
+                    emit(callId, "status", "参考图上传压缩失败，使用原图继续…", null);
+                }
+                request.put("images", new JSONArray().put(
+                        referenceId.isEmpty() ? referenceDataUrl : referenceId
+                ));
             }
 
             emit(callId, "status", "正在提交任务…", null);
@@ -539,11 +548,71 @@ public class MainActivity extends Activity {
         }
     }
 
+    private String uploadReferenceImage(String key, String dataUrl) throws Exception {
+        int comma = dataUrl.indexOf(',');
+        int semicolon = dataUrl.indexOf(';');
+        if (comma < 0 || semicolon < 0 || semicolon > comma) {
+            throw new IllegalArgumentException("参考图数据格式不正确");
+        }
+        String mime = safe(dataUrl.substring(5, semicolon), "image/jpeg");
+        byte[] imageBytes = android.util.Base64.decode(
+                dataUrl.substring(comma + 1),
+                android.util.Base64.DEFAULT
+        );
+        String extension = extensionFor(mime);
+        String boundary = "----MiaoJiPaint" + System.currentTimeMillis();
+        String fileHeader = "--" + boundary + "\r\n"
+                + "Content-Disposition: form-data; name=\"file\"; filename=\""
+                + "reference." + extension + "\"\r\n"
+                + "Content-Type: " + mime + "\r\n\r\n";
+        String ending = "\r\n--" + boundary + "--\r\n";
+
+        ByteArrayOutputStream bodyBuffer = new ByteArrayOutputStream();
+        bodyBuffer.write(fileHeader.getBytes(StandardCharsets.UTF_8));
+        bodyBuffer.write(imageBytes);
+        bodyBuffer.write(ending.getBytes(StandardCharsets.UTF_8));
+        byte[] body = bodyBuffer.toByteArray();
+
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(API_ROOT + "/uploads/images");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(20000);
+            connection.setReadTimeout(120000);
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setFixedLengthStreamingMode(body.length);
+            connection.setRequestProperty("Authorization", "Bearer " + key);
+            connection.setRequestProperty(
+                    "Content-Type", "multipart/form-data; boundary=" + boundary
+            );
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("User-Agent", "MiaoJiPaint/1.0");
+            try (OutputStream output = connection.getOutputStream()) {
+                output.write(body);
+            }
+
+            int status = connection.getResponseCode();
+            String response = readResponse(connection);
+            JSONObject root = response.isEmpty() ? new JSONObject() : new JSONObject(response);
+            if (status < 200 || status >= 300) {
+                throw new IllegalStateException(root.optString("message",
+                        "参考图上传失败（HTTP " + status + "）"));
+            }
+            JSONObject data = root.optJSONObject("data");
+            String id = data == null ? "" : data.optString("id", "");
+            if (id.isEmpty()) throw new IllegalStateException("参考图上传后没有返回编号");
+            return id;
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    }
+
     private String currentVersionName() {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "1.3.3";
+            return "1.3.4";
         }
     }
 

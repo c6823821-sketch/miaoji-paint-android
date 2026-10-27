@@ -1139,7 +1139,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.3.3</span>
+            <span class="version-text" id="versionText">当前版本 1.3.4</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1541,8 +1541,8 @@
       if (currentModel.model === "gpt-image-2.5-flare"
           && qualitySelect.value === "low" && resolutionSelect.value === "1k") {
         if (referenceDataUrl) {
-          priceTitle.textContent = "图生图预扣 ¥0.24｜近期实扣约 ¥0.11–0.14";
-          priceDetail.textContent = "参考图会计算输入成本，所以比纯文生图贵";
+          priceTitle.textContent = "图生图预扣 ¥0.24｜实扣按参考图计算";
+          priceDetail.textContent = "参考图越复杂实扣越高，以结果页为准";
         } else {
           priceTitle.textContent = "文生图预扣 ¥0.24｜近期实扣 ¥0.05–0.06";
           priceDetail.textContent = "同参数无参考图试片实扣 ¥0.06";
@@ -1605,14 +1605,14 @@
       reader.onload = () => {
         const image = new Image();
         image.onload = () => {
-          const scale = Math.min(1, 1536 / Math.max(image.width, image.height));
+          const scale = Math.min(1, 1024 / Math.max(image.width, image.height));
           const canvas = document.createElement("canvas");
           canvas.width = Math.max(1, Math.round(image.width * scale));
           canvas.height = Math.max(1, Math.round(image.height * scale));
           canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
-          referenceDataUrl = canvas.toDataURL("image/jpeg", .86);
+          referenceDataUrl = canvas.toDataURL("image/jpeg", .82);
           referenceImage.src = referenceDataUrl;
-          referenceName.textContent = file.name || "reference.jpg";
+          referenceName.textContent = `${file.name || "reference.jpg"} · 已压缩`;
           referencePreview.hidden = false;
           referenceZone.hidden = true;
           updatePromptMode();
@@ -1984,7 +1984,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.3";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.4";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
