@@ -671,6 +671,7 @@
       font-size: 9px;
     }
     .result-meta strong { color: var(--ink); font-size: 11px; }
+    .result-meta span { text-align: right; line-height: 1.55; }
     .result-actions {
       display: flex;
       gap: 8px;
@@ -1138,7 +1139,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.3.2</span>
+            <span class="version-text" id="versionText">当前版本 1.3.3</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1378,6 +1379,7 @@
     let toastTimer = null;
     let currentResult = null;
     let generationCallId = "";
+    let activeGenerationSettings = null;
     let updateCallId = "";
     const modelCalls = new Set();
     const saveCalls = new Map();
@@ -1492,7 +1494,7 @@
 
     function preferredQuality(model) {
       if (!model.allowed_qualities.length) return "";
-      if (model.model === "gpt-image-2.5-flare" && model.allowed_qualities.includes("low")) return "low";
+      if (model.allowed_qualities.includes("low")) return "low";
       return model.default_quality || model.allowed_qualities[0];
     }
 
@@ -1686,7 +1688,13 @@
       const cost = document.createElement("strong");
       cost.textContent = `本次实扣 ${formatMoney(data.chargedCents)}`;
       const info = document.createElement("span");
-      info.textContent = `${data.size || ""} · ${String(data.resolution || "").toUpperCase()}`;
+      const settings = activeGenerationSettings;
+      info.textContent = settings
+        ? `${settings.modelName} · ${settings.size} · ${settings.resolution.toUpperCase()}`
+          + `${settings.quality ? " · " + settings.quality : ""}`
+          + ` · ${settings.hasReference ? "图生图" : "文生图"}`
+          + `${settings.styleName ? " · " + settings.styleName : ""}`
+        : `${data.size || ""} · ${String(data.resolution || "").toUpperCase()}`;
       meta.append(cost, info);
 
       const actions = document.createElement("div");
@@ -1768,6 +1776,14 @@
         }
       }
 
+      activeGenerationSettings = {
+        modelName: currentModel.display_name,
+        size: sizeSelect.value,
+        resolution: resolutionSelect.value,
+        quality: qualityField.hidden ? "" : qualitySelect.value,
+        hasReference: !!referenceDataUrl,
+        styleName: hasStyle ? selectedStyle.name : ""
+      };
       busy = true;
       generateButton.disabled = true;
       generateButton.textContent = "生成中…";
@@ -1968,7 +1984,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.2";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.3";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
