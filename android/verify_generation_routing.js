@@ -83,7 +83,10 @@ async function main() {
   const beauty = await evaluate(`(() => {
     window.Android = {
       hasKey: () => true,
-      generate: (...args) => { window.__nativeGenerate = args; }
+      generate: (...args) => {
+        window.__nativeGenerate = args;
+        window.__nativeCount = (window.__nativeCount || 0) + 1;
+      }
     };
     beautyPhotoDataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
     startBeautyGeneration();
@@ -123,6 +126,62 @@ async function main() {
     throw new Error("Beauty result leaked into the AI image result card");
   }
 
+  console.log("checking effect route");
+  const effect = await evaluate(`(() => {
+    effectPhotoDataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    const callsBeforePreview = window.__nativeCount;
+    renderEffectCards();
+    const beforeFilter = effectPhotoImage.style.filter;
+    effectPresetId = "hong-kong-red";
+    effectStrength.value = "100";
+    renderEffectCards();
+    applyEffectPreview();
+    const previewChanged = beforeFilter !== effectPhotoImage.style.filter;
+    const previewCalls = window.__nativeCount - callsBeforePreview;
+    startEffectGeneration();
+    const callId = window.__nativeGenerate.at(-1);
+    window.__miaoNative(JSON.stringify({
+      callId,
+      event: "status",
+      message: "任务 effect123 已提交 · 已等待 9 秒"
+    }));
+    const statusRouted = document.getElementById("effectGeneratingText").textContent;
+    window.__miaoNative(JSON.stringify({
+      callId,
+      event: "result",
+      data: {
+        imageUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+        chargedCents: 8,
+        mimeType: "image/png"
+      }
+    }));
+    return {
+      mode: generationMode,
+      statusRouted,
+      cardCount: effectGrid.children.length,
+      previewChanged,
+      previewCalls,
+      effectStatus: effectResultStatus.textContent,
+      effectHasSave: effectResultBody.textContent.includes("保存到手机"),
+      beautyStatus: beautyResultStatus.textContent,
+      imageStatus: resultStatus.textContent
+    };
+  })()`);
+
+  if (effect.mode !== "effect") throw new Error(`Effect mode is ${effect.mode}`);
+  if (effect.statusRouted !== "任务 effect123 已提交 · 已等待 9 秒") {
+    throw new Error(`Effect status routed to the wrong panel: ${effect.statusRouted}`);
+  }
+  if (effect.cardCount !== 12 || !effect.previewChanged || effect.previewCalls !== 0) {
+    throw new Error("Effect live preview did not update locally for free");
+  }
+  if (effect.effectStatus !== "特效生成完成" || !effect.effectHasSave) {
+    throw new Error("Effect result was not rendered in the effect result card");
+  }
+  if (effect.beautyStatus !== "修图完成" || effect.imageStatus === "生成完成") {
+    throw new Error("Effect result leaked into another result card");
+  }
+
   console.log("checking image route");
   const image = await evaluate(`(() => {
     window.confirm = () => true;
@@ -138,7 +197,7 @@ async function main() {
     throw new Error("AI image generation did not switch back to image mode");
   }
 
-  console.log("PASS: beauty status/result and AI image routes stay separate");
+  console.log("PASS: beauty, effect, and AI image routes stay separate");
   socket.close();
 }
 

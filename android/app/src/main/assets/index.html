@@ -945,6 +945,172 @@
     .beauty-result-card { min-height: 430px; }
     .beauty-result-body { min-height: 370px; }
 
+    .portrait-preview-stage {
+      position: relative;
+      overflow: hidden;
+      border-radius: 17px;
+      background: #e9e5db;
+      isolation: isolate;
+    }
+    .portrait-preview-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      opacity: .16;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+    .portrait-preview-stage img {
+      position: relative;
+      z-index: 1;
+      transition: filter .22s ease;
+    }
+    .portrait-effect-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+      transition: opacity .22s ease, background .22s ease;
+    }
+    .portrait-live-badge {
+      position: absolute;
+      z-index: 5;
+      left: 10px;
+      top: 10px;
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, .36);
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(15, 24, 22, .66);
+      box-shadow: 0 5px 18px rgba(10, 20, 18, .18);
+      backdrop-filter: blur(9px);
+      font-size: 8px;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+    .trend-note {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid rgba(13, 118, 110, .13);
+      border-radius: 15px;
+      color: #3f5f55;
+      background: linear-gradient(135deg, #edf8f4, #fbf7ef);
+      font-size: 10px;
+      line-height: 1.65;
+    }
+    .trend-note strong { color: var(--green-dark); white-space: nowrap; }
+    .effect-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .effect-card {
+      position: relative;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 16px;
+      color: var(--ink);
+      background: #f8f6f0;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .effect-card:active { transform: translateY(1px); }
+    .effect-card.selected {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(13, 118, 110, .14);
+    }
+    .effect-card-visual {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 72% 25%, var(--effect-glow, rgba(255,255,255,.68)), transparent 32%),
+        linear-gradient(145deg, var(--effect-a, #c9d7d4), var(--effect-b, #5a776e));
+    }
+    .effect-card-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, transparent 35%, rgba(255,255,255,.24) 48%, transparent 62%),
+        radial-gradient(circle at 50% 120%, rgba(13, 22, 20, .42), transparent 54%);
+    }
+    .effect-card-visual img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transition: filter .2s ease;
+    }
+    .effect-card-glyph {
+      position: absolute;
+      z-index: 2;
+      right: 11px;
+      bottom: 8px;
+      color: rgba(255, 255, 255, .88);
+      font-size: 29px;
+      font-weight: 300;
+      text-shadow: 0 3px 14px rgba(0, 0, 0, .2);
+    }
+    .effect-trend-badge {
+      position: absolute;
+      z-index: 3;
+      left: 8px;
+      top: 8px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(16, 28, 25, .62);
+      backdrop-filter: blur(8px);
+      font-size: 7px;
+      font-weight: 850;
+    }
+    .effect-card-check {
+      position: absolute;
+      z-index: 3;
+      right: 8px;
+      top: 8px;
+      width: 22px;
+      height: 22px;
+      display: none;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--green);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .effect-card.selected .effect-card-check { display: grid; }
+    .effect-card-copy { padding: 10px 10px 11px; }
+    .effect-card-copy strong {
+      display: block;
+      font-size: 11px;
+      letter-spacing: -.01em;
+    }
+    .effect-card-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.45;
+    }
+    .effect-source {
+      margin-top: 6px;
+      color: #8a7167;
+      font-size: 7px;
+      line-height: 1.4;
+    }
+    #effectPrompt { min-height: 106px; }
+
     .action-dock {
       position: fixed;
       z-index: 18;
@@ -1195,6 +1361,7 @@
       .settings-grid { grid-template-columns: 1fr 1fr; }
       .settings-grid .field:first-child { grid-column: 1 / -1; }
       .style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .effect-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .style-preview { height: auto; }
       .reference-preview { grid-template-columns: 78px minmax(0, 1fr); }
       .reference-preview img { width: 78px; height: 78px; }
@@ -1226,6 +1393,7 @@
   <nav class="page-tabs" aria-label="功能板块">
     <button class="page-tab active" type="button" data-page="imagePage">AI 生图</button>
     <button class="page-tab" type="button" data-page="beautyPage">一键美颜</button>
+    <button class="page-tab" type="button" data-page="effectPage">热门特效</button>
   </nav>
 
   <main class="page" id="imagePage">
@@ -1423,6 +1591,105 @@
     </div>
   </main>
 
+  <main class="page" id="effectPage" hidden>
+    <section class="page-heading">
+      <p class="eyebrow">人像玩法定向整理</p>
+      <h1>热门特效</h1>
+      <p>按 2026 年公开可见的抖音/快手人像热词整理妆造方向。上传照片后，每张卡片会实时套用你本人的照片做免费预览；真正换妆、发型、服装和场景时才提交妙极任务。</p>
+    </section>
+
+    <div class="trend-note">
+      <strong>趋势口径</strong>
+      <span>这里不是自称“官方实时榜”，而是 2026-10-28 检索到的公开热门标签与可验证视觉效果。卡片会标注来源热词，避免只按一个名字凭空套模板。</span>
+    </div>
+
+    <div class="beauty-layout">
+      <div class="stack">
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">上传人像</div>
+            <div class="card-subtitle">本地实时预览免费，不会自动提交或扣费</div>
+          </div>
+          <div class="card-body">
+            <div class="beauty-photo-zone" id="effectPhotoZone" role="button" tabindex="0">
+              <div class="upload-icon">＋</div>
+              <strong>上传一张清晰人像照片</strong>
+              <span>正面或轻微侧脸更容易保留五官；上传后可立即看到 12 种实时色调与光线预览</span>
+            </div>
+            <div class="beauty-photo-preview" id="effectPhotoPreview" hidden>
+              <div class="portrait-preview-stage">
+                <img id="effectPhotoImage" alt="热门特效实时预览">
+                <div class="portrait-effect-overlay" id="effectPhotoOverlay"></div>
+                <span class="portrait-live-badge" id="effectLiveBadge">实时预览</span>
+              </div>
+              <div class="beauty-photo-actions">
+                <button class="secondary-button" id="replaceEffectPhotoBtn" type="button">更换照片</button>
+                <button class="secondary-button" id="removeEffectPhotoBtn" type="button">移除</button>
+              </div>
+            </div>
+            <input id="effectPhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">热门特效库</div>
+            <div class="card-subtitle">12 种 · 上传后卡片同步使用你的照片</div>
+          </div>
+          <div class="card-body">
+            <div class="effect-grid" id="effectGrid"></div>
+            <details class="config-group">
+              <summary>查看本特效完整生成要求</summary>
+              <div class="config-body">
+                <p class="help-copy" id="effectPromptPreview" style="margin-top:0"></p>
+              </div>
+            </details>
+
+            <div class="beauty-strength">
+              <div class="beauty-strength-head">
+                <strong>特效强度</strong>
+                <span id="effectStrengthValue">72%</span>
+              </div>
+              <input id="effectStrength" type="range" min="20" max="100" value="72" step="4">
+            </div>
+
+            <textarea id="effectPrompt" maxlength="2000"
+              placeholder="可选补充：例如保留原发型只换妆；不要改脸宽；红裙改黑裙；背景不要出现文字"></textarea>
+            <div class="identity-lock">身份保护已开启：不会拿另一位真人换脸，也不会抹掉你的骨相和辨识度；只重绘妆发、服装、场景、光线与色调。特效强度越高，妆造和氛围越戏剧化。</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">生成设置</div>
+            <div class="card-subtitle">仍使用妙极最低价档</div>
+          </div>
+          <div class="card-body">
+            <label class="field-label" for="effectModelSelect">修图模型</label>
+            <select class="text-field" id="effectModelSelect"></select>
+            <p class="help-copy">只有点击底部“生成特效照片”才会提交云端任务；切换特效、拖动强度和编辑提示词都不会扣费。</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card beauty-result-card">
+          <div class="card-head">
+            <div class="card-title">特效结果</div>
+            <div class="card-subtitle" id="effectResultStatus">等待生成</div>
+          </div>
+          <div class="result-body beauty-result-body" id="effectResultBody">
+            <div class="result-empty">
+              <div class="result-empty-icon">✦</div>
+              <strong>特效照片会显示在这里</strong>
+              <p>先选特效并查看免费预览，再点底部按钮生成。结果不会自动保存到手机。</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
   <div class="action-dock" id="imageActionDock">
     <div class="price-copy">
       <strong id="priceTitle">正在读取价格…</strong>
@@ -1436,6 +1703,13 @@
       <span id="beautyPriceDetail">人像生成会按参考图输入成本计费</span>
     </div>
     <button class="primary-button" id="beautyGenerateBtn" type="button">一键美颜</button>
+  </div>
+  <div class="action-dock" id="effectActionDock" hidden>
+    <div class="price-copy">
+      <strong id="effectPriceTitle">按妙极任务预扣结算</strong>
+      <span id="effectPriceDetail">人像特效会按参考图输入成本计费</span>
+    </div>
+    <button class="primary-button" id="effectGenerateBtn" type="button">生成特效照片</button>
   </div>
 
   <div class="modal-mask" id="settingsModal">
@@ -1459,7 +1733,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.6.4</span>
+            <span class="version-text" id="versionText">当前版本 1.7.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1474,7 +1748,7 @@
   <div class="modal-mask" id="helpModal">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
       <header class="modal-head">
-        <h2 id="helpTitle">风格卡片怎么用</h2>
+        <h2 id="helpTitle">风格与特效怎么用</h2>
         <button class="modal-close" data-close="helpModal" type="button" aria-label="关闭">×</button>
       </header>
       <div class="modal-body">
@@ -1490,6 +1764,13 @@
               <span class="badge neutral">已整理</span>
             </div>
             <p>参考社区高收藏类型整理：油画厚涂、动漫插画、电影胶片、高级卡片。重点放在构图、材质、光线和色彩控制。</p>
+          </div>
+          <div class="guide-item">
+            <div class="guide-title">
+              <strong>热门特效</strong>
+              <span class="badge neutral">独立人像板块</span>
+            </div>
+            <p>按公开热词整理 12 种妆造方向。上传照片后，卡片和大图会先在手机本地实时套色，免费预览；点“生成特效照片”才会上传妙极并扣费。</p>
           </div>
           <div class="guide-item">
             <div class="guide-title">
@@ -1524,6 +1805,7 @@
         <p class="help-copy">每次只选一个主风格。需要混搭时，直接在提示词里补充，例如“油画厚涂 + 电影逆光”。选择“不加额外风格”就完全按你写的生成。</p>
         <div class="button-row">
           <button class="secondary-button" id="helpCloseBtn" type="button">去选择风格</button>
+          <button class="secondary-button" id="openEffectsBtn" type="button">去看热门特效</button>
           <button class="secondary-button" id="helpPromptBtn" type="button">去写提示词</button>
         </div>
       </div>
@@ -1707,6 +1989,141 @@
       }
     ];
 
+    const EFFECT_PRESETS = [
+      {
+        id: "korean-editorial",
+        name: "韩女氛围",
+        desc: "通透冷白皮 · 水光卧蚕 · 韩系画报",
+        source: "公开热词：韩女氛围特效",
+        badge: "趋势灵感",
+        colors: ["#e7b9b0", "#8e9db8"],
+        grade: { brightness: 1.05, contrast: .96, saturate: .88, sepia: .06, hue: -3 },
+        overlay: "radial-gradient(circle at 75% 18%, rgba(255,226,225,.72), transparent 34%), linear-gradient(145deg, rgba(124,157,204,.3), rgba(255,220,213,.14))",
+        prompt: "Create a polished Korean editorial beauty portrait while preserving the exact person from Image 1. Refined Korean editorial makeup: translucent satin skin with visible natural texture, soft straight brows, delicate peach-brown eyeshadow, precise tightline, a few individually defined lashes, subtle aegyo-sal highlight, cool rose lips and restrained pink blush. Keep the original face shape, bone structure, eye shape and spacing, nose, lips, jawline, moles and recognizable identity. Hair may be cleanly styled with a few natural flyaways. Scene: quiet Seoul studio beside a rain-specked window, dusk sky, sheer curtain, shallow depth of field. Lighting: soft north-window key light with a narrow cool rim light. Color: cool ivory, dusty rose and slate blue. Premium magazine editorial finish, 85mm lens, natural skin pores, no plastic smoothing, no influencer face template."
+      },
+      {
+        id: "ice-city",
+        name: "AI 冰城倩影",
+        desc: "冰蓝轮廓光 · 霜晶妆 · 雪雾场景",
+        source: "公开热词：AI 冰城倩影",
+        badge: "2026 新特效",
+        colors: ["#a9e1ef", "#315e78"],
+        grade: { brightness: 1.06, contrast: 1.08, saturate: .86, sepia: 0, hue: -10 },
+        overlay: "radial-gradient(circle at 76% 20%, rgba(205,249,255,.86), transparent 30%), linear-gradient(155deg, rgba(70,151,188,.34), rgba(12,43,66,.22))",
+        prompt: "Transform Image 1 into a high-fashion ice-city portrait while preserving the person's recognizable face, bone structure, facial proportions and personal features. Makeup: translucent porcelain base with realistic skin grain, frost-white pearlescent inner corners, smoky ice-blue outer eyeshadow, fine silver liner, sculpted cool cheek highlight and a muted berry lip. Hair: sculptural wet-look styling with a few frozen strands, never covering the face. Wardrobe: pale blue translucent organza with crystalline beadwork. Scene: modern frozen city at blue hour, abstract ice architecture, drifting snow particles and fog. Lighting: hard cyan rim light from behind and a soft frontal fill, visible cold breath, delicate frost crystals on fabric. Cinematic beauty campaign photography, 50mm lens, high microdetail, elegant and restrained. No text, no watermark, no extra people, no plastic skin."
+      },
+      {
+        id: "tulip-goddess",
+        name: "郁金香花海女神",
+        desc: "春日花海 · 缎面长裙 · 逆光花瓣",
+        source: "公开热词：郁金香花海女神",
+        badge: "春季热词",
+        colors: ["#f0a188", "#8cae79"],
+        grade: { brightness: 1.07, contrast: 1.02, saturate: 1.18, sepia: .03, hue: 4 },
+        overlay: "radial-gradient(circle at 70% 15%, rgba(255,229,174,.8), transparent 32%), linear-gradient(150deg, rgba(255,133,126,.24), rgba(107,157,91,.2))",
+        prompt: "Turn Image 1 into a cinematic spring editorial portrait while keeping the same recognizable person, original facial anatomy and natural identity. Makeup: fresh luminous skin, peach-apricot eyeshadow, softly curled brows, delicate coral blush and glossy rose-petal lips. Hair: loose dark waves moved by a gentle wind, a few real tulip petals caught in the hair. Wardrobe: refined champagne satin slip dress with matte silk texture. Scene: an endless tulip field at golden hour, low camera angle, layered flowers in foreground bokeh, distant tree line and pale blue sky. Lighting: warm backlight through petals, soft frontal bounce, subtle lens flare and airy haze. Color: coral, butter yellow and fresh green. Photographic realism, medium-format film look, natural skin texture, refined composition, no fake flower crown, no text, no watermark."
+      },
+      {
+        id: "western-regions",
+        name: "西域妆造",
+        desc: "暖金珠饰 · 异域眼妆 · 日落沙海",
+        source: "公开热词：西域美女 AI 特效",
+        badge: "妆造热词",
+        colors: ["#d4a25f", "#37645f"],
+        grade: { brightness: 1.03, contrast: 1.12, saturate: 1.12, sepia: .12, hue: -10 },
+        overlay: "radial-gradient(circle at 72% 20%, rgba(255,212,130,.72), transparent 34%), linear-gradient(145deg, rgba(192,119,55,.32), rgba(23,86,83,.27))",
+        prompt: "Create an art-directed Western-Regions-inspired beauty portrait from Image 1 without changing the person's ethnicity, identity or facial anatomy. Makeup: warm bronze eyeshadow with elongated almond contour, deep teal accent at the outer corner, precise dark liner, feathery lashes, golden inner-corner light, sculpted terracotta blush and a lacquered brick-red lip. Hair: intricate but believable braided updo with fine antique-gold chains and small turquoise beads. Wardrobe: dark emerald silk with embroidered gold thread and layered gauze. Scene: dusk desert courtyard with carved stone arches, patterned kilim and distant sand dunes. Lighting: low golden sun from the side, soft reflected fill, fine dust in the air. Color: amber, emerald and oxblood. Editorial fashion photography, rich tactile fabric detail, natural pores, no costume caricature, no text, no watermark."
+      },
+      {
+        id: "soft-film",
+        name: "纯欲胶片",
+        desc: "奶油肤色 · 轻雾柔焦 · 清透近景",
+        source: "公开热词：纯欲女孩 AI 写真",
+        badge: "写真热词",
+        colors: ["#f4dccf", "#b9a7a8"],
+        grade: { brightness: 1.08, contrast: .95, saturate: .82, sepia: .12, hue: -2 },
+        overlay: "radial-gradient(circle at 74% 16%, rgba(255,239,215,.86), transparent 32%), linear-gradient(150deg, rgba(250,213,204,.3), rgba(162,170,190,.18))",
+        prompt: "Transform Image 1 into a tasteful soft-film close-up portrait while preserving the exact person's identity, face shape, expression and natural anatomy. Makeup: creamy semi-matte skin, feathery natural brows, muted rose-beige eyeshadow, thin brown liner, individually separated lashes, pale peach blush and a sheer rosy nude lip. Hair: softly tousled natural hair with realistic flyaways. Wardrobe: simple ivory cotton or fine knit with clean neckline. Scene: quiet sunlit room, off-white wall and a hint of sheer curtain. Lighting: diffused late-afternoon window light, gentle shadow falloff, very subtle 35mm film grain and halation. Color: cream, warm peach and desaturated rose. Intimate editorial portrait, 85mm lens, natural pores and facial texture, not childish, no sexualized pose, no body alteration, no text, no watermark."
+      },
+      {
+        id: "goddess-arrival",
+        name: "气质女神",
+        desc: "红裙逆光 · 金粉空气感 · 电影主视觉",
+        source: "公开热词：气质女神换脸特效",
+        badge: "热门主视觉",
+        colors: ["#b94f44", "#3b4055"],
+        grade: { brightness: .99, contrast: 1.16, saturate: 1.2, sepia: .05, hue: -7 },
+        overlay: "radial-gradient(circle at 76% 18%, rgba(255,212,126,.72), transparent 30%), linear-gradient(145deg, rgba(147,30,38,.34), rgba(33,43,67,.28))",
+        prompt: "Turn Image 1 into a cinematic goddess-inspired beauty key visual while keeping the person's exact identity, facial structure, expression and natural proportions. Makeup: flawless but textured skin, lifted brown-black eye makeup, elongated liner, dramatic individual lashes, warm contour, luminous cheekbone, brushed-up brows and deep velvet rose lip. Hair: glossy dark waves lifted by wind, a few delicate gold threads. Wardrobe: flowing oxblood-red silk couture with restrained metallic embroidery. Scene: monumental dark architecture at dusk, narrow shafts of warm light, floating gold dust and atmospheric haze. Lighting: strong low-key rim light with a soft front fill, controlled highlights on skin and fabric. Color: oxblood, antique gold and deep blue-black. High-end film poster composition, realistic anatomy, elegant rather than costume-like, no crown unless subtle, no text, no watermark, no duplicate face."
+      },
+      {
+        id: "great-wall",
+        name: "AI 长城倩影",
+        desc: "山脊晨雾 · 风衣长发 · 电影感远山",
+        source: "公开热词：AI 长城倩影",
+        badge: "风景人像",
+        colors: ["#b8a176", "#4d6157"],
+        grade: { brightness: 1.02, contrast: 1.16, saturate: .88, sepia: .1, hue: 5 },
+        overlay: "radial-gradient(circle at 72% 13%, rgba(255,221,162,.6), transparent 34%), linear-gradient(150deg, rgba(163,126,77,.26), rgba(57,92,85,.25))",
+        prompt: "Create a cinematic Great Wall travel portrait from Image 1 while preserving the exact person's facial identity, bone structure, expression and age. Makeup: refined natural glamour with clean skin texture, softly defined brows, muted bronze eyes, thin black liner, neutral rose-brown lip and subtle contour. Hair: long dark hair controlled by mountain wind, strands moving naturally. Wardrobe: tailored sand-colored trench coat over an ivory silk shirt. Scene: restored stone Great Wall following a dramatic mountain ridge at dawn, layers of mist, distant watchtowers, low vegetation and wind-shaped clouds. Lighting: warm sunrise edge light from the left, cool sky fill, atmospheric depth. Color: sand, moss green and pale gold. Editorial travel photography, believable fabric motion and environmental contact, wide cinematic composition with the person integrated into the landscape, no text, no watermark, no tourist cliché."
+      },
+      {
+        id: "white-rose",
+        name: "白玫瑰魔法",
+        desc: "奶白玫瑰 · 冷调高光 · 梦幻虚化",
+        source: "公开热词：白玫瑰美妞 / 魔法表情",
+        badge: "浪漫特效",
+        colors: ["#f2e8e7", "#a8bac8"],
+        grade: { brightness: 1.09, contrast: .98, saturate: .8, sepia: .03, hue: -5 },
+        overlay: "radial-gradient(circle at 74% 20%, rgba(255,255,255,.9), transparent 32%), linear-gradient(150deg, rgba(235,216,222,.3), rgba(147,184,212,.2))",
+        prompt: "Transform Image 1 into a romantic white-rose beauty portrait while preserving the exact person's identity and real facial anatomy. Makeup: cool porcelain-finish base with natural texture, white-pearl inner corner highlight, smoky taupe eyeshadow, thin charcoal liner, sculpted soft contour and a milky rose lip. Hair: loose elegant waves with a few small fresh white roses, no oversized fantasy crown. Wardrobe: ivory silk-organza dress with subtle hand-sewn translucent beads. Scene: moonlit garden filled with white roses, layered foreground petals, cool blue mist and tiny warm fairy lights far behind. Lighting: cool soft key light, narrow silver rim light, gentle bloom around highlights. Color: ivory, silver blue and muted blush. Luxury perfume-campaign aesthetic, realistic petals and fabric, no text, no watermark, no plastic face."
+      },
+      {
+        id: "hong-kong-red",
+        name: "港风红裙",
+        desc: "九十年代胶片 · 霓虹红唇 · 王家卫式夜色",
+        source: "趋势延展：港风红裙/复古胶片热词",
+        badge: "常青热款",
+        colors: ["#b20f2f", "#1f495f"],
+        grade: { brightness: 1.01, contrast: 1.18, saturate: 1.22, sepia: .08, hue: -5 },
+        overlay: "radial-gradient(circle at 76% 18%, rgba(255,92,74,.52), transparent 32%), linear-gradient(145deg, rgba(18,81,101,.35), rgba(121,13,34,.28))",
+        prompt: "Turn Image 1 into a 1990s Hong Kong cinema-inspired beauty portrait while preserving the person's recognizable face, bone structure and expression. Makeup: matte velvet skin with visible texture, bold smoky brown-black eyes, sharp elongated liner, defined brows, warm sculpting, deep brick-red matte lip. Hair: voluminous glossy black waves, period-correct but refined. Wardrobe: elegant crimson silk qipao-inspired dress with clean tailoring. Scene: narrow rainy Hong Kong street at night, glowing red and teal neon signs with all text removed, wet pavement and distant street light bokeh. Lighting: directional neon key light, practical reflections, rich shadow, subtle 35mm grain and halation. Color: lacquer red, teal and warm tungsten. Cinematic film still, sophisticated and restrained, no brand logos, no readable signs, no text, no watermark, no duplicate face."
+      },
+      {
+        id: "new-chinese",
+        name: "新中式千金",
+        desc: "墨色留白 · 玉石高光 · 东方画报",
+        source: "趋势延展：新中式/东方写真热词",
+        badge: "东方妆造",
+        colors: ["#9e8069", "#415e58"],
+        grade: { brightness: 1.05, contrast: 1.08, saturate: .9, sepia: .16, hue: -8 },
+        overlay: "radial-gradient(circle at 72% 16%, rgba(230,222,187,.7), transparent 34%), linear-gradient(150deg, rgba(137,101,75,.24), rgba(29,83,71,.22))",
+        prompt: "Create a modern New-Chinese editorial portrait from Image 1 while keeping the exact person's identity and facial proportions. Makeup: translucent porcelain base with natural skin texture, softly elongated ink-brown eyes, restrained red-brown eyeshadow, fine liner, sculpted muted blush and a lacquered persimmon lip. Hair: sleek low chignon with a single jade pin and a few controlled flyaways. Wardrobe: graphite silk qipao-inspired jacket with ivory piping and subtle jade jewelry. Scene: minimalist modern courtyard with aged paper screen, ink-wash texture, a branch and generous negative space. Lighting: soft diffused daylight with one warm accent, elegant shadow gradients. Color: ink black, warm paper ivory and muted jade. Refined fashion editorial, tactile silk and wood, no ancient costume cosplay, no text, no watermark."
+      },
+      {
+        id: "silver-idol",
+        name: "未来女团",
+        desc: "液态银光 · 冷蓝眼妆 · 舞台镜头",
+        source: "趋势延展：未来感女团妆/银色舞台热词",
+        badge: "未来妆造",
+        colors: ["#b9c7dc", "#42506d"],
+        grade: { brightness: 1.05, contrast: 1.2, saturate: .82, sepia: 0, hue: 7 },
+        overlay: "radial-gradient(circle at 74% 18%, rgba(207,240,255,.78), transparent 30%), linear-gradient(145deg, rgba(72,128,205,.3), rgba(15,21,52,.3))",
+        prompt: "Transform Image 1 into a futuristic pop-idol beauty portrait while preserving the exact person's recognizable facial identity and anatomy. Makeup: luminous glass skin with realistic texture, silver-chrome inner corners, icy blue graphic eyeliner, softly smoked lower lash line, sculpted cool highlight and glossy muted berry lip. Hair: sleek wet-look styling with a few metallic silver strands. Wardrobe: sculptural pearl-grey technical fabric with subtle reflective trim. Scene: dark stage with vertical columns of cyan and violet light, thin atmospheric fog and small floating light particles. Lighting: crisp cool rim light, soft frontal beauty light, controlled lens bloom. Color: silver, ice blue and deep violet. High-end K-pop concept photography, 85mm lens, believable skin and fabric detail, no readable text, no logos, no watermark, no extra people."
+      },
+      {
+        id: "tang-palace",
+        name: "唐风花钿",
+        desc: "金红宫宴 · 花钿妆 · 东方电影光影",
+        source: "趋势延展：唐风花钿/国风写真热词",
+        badge: "国风人像",
+        colors: ["#b56c4b", "#763548"],
+        grade: { brightness: 1.04, contrast: 1.07, saturate: 1.08, sepia: .12, hue: -5 },
+        overlay: "radial-gradient(circle at 72% 17%, rgba(255,197,115,.68), transparent 32%), linear-gradient(150deg, rgba(150,57,42,.26), rgba(103,34,64,.22))",
+        prompt: "Turn Image 1 into a luxurious Tang-inspired palace beauty portrait while preserving the person's exact identity and natural facial anatomy. Makeup: warm porcelain base with visible skin texture, softly arched brows, rose-gold and persimmon eyeshadow, elongated liner, delicate floral huadian mark in the center of the forehead, natural blush and a saturated pomegranate lip. Hair: historically inspired but clean high updo with gold hairpins, small pearls and silk flowers, no oversized stage costume. Wardrobe: deep vermilion and antique-gold silk with fine woven patterns. Scene: dim palace corridor with carved wood screens, candles and a few distant silk lanterns. Lighting: warm candle key light, cool moonlight rim, soft atmospheric haze. Color: vermilion, antique gold and ink shadow. Cinematic historical beauty portrait, realistic materials, respectful cultural styling, no text, no watermark."
+      }
+    ];
+
     const SIZE_OPTIONS = [
       ["1:1", "1:1 正方形"], ["3:4", "3:4 竖图"], ["4:3", "4:3 横图"],
       ["9:16", "9:16 竖屏"], ["16:9", "16:9 宽屏"], ["2:3", "2:3 竖图"],
@@ -1735,8 +2152,10 @@
     const resultStatus = $("resultStatus");
     const imagePage = $("imagePage");
     const beautyPage = $("beautyPage");
+    const effectPage = $("effectPage");
     const imageActionDock = $("imageActionDock");
     const beautyActionDock = $("beautyActionDock");
+    const effectActionDock = $("effectActionDock");
     const beautyPhotoZone = $("beautyPhotoZone");
     const beautyPhotoPreview = $("beautyPhotoPreview");
     const beautyPhotoImage = $("beautyPhotoImage");
@@ -1752,6 +2171,23 @@
     const beautyGenerateBtn = $("beautyGenerateBtn");
     const beautyPriceTitle = $("beautyPriceTitle");
     const beautyPriceDetail = $("beautyPriceDetail");
+    const effectPhotoZone = $("effectPhotoZone");
+    const effectPhotoPreview = $("effectPhotoPreview");
+    const effectPhotoImage = $("effectPhotoImage");
+    const effectPhotoOverlay = $("effectPhotoOverlay");
+    const effectPhotoInput = $("effectPhotoInput");
+    const effectLiveBadge = $("effectLiveBadge");
+    const effectGrid = $("effectGrid");
+    const effectPromptPreview = $("effectPromptPreview");
+    const effectStrength = $("effectStrength");
+    const effectStrengthValue = $("effectStrengthValue");
+    const effectPrompt = $("effectPrompt");
+    const effectModelSelect = $("effectModelSelect");
+    const effectResultBody = $("effectResultBody");
+    const effectResultStatus = $("effectResultStatus");
+    const effectGenerateBtn = $("effectGenerateBtn");
+    const effectPriceTitle = $("effectPriceTitle");
+    const effectPriceDetail = $("effectPriceDetail");
     const settingsModal = $("settingsModal");
     const helpModal = $("helpModal");
     const referenceInput = $("referenceInput");
@@ -1771,6 +2207,9 @@
     let beautyPhotoDataUrl = "";
     let beautyPresetId = "natural-retouch";
     let beautyBusy = false;
+    let effectPhotoDataUrl = "";
+    let effectPresetId = "ice-city";
+    let effectBusy = false;
     let generationMode = "image";
     let busy = false;
     let toastTimer = null;
@@ -2008,8 +2447,10 @@
     function showAppPage(pageId) {
       imagePage.hidden = pageId !== "imagePage";
       beautyPage.hidden = pageId !== "beautyPage";
+      effectPage.hidden = pageId !== "effectPage";
       imageActionDock.hidden = pageId !== "imagePage";
       beautyActionDock.hidden = pageId !== "beautyPage";
+      effectActionDock.hidden = pageId !== "effectPage";
       document.querySelectorAll(".page-tab").forEach((button) => {
         button.classList.toggle("active", button.dataset.page === pageId);
       });
@@ -2043,6 +2484,298 @@
         ? `人像图生图 · 预扣约 ¥${(cents / 100).toFixed(2)}`
         : "人像图生图 · 按任务预扣";
       beautyPriceDetail.textContent = "参考图和提示词长度会影响实扣，以结果页为准";
+    }
+
+    function selectedEffectModel() {
+      return models.find((model) => model.model === effectModelSelect.value) || models[0];
+    }
+
+    function fillEffectModelSelect() {
+      const previous = effectModelSelect.value;
+      fillSelect(
+        effectModelSelect,
+        models.map((model) => [model.model, model.display_name]),
+        previous || "gpt-image-2.5-flare"
+      );
+      updateEffectPrice();
+    }
+
+    function updateEffectPrice() {
+      const model = selectedEffectModel();
+      const quality = beautyQuality(model);
+      const values = model.estimate_cents || {};
+      const cents = Number((values[quality] || values[""] || {})["1k"] || 0);
+      effectPriceTitle.textContent = cents > 0
+        ? `热门特效图生图 · 预扣约 ¥${(cents / 100).toFixed(2)}`
+        : "热门特效图生图 · 按任务预扣";
+      effectPriceDetail.textContent = "本地实时预览免费；点生成后才提交妙极并计费";
+    }
+
+    function currentEffectPreset() {
+      return EFFECT_PRESETS.find((effect) => effect.id === effectPresetId)
+        || EFFECT_PRESETS[0];
+    }
+
+    function effectCssFilter(effect, strength = Number(effectStrength.value)) {
+      const mix = Math.max(0, Math.min(1, Number(strength) / 100));
+      const grade = effect.grade;
+      const brightness = 1 + (grade.brightness - 1) * mix;
+      const contrast = 1 + (grade.contrast - 1) * mix;
+      const saturate = 1 + (grade.saturate - 1) * mix;
+      const sepia = grade.sepia * mix;
+      const hue = grade.hue * mix;
+      return `brightness(${brightness.toFixed(3)}) contrast(${contrast.toFixed(3)})`
+        + ` saturate(${saturate.toFixed(3)}) sepia(${sepia.toFixed(3)})`
+        + ` hue-rotate(${hue.toFixed(1)}deg)`;
+    }
+
+    function applyEffectPreview() {
+      const effect = currentEffectPreset();
+      const strength = Number(effectStrength.value);
+      const mix = strength / 100;
+      effectPhotoImage.style.filter = effectCssFilter(effect, strength);
+      effectPhotoOverlay.style.background = effect.overlay;
+      effectPhotoOverlay.style.opacity = String(0.12 + mix * 0.38);
+      effectLiveBadge.textContent = `${effect.name} · 实时预览`;
+      effectPromptPreview.textContent = effect.prompt;
+      effectStrengthValue.textContent = `${strength}%`;
+    }
+
+    function renderEffectCards() {
+      effectGrid.replaceChildren();
+      for (const effect of EFFECT_PRESETS) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "effect-card" + (effect.id === effectPresetId ? " selected" : "");
+        button.setAttribute("aria-pressed", effect.id === effectPresetId ? "true" : "false");
+
+        const visual = document.createElement("div");
+        visual.className = "effect-card-visual";
+        visual.style.setProperty("--effect-a", effect.colors[0]);
+        visual.style.setProperty("--effect-b", effect.colors[1]);
+        visual.style.setProperty("--effect-glow", `${effect.colors[0]}cc`);
+        if (effectPhotoDataUrl) {
+          const image = document.createElement("img");
+          image.src = effectPhotoDataUrl;
+          image.alt = `${effect.name}照片预览`;
+          image.style.filter = effectCssFilter(effect, 88);
+          visual.appendChild(image);
+        }
+
+        const badge = document.createElement("span");
+        badge.className = "effect-trend-badge";
+        badge.textContent = effect.badge;
+        const glyph = document.createElement("span");
+        glyph.className = "effect-card-glyph";
+        glyph.textContent = "✦";
+        const check = document.createElement("span");
+        check.className = "effect-card-check";
+        check.textContent = "✓";
+        visual.append(badge, glyph, check);
+
+        const copy = document.createElement("div");
+        copy.className = "effect-card-copy";
+        const name = document.createElement("strong");
+        name.textContent = effect.name;
+        const desc = document.createElement("span");
+        desc.textContent = effect.desc;
+        const source = document.createElement("p");
+        source.className = "effect-source";
+        source.textContent = effect.source;
+        copy.append(name, desc, source);
+        button.append(visual, copy);
+
+        button.addEventListener("click", () => {
+          effectPresetId = effect.id;
+          renderEffectCards();
+          applyEffectPreview();
+          showToast(`已选择：${effect.name}，实时预览已更新`);
+        });
+        effectGrid.appendChild(button);
+      }
+      applyEffectPreview();
+    }
+
+    function resetEffectPhoto() {
+      effectPhotoDataUrl = "";
+      effectPhotoInput.value = "";
+      effectPhotoImage.removeAttribute("src");
+      effectPhotoImage.style.filter = "";
+      effectPhotoPreview.hidden = true;
+      effectPhotoZone.hidden = false;
+      renderEffectCards();
+    }
+
+    function setEffectPhoto(file) {
+      processPortraitPhoto(file, (dataUrl) => {
+        effectPhotoDataUrl = dataUrl;
+        effectPhotoImage.src = dataUrl;
+        effectPhotoPreview.hidden = false;
+        effectPhotoZone.hidden = true;
+        renderEffectCards();
+        showToast("照片已加载，点特效卡片可实时免费预览");
+      });
+    }
+
+    function showEffectEmpty() {
+      effectResultStatus.textContent = "等待生成";
+      effectResultBody.innerHTML = `
+        <div class="result-empty">
+          <div class="result-empty-icon">✦</div>
+          <strong>特效照片会显示在这里</strong>
+          <p>先选特效并查看免费预览，再点底部按钮生成。结果不会自动保存到手机。</p>
+        </div>`;
+    }
+
+    function showEffectGenerating() {
+      effectResultStatus.textContent = "正在生成特效";
+      effectResultBody.innerHTML = `
+        <div class="generating">
+          <div class="spinner"></div>
+          <strong id="effectGeneratingText">正在准备照片并提交妙极任务…</strong>
+          <p>提交后会显示任务编号、进度和已等待时间。</p>
+          <div class="progress-track"><span></span></div>
+        </div>`;
+    }
+
+    function updateEffectGeneratingText(message) {
+      const element = $("effectGeneratingText");
+      if (element) element.textContent = message || "正在生成热门特效…";
+    }
+
+    function showEffectError(message, data) {
+      effectResultStatus.textContent = "特效生成失败";
+      effectResultBody.replaceChildren();
+      const panel = document.createElement("div");
+      panel.className = "error-panel";
+      const title = document.createElement("strong");
+      title.textContent = "这次没有生成成功";
+      const copy = document.createElement("p");
+      copy.textContent = message || "请稍后重试";
+      panel.append(title, copy);
+      if (data && data.openRecharge) {
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "primary-button";
+        action.textContent = "打开登录 / 充值";
+        action.addEventListener("click", () => bridge() && bridge().openLogin());
+        panel.appendChild(action);
+      }
+      effectResultBody.appendChild(panel);
+    }
+
+    function showEffectResult(data) {
+      effectResultStatus.textContent = "特效生成完成";
+      effectResultBody.replaceChildren();
+      const image = document.createElement("img");
+      image.className = "result-image";
+      image.alt = "热门特效生成结果";
+      image.referrerPolicy = "no-referrer";
+      image.src = data.imageUrl;
+
+      const meta = document.createElement("div");
+      meta.className = "result-meta";
+      const cost = document.createElement("strong");
+      cost.textContent = `本次实扣 ${formatMoney(data.chargedCents)}`;
+      const info = document.createElement("span");
+      const settings = activeGenerationSettings;
+      info.textContent = settings
+        ? `${settings.modelName} · ${settings.styleName} · 强度 ${settings.strength}%`
+        : "热门特效图生图";
+      meta.append(cost, info);
+
+      const actions = document.createElement("div");
+      actions.className = "result-actions";
+      const save = document.createElement("button");
+      save.type = "button";
+      save.className = "primary-button";
+      save.textContent = "保存到手机";
+      const again = document.createElement("button");
+      again.type = "button";
+      again.className = "secondary-button";
+      again.textContent = "再生成一次";
+      again.addEventListener("click", startEffectGeneration);
+      actions.append(save, again);
+      save.addEventListener("click", () => {
+        if (!bridge()) return;
+        const callId = id("save");
+        saveCalls.set(callId, { save });
+        save.disabled = true;
+        save.textContent = "保存中…";
+        bridge().saveImage(
+          data.imageUrl,
+          data.mimeType || "image/png",
+          "妙极特效_" + timestampName(),
+          callId
+        );
+      });
+      effectResultBody.append(image, meta, actions);
+    }
+
+    function finishEffectBusy() {
+      effectBusy = false;
+      effectGenerateBtn.disabled = false;
+      effectGenerateBtn.textContent = "生成特效照片";
+    }
+
+    function startEffectGeneration() {
+      if (effectBusy || busy || beautyBusy || generationCallId) {
+        showToast("已有一个图片任务正在生成，请等它完成");
+        return;
+      }
+      if (!effectPhotoDataUrl) {
+        showToast("请先上传一张人像照片");
+        effectPhotoZone.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      if (!bridge() || !bridge().hasKey()) {
+        openModal(settingsModal);
+        updateConnectionState();
+        showToast("请先配置妙极 API Key");
+        return;
+      }
+      const effect = currentEffectPreset();
+      const model = selectedEffectModel();
+      const strength = Number(effectStrength.value);
+      const strengthText = strength <= 45
+        ? "subtle editorial transformation"
+        : strength <= 75
+          ? "clearly visible beauty and styling transformation"
+          : "bold high-impact editorial transformation";
+      const identityLock = "Image 1 is the only identity and source photo. Preserve the exact same recognizable person and facial anatomy: face shape, bone structure, eye shape and spacing, nose, lips, jawline, ears, hairline, skin-tone family, moles, age and expression. Do not merge another real person's face, do not replace the identity, do not make a generic influencer face, do not change ethnicity or body proportions. You may change makeup, hair styling, wardrobe, background, lighting and color grade as requested. Keep realistic skin pores and natural light continuity. No text, no watermark, no logos, no duplicate faces, no extra limbs.";
+      const fullPrompt = [
+        identityLock,
+        `Trend effect: ${effect.name}. ${effect.prompt}`,
+        `Transformation strength: ${strength}% (${strengthText}).`,
+        effectPrompt.value.trim()
+      ].filter(Boolean).join("\n\n");
+
+      effectBusy = true;
+      effectGenerateBtn.disabled = true;
+      effectGenerateBtn.textContent = "生成中…";
+      showEffectGenerating();
+      generationMode = "effect";
+      activeGenerationSettings = {
+        modelName: model.display_name,
+        size: "auto",
+        resolution: "1k",
+        quality: beautyQuality(model),
+        hasReference: true,
+        referenceCount: 1,
+        styleName: effect.name,
+        strength
+      };
+      generationCallId = id("effect");
+      bridge().generate(
+        fullPrompt,
+        model.model,
+        "auto",
+        "1k",
+        beautyQuality(model),
+        1,
+        JSON.stringify([effectPhotoDataUrl]),
+        generationCallId
+      );
     }
 
     function renderBeautyPresets() {
@@ -2079,7 +2812,7 @@
       beautyPhotoZone.hidden = false;
     }
 
-    function setBeautyPhoto(file) {
+    function processPortraitPhoto(file, onReady) {
       if (!file) return;
       if (!file.type.startsWith("image/")) {
         showToast("请选择人像图片");
@@ -2098,17 +2831,23 @@
           canvas.width = Math.max(1, Math.round(image.width * scale));
           canvas.height = Math.max(1, Math.round(image.height * scale));
           canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
-          beautyPhotoDataUrl = canvas.toDataURL("image/jpeg", .92);
-          beautyPhotoImage.src = beautyPhotoDataUrl;
-          beautyPhotoPreview.hidden = false;
-          beautyPhotoZone.hidden = true;
-          showToast("照片已加载，选择方案后点“一键美颜”");
+          onReady(canvas.toDataURL("image/jpeg", .92));
         };
         image.onerror = () => showToast("照片读取失败");
         image.src = String(reader.result || "");
       };
       reader.onerror = () => showToast("照片读取失败");
       reader.readAsDataURL(file);
+    }
+
+    function setBeautyPhoto(file) {
+      processPortraitPhoto(file, (dataUrl) => {
+        beautyPhotoDataUrl = dataUrl;
+        beautyPhotoImage.src = dataUrl;
+        beautyPhotoPreview.hidden = false;
+        beautyPhotoZone.hidden = true;
+        showToast("照片已加载，选择方案后点“一键美颜”");
+      });
     }
 
     function showBeautyEmpty() {
@@ -2213,7 +2952,10 @@
     }
 
     function startBeautyGeneration() {
-      if (beautyBusy) return;
+      if (beautyBusy || busy || effectBusy || generationCallId) {
+        showToast("已有一个图片任务正在生成，请等它完成");
+        return;
+      }
       if (!beautyPhotoDataUrl) {
         showToast("请先上传一张人像照片");
         beautyPhotoZone.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2487,7 +3229,10 @@
     }
 
     function startGeneration() {
-      if (busy) return;
+      if (busy || beautyBusy || effectBusy || generationCallId) {
+        showToast("已有一个图片任务正在生成，请等它完成");
+        return;
+      }
       generationMode = "image";
       const prompt = promptInput.value.trim();
       const selectedStyle = STYLE_CARDS.find((style) => style.id === selectedStyleId)
@@ -2578,6 +3323,7 @@
           models = event.data.items;
           renderModels("gpt-image-2.5-flare");
           fillBeautyModelSelect();
+          fillEffectModelSelect();
         }
         return;
       }
@@ -2630,11 +3376,15 @@
       if (event.callId !== generationCallId) return;
       if (event.event === "status") {
         if (generationMode === "beauty") updateBeautyGeneratingText(event.message);
+        else if (generationMode === "effect") updateEffectGeneratingText(event.message);
         else updateGeneratingText(event.message);
       } else if (event.event === "result") {
         if (generationMode === "beauty") {
           showBeautyResult(event.data || {});
           finishBeautyBusy();
+        } else if (generationMode === "effect") {
+          showEffectResult(event.data || {});
+          finishEffectBusy();
         } else {
           showResult(event.data || {});
           finishBusy();
@@ -2644,6 +3394,9 @@
         if (generationMode === "beauty") {
           showBeautyError(event.message, event.data);
           finishBeautyBusy();
+        } else if (generationMode === "effect") {
+          showEffectError(event.message, event.data);
+          finishEffectBusy();
         } else {
           showError(event.message, event.data);
           finishBusy();
@@ -2699,6 +3452,20 @@
     beautyModelSelect.addEventListener("change", updateBeautyPrice);
     beautyGenerateBtn.addEventListener("click", startBeautyGeneration);
 
+    effectPhotoZone.addEventListener("click", () => effectPhotoInput.click());
+    effectPhotoZone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        effectPhotoInput.click();
+      }
+    });
+    $("replaceEffectPhotoBtn").addEventListener("click", () => effectPhotoInput.click());
+    $("removeEffectPhotoBtn").addEventListener("click", resetEffectPhoto);
+    effectPhotoInput.addEventListener("change", () => setEffectPhoto(effectPhotoInput.files[0]));
+    effectStrength.addEventListener("input", applyEffectPreview);
+    effectModelSelect.addEventListener("change", updateEffectPrice);
+    effectGenerateBtn.addEventListener("click", startEffectGeneration);
+
     $("loginBtn").addEventListener("click", () => {
       if (bridge()) bridge().openLogin();
     });
@@ -2748,6 +3515,10 @@
       closeModal(helpModal);
       document.querySelector(".style-library").scrollIntoView({ behavior: "smooth", block: "start" });
     });
+    $("openEffectsBtn").addEventListener("click", () => {
+      closeModal(helpModal);
+      showAppPage("effectPage");
+    });
     $("helpPromptBtn").addEventListener("click", () => {
       closeModal(helpModal);
       promptInput.focus();
@@ -2758,16 +3529,19 @@
       fillSelect(sizeSelect, SIZE_OPTIONS, "1:1");
       renderModels("gpt-image-2.5-flare");
       fillBeautyModelSelect();
+      fillEffectModelSelect();
       renderBeautyPresets();
       updateBeautyStrengthLabel();
       showBeautyEmpty();
+      renderEffectCards();
+      showEffectEmpty();
       renderStyleCards();
       renderReferences();
       updatePromptMode();
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.4";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
