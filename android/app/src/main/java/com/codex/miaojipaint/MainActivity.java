@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 
     private WebView webView;
     private SharedPreferences preferences;
-    private final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private final ExecutorService executor = Executors.newCachedThreadPool();
 
     private String pendingSaveUrl;
     private String pendingSaveMime;
@@ -234,7 +234,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.6.2";
+                return "1.6.3";
             }
         }
 
@@ -319,6 +319,7 @@ public class MainActivity extends Activity {
                 return;
             }
 
+            emit(callId, "status", "请求已收到，正在准备照片…", null);
             executor.execute(() -> runGeneration(
                     key,
                     prompt.trim(),
@@ -634,7 +635,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "1.6.2";
+            return "1.6.3";
         }
     }
 

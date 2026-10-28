@@ -1459,7 +1459,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.6.2</span>
+            <span class="version-text" id="versionText">当前版本 1.6.3</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2126,8 +2126,8 @@
       beautyResultBody.innerHTML = `
         <div class="generating">
           <div class="spinner"></div>
-          <strong id="beautyGeneratingText">正在扫描面部并保留身份特征…</strong>
-          <p>只修改你选择的局部，不替换人物。</p>
+          <strong id="beautyGeneratingText">正在准备照片并提交妙极任务…</strong>
+          <p>提交后会显示任务编号；通常 20 秒到 3 分钟完成。</p>
           <div class="progress-track"><span></span></div>
         </div>`;
     }
@@ -2767,7 +2767,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.2";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.3";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
