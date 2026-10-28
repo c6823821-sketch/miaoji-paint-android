@@ -128,7 +128,13 @@ async function main() {
 
   console.log("checking effect route");
   const effect = await evaluate(`(() => {
+    effectPhotoDataUrl = "";
+    renderEffectCards();
+    const sampleImages = [...effectGrid.querySelectorAll(".effect-card-visual img")]
+      .filter((image) => image.getAttribute("src") === "effect-model.jpg").length;
     effectPhotoDataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    effectSourceSize = closestEffectSize(1600, 900);
+    effectSizeSelect.value = "source";
     const callsBeforePreview = window.__nativeCount;
     renderEffectCards();
     const beforeFilter = effectPhotoImage.style.filter;
@@ -159,8 +165,10 @@ async function main() {
       mode: generationMode,
       statusRouted,
       cardCount: effectGrid.children.length,
+      sampleImages,
       previewChanged,
       previewCalls,
+      generatedSize: window.__nativeGenerate[2],
       effectStatus: effectResultStatus.textContent,
       effectHasSave: effectResultBody.textContent.includes("保存到手机"),
       beautyStatus: beautyResultStatus.textContent,
@@ -172,8 +180,14 @@ async function main() {
   if (effect.statusRouted !== "任务 effect123 已提交 · 已等待 9 秒") {
     throw new Error(`Effect status routed to the wrong panel: ${effect.statusRouted}`);
   }
-  if (effect.cardCount !== 12 || !effect.previewChanged || effect.previewCalls !== 0) {
+  if (effect.cardCount !== 12 || effect.sampleImages !== 12) {
+    throw new Error("Effect cards do not have visible sample images");
+  }
+  if (!effect.previewChanged || effect.previewCalls !== 0) {
     throw new Error("Effect live preview did not update locally for free");
+  }
+  if (effect.generatedSize !== "16:9") {
+    throw new Error(`Effect source aspect was not used: ${effect.generatedSize}`);
   }
   if (effect.effectStatus !== "特效生成完成" || !effect.effectHasSave) {
     throw new Error("Effect result was not rendered in the effect result card");

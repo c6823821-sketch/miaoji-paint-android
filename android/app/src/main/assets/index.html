@@ -1595,12 +1595,12 @@
     <section class="page-heading">
       <p class="eyebrow">人像玩法定向整理</p>
       <h1>热门特效</h1>
-      <p>按 2026 年公开可见的抖音/快手人像热词整理妆造方向。上传照片后，每张卡片会实时套用你本人的照片做免费预览；真正换妆、发型、服装和场景时才提交妙极任务。</p>
+      <p>把公开热门的人像妆造做成可选项。上传后会先用你的照片免费预览，点生成才提交云端重绘。</p>
     </section>
 
     <div class="trend-note">
       <strong>趋势口径</strong>
-      <span>这里不是自称“官方实时榜”，而是 2026-10-28 检索到的公开热门标签与可验证视觉效果。卡片会标注来源热词，避免只按一个名字凭空套模板。</span>
+      <span>整理公开热门标签，不冒充平台官方榜；每张卡片标出来源。</span>
     </div>
 
     <div class="beauty-layout">
@@ -1667,6 +1667,9 @@
           <div class="card-body">
             <label class="field-label" for="effectModelSelect">修图模型</label>
             <select class="text-field" id="effectModelSelect"></select>
+            <label class="field-label field-gap" for="effectSizeSelect">生成比例</label>
+            <select class="text-field" id="effectSizeSelect"></select>
+            <p class="help-copy" id="effectRatioHint">默认跟随上传照片，自动匹配最接近的可用比例。</p>
             <p class="help-copy">只有点击底部“生成特效照片”才会提交云端任务；切换特效、拖动强度和编辑提示词都不会扣费。</p>
           </div>
         </section>
@@ -1733,7 +1736,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.0</span>
+            <span class="version-text" id="versionText">当前版本 1.7.1</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2006,7 +2009,7 @@
         name: "AI 冰城倩影",
         desc: "冰蓝轮廓光 · 霜晶妆 · 雪雾场景",
         source: "公开热词：AI 冰城倩影",
-        badge: "2026 新特效",
+        badge: "新特效",
         colors: ["#a9e1ef", "#315e78"],
         grade: { brightness: 1.06, contrast: 1.08, saturate: .86, sepia: 0, hue: -10 },
         overlay: "radial-gradient(circle at 76% 20%, rgba(205,249,255,.86), transparent 30%), linear-gradient(155deg, rgba(70,151,188,.34), rgba(12,43,66,.22))",
@@ -2183,6 +2186,8 @@
     const effectStrengthValue = $("effectStrengthValue");
     const effectPrompt = $("effectPrompt");
     const effectModelSelect = $("effectModelSelect");
+    const effectSizeSelect = $("effectSizeSelect");
+    const effectRatioHint = $("effectRatioHint");
     const effectResultBody = $("effectResultBody");
     const effectResultStatus = $("effectResultStatus");
     const effectGenerateBtn = $("effectGenerateBtn");
@@ -2209,6 +2214,7 @@
     let beautyBusy = false;
     let effectPhotoDataUrl = "";
     let effectPresetId = "ice-city";
+    let effectSourceSize = "";
     let effectBusy = false;
     let generationMode = "image";
     let busy = false;
@@ -2511,6 +2517,24 @@
       effectPriceDetail.textContent = "本地实时预览免费；点生成后才提交妙极并计费";
     }
 
+    function closestEffectSize(width, height) {
+      const sourceRatio = width / height;
+      return SIZE_OPTIONS
+        .map(([value]) => {
+          const [w, h] = value.split(":").map(Number);
+          return { value, distance: Math.abs(Math.log(sourceRatio / (w / h))) };
+        })
+        .sort((a, b) => a.distance - b.distance)[0].value;
+    }
+
+    function updateEffectSizeHint() {
+      effectRatioHint.textContent = effectSizeSelect.value !== "source"
+        ? `当前手动使用 ${effectSizeSelect.value}，不会跟随原图。`
+        : effectSourceSize
+          ? `已跟随原图，匹配为 ${effectSourceSize}；不支持的比例会自动取最接近选项。`
+          : "上传照片后自动读取原图比例，并匹配最接近的可用选项。";
+    }
+
     function currentEffectPreset() {
       return EFFECT_PRESETS.find((effect) => effect.id === effectPresetId)
         || EFFECT_PRESETS[0];
@@ -2554,13 +2578,11 @@
         visual.style.setProperty("--effect-a", effect.colors[0]);
         visual.style.setProperty("--effect-b", effect.colors[1]);
         visual.style.setProperty("--effect-glow", `${effect.colors[0]}cc`);
-        if (effectPhotoDataUrl) {
-          const image = document.createElement("img");
-          image.src = effectPhotoDataUrl;
-          image.alt = `${effect.name}照片预览`;
-          image.style.filter = effectCssFilter(effect, 88);
-          visual.appendChild(image);
-        }
+        const image = document.createElement("img");
+        image.src = effectPhotoDataUrl || "effect-model.jpg";
+        image.alt = `${effect.name}效果预览`;
+        image.style.filter = effectCssFilter(effect, 88);
+        visual.appendChild(image);
 
         const badge = document.createElement("span");
         badge.className = "effect-trend-badge";
@@ -2598,21 +2620,27 @@
 
     function resetEffectPhoto() {
       effectPhotoDataUrl = "";
+      effectSourceSize = "";
       effectPhotoInput.value = "";
       effectPhotoImage.removeAttribute("src");
       effectPhotoImage.style.filter = "";
       effectPhotoPreview.hidden = true;
       effectPhotoZone.hidden = false;
+      effectSizeSelect.value = "source";
+      updateEffectSizeHint();
       renderEffectCards();
     }
 
     function setEffectPhoto(file) {
-      processPortraitPhoto(file, (dataUrl) => {
+      processPortraitPhoto(file, (dataUrl, dimensions) => {
         effectPhotoDataUrl = dataUrl;
+        effectSourceSize = closestEffectSize(dimensions.width, dimensions.height);
+        effectSizeSelect.value = "source";
         effectPhotoImage.src = dataUrl;
         effectPhotoPreview.hidden = false;
         effectPhotoZone.hidden = true;
         renderEffectCards();
+        updateEffectSizeHint();
         showToast("照片已加载，点特效卡片可实时免费预览");
       });
     }
@@ -2680,7 +2708,7 @@
       const info = document.createElement("span");
       const settings = activeGenerationSettings;
       info.textContent = settings
-        ? `${settings.modelName} · ${settings.styleName} · 强度 ${settings.strength}%`
+        ? `${settings.modelName} · ${settings.size} · ${settings.styleName} · 强度 ${settings.strength}%`
         : "热门特效图生图";
       meta.append(cost, info);
 
@@ -2737,6 +2765,9 @@
       const effect = currentEffectPreset();
       const model = selectedEffectModel();
       const strength = Number(effectStrength.value);
+      const size = effectSizeSelect.value === "source"
+        ? (effectSourceSize || "3:4")
+        : effectSizeSelect.value;
       const strengthText = strength <= 45
         ? "subtle editorial transformation"
         : strength <= 75
@@ -2757,7 +2788,7 @@
       generationMode = "effect";
       activeGenerationSettings = {
         modelName: model.display_name,
-        size: "auto",
+        size,
         resolution: "1k",
         quality: beautyQuality(model),
         hasReference: true,
@@ -2769,7 +2800,7 @@
       bridge().generate(
         fullPrompt,
         model.model,
-        "auto",
+        size,
         "1k",
         beautyQuality(model),
         1,
@@ -2831,7 +2862,10 @@
           canvas.width = Math.max(1, Math.round(image.width * scale));
           canvas.height = Math.max(1, Math.round(image.height * scale));
           canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
-          onReady(canvas.toDataURL("image/jpeg", .92));
+          onReady(canvas.toDataURL("image/jpeg", .92), {
+            width: image.width,
+            height: image.height
+          });
         };
         image.onerror = () => showToast("照片读取失败");
         image.src = String(reader.result || "");
@@ -3464,6 +3498,7 @@
     effectPhotoInput.addEventListener("change", () => setEffectPhoto(effectPhotoInput.files[0]));
     effectStrength.addEventListener("input", applyEffectPreview);
     effectModelSelect.addEventListener("change", updateEffectPrice);
+    effectSizeSelect.addEventListener("change", updateEffectSizeHint);
     effectGenerateBtn.addEventListener("click", startEffectGeneration);
 
     $("loginBtn").addEventListener("click", () => {
@@ -3530,6 +3565,12 @@
       renderModels("gpt-image-2.5-flare");
       fillBeautyModelSelect();
       fillEffectModelSelect();
+      fillSelect(
+        effectSizeSelect,
+        [["source", "跟随上传照片"], ...SIZE_OPTIONS],
+        "source"
+      );
+      updateEffectSizeHint();
       renderBeautyPresets();
       updateBeautyStrengthLabel();
       showBeautyEmpty();
@@ -3541,7 +3582,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.1";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
