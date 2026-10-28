@@ -131,7 +131,10 @@ async function main() {
     effectPhotoDataUrl = "";
     renderEffectCards();
     const sampleImages = [...effectGrid.querySelectorAll(".effect-card-visual img")]
-      .filter((image) => image.getAttribute("src") === "effect-model.jpg").length;
+      .filter((image) => {
+        const source = image.getAttribute("src") || "";
+        return source.includes("effect-") && source.endsWith(".jpg");
+      }).length;
     effectPhotoDataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
     effectSourceSize = closestEffectSize(1600, 900);
     effectSizeSelect.value = "source";

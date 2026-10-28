@@ -1614,7 +1614,7 @@
             <div class="beauty-photo-zone" id="effectPhotoZone" role="button" tabindex="0">
               <div class="upload-icon">＋</div>
               <strong>上传一张清晰人像照片</strong>
-              <span>正面或轻微侧脸更容易保留五官；上传后可立即看到 12 种实时色调与光线预览</span>
+              <span>上传后可在大图里实时预览色调与光线；点生成后才输出完整妆造成品</span>
             </div>
             <div class="beauty-photo-preview" id="effectPhotoPreview" hidden>
               <div class="portrait-preview-stage">
@@ -1634,7 +1634,7 @@
         <section class="card">
           <div class="card-head">
             <div class="card-title">热门特效库</div>
-            <div class="card-subtitle">12 种 · 上传后卡片同步使用你的照片</div>
+            <div class="card-subtitle">12 种 · 实际生成成品缩略图</div>
           </div>
           <div class="card-body">
             <div class="effect-grid" id="effectGrid"></div>
@@ -1736,7 +1736,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.1</span>
+            <span class="version-text" id="versionText">当前版本 1.7.2</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1773,7 +1773,7 @@
               <strong>热门特效</strong>
               <span class="badge neutral">独立人像板块</span>
             </div>
-            <p>按公开热词整理 12 种妆造方向。上传照片后，卡片和大图会先在手机本地实时套色，免费预览；点“生成特效照片”才会上传妙极并扣费。</p>
+            <p>卡片显示妙极实际生成的成品。选择特效后，上传照片可先在大图里免费预览色调；点“生成特效照片”才会上传并扣费。</p>
           </div>
           <div class="guide-item">
             <div class="guide-title">
@@ -2126,6 +2126,9 @@
         prompt: "Turn Image 1 into a luxurious Tang-inspired palace beauty portrait while preserving the person's exact identity and natural facial anatomy. Makeup: warm porcelain base with visible skin texture, softly arched brows, rose-gold and persimmon eyeshadow, elongated liner, delicate floral huadian mark in the center of the forehead, natural blush and a saturated pomegranate lip. Hair: historically inspired but clean high updo with gold hairpins, small pearls and silk flowers, no oversized stage costume. Wardrobe: deep vermilion and antique-gold silk with fine woven patterns. Scene: dim palace corridor with carved wood screens, candles and a few distant silk lanterns. Lighting: warm candle key light, cool moonlight rim, soft atmospheric haze. Color: vermilion, antique gold and ink shadow. Cinematic historical beauty portrait, realistic materials, respectful cultural styling, no text, no watermark."
       }
     ];
+    EFFECT_PRESETS.forEach((effect) => {
+      effect.previewImage = `effect-${effect.id}.jpg`;
+    });
 
     const SIZE_OPTIONS = [
       ["1:1", "1:1 正方形"], ["3:4", "3:4 竖图"], ["4:3", "4:3 横图"],
@@ -2579,9 +2582,8 @@
         visual.style.setProperty("--effect-b", effect.colors[1]);
         visual.style.setProperty("--effect-glow", `${effect.colors[0]}cc`);
         const image = document.createElement("img");
-        image.src = effectPhotoDataUrl || "effect-model.jpg";
+        image.src = effect.previewImage;
         image.alt = `${effect.name}效果预览`;
-        image.style.filter = effectCssFilter(effect, 88);
         visual.appendChild(image);
 
         const badge = document.createElement("span");
@@ -2641,7 +2643,7 @@
         effectPhotoZone.hidden = true;
         renderEffectCards();
         updateEffectSizeHint();
-        showToast("照片已加载，点特效卡片可实时免费预览");
+        showToast("照片已加载，可在大图查看实时色调预览");
       });
     }
 
@@ -3582,7 +3584,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.1";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.2";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
