@@ -234,7 +234,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.3.4";
+                return "1.4.0";
             }
         }
 
@@ -303,7 +303,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void generate(String prompt, String model, String size, String resolution,
-                             String quality, int count, String referenceDataUrl,
+                             String quality, int count, String referenceImagesJson,
                              String callId) {
             final String key = apiKey().trim();
             if (key.isEmpty()) {
@@ -327,7 +327,7 @@ public class MainActivity extends Activity {
                     safe(resolution, "1k"),
                     quality == null ? "" : quality.trim(),
                     Math.max(1, count),
-                    referenceDataUrl == null ? "" : referenceDataUrl.trim(),
+                    referenceImagesJson == null ? "[]" : referenceImagesJson,
                     callId
             ));
         }
@@ -363,7 +363,7 @@ public class MainActivity extends Activity {
 
     private void runGeneration(String key, String prompt, String model, String size,
                                String resolution, String quality, int count,
-                               String referenceDataUrl, String callId) {
+                               String referenceImagesJson, String callId) {
         HttpURLConnection connection = null;
         try {
             JSONObject request = new JSONObject();
@@ -373,17 +373,29 @@ public class MainActivity extends Activity {
             request.put("resolution", resolution);
             request.put("n", count);
             if (!quality.isEmpty()) request.put("quality", quality);
-            if (!referenceDataUrl.isEmpty()) {
-                String referenceId = "";
-                try {
-                    emit(callId, "status", "正在压缩并上传参考图…", null);
-                    referenceId = uploadReferenceImage(key, referenceDataUrl);
-                } catch (Exception uploadError) {
-                    emit(callId, "status", "参考图上传压缩失败，使用原图继续…", null);
+            JSONArray referenceImages = referenceImagesJson == null
+                    || referenceImagesJson.trim().isEmpty()
+                    ? new JSONArray()
+                    : new JSONArray(referenceImagesJson);
+            if (referenceImages.length() > 0) {
+                JSONArray uploadedReferences = new JSONArray();
+                for (int index = 0; index < referenceImages.length(); index++) {
+                    String dataUrl = referenceImages.optString(index, "");
+                    if (dataUrl.isEmpty()) continue;
+                    emit(callId, "status",
+                            "正在压缩并上传参考图 " + (index + 1) + "/"
+                                    + referenceImages.length() + "…", null);
+                    String referenceId = "";
+                    try {
+                        referenceId = uploadReferenceImage(key, dataUrl);
+                    } catch (Exception uploadError) {
+                        emit(callId, "status",
+                                "参考图 " + (index + 1) + " 压缩失败，使用压缩后的本地图继续…",
+                                null);
+                    }
+                    uploadedReferences.put(referenceId.isEmpty() ? dataUrl : referenceId);
                 }
-                request.put("images", new JSONArray().put(
-                        referenceId.isEmpty() ? referenceDataUrl : referenceId
-                ));
+                request.put("images", uploadedReferences);
             }
 
             emit(callId, "status", "正在提交任务…", null);
@@ -612,7 +624,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "1.3.4";
+            return "1.4.0";
         }
     }
 

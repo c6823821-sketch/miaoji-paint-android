@@ -304,6 +304,54 @@
       object-fit: cover;
       background: #e6e1d6;
     }
+    .reference-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .reference-item {
+      position: relative;
+      min-width: 0;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 12px;
+      background: #ece8de;
+    }
+    .reference-item img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .reference-item span {
+      position: absolute;
+      left: 5px;
+      bottom: 5px;
+      min-width: 19px;
+      padding: 2px 5px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(23, 32, 30, .72);
+      font-size: 8px;
+      text-align: center;
+    }
+    .reference-remove {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(23, 32, 30, .76);
+      font-size: 13px;
+      line-height: 22px;
+      cursor: pointer;
+    }
     .reference-copy strong {
       display: block;
       margin-bottom: 5px;
@@ -532,6 +580,13 @@
         radial-gradient(circle at 70% 30%, #e8c06e 0 10%, transparent 33%),
         linear-gradient(155deg, transparent 0 47%, rgba(143, 113, 190, .75) 48% 62%, transparent 63%),
         linear-gradient(135deg, #171c34, #443961 58%, #151a27);
+    }
+    .style-preview.travel {
+      background:
+        linear-gradient(165deg, transparent 0 54%, #252c28 54.5% 55.2%, transparent 55.8%),
+        radial-gradient(circle at 71% 73%, #d79b4f 0 5%, transparent 6%),
+        linear-gradient(18deg, transparent 0 65%, rgba(34, 44, 38, .38) 66% 68%, transparent 69%),
+        linear-gradient(to bottom, #7fa6a9 0 53%, #f3f0e8 54% 100%);
     }
     .style-preview.none {
       background:
@@ -1043,23 +1098,13 @@
             <div class="card-subtitle">可选 · 用于图生图或风格参考</div>
           </div>
           <div class="card-body">
+            <div class="reference-grid" id="referencePreview" hidden></div>
             <div class="upload-zone" id="uploadZone" role="button" tabindex="0">
               <div class="upload-icon">＋</div>
-              <strong>上传参考图</strong>
-              <span>点击从相册选择 PNG、JPG 或 WEBP</span>
+              <strong id="uploadTitle">上传参考图</strong>
+              <span id="uploadHint">一次可选择多张，最多 6 张 · PNG / JPG / WEBP</span>
             </div>
-            <div class="reference-preview" id="referencePreview" hidden>
-              <img id="referenceImage" alt="参考图预览">
-              <div class="reference-copy">
-                <strong>已添加参考图</strong>
-                <p id="referenceName">reference.jpg</p>
-                <div class="inline-actions">
-                  <button class="secondary-button" id="replaceReferenceBtn" type="button">更换图片</button>
-                  <button class="secondary-button" id="removeReferenceBtn" type="button">移除</button>
-                </div>
-              </div>
-            </div>
-            <input id="referenceInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <input id="referenceInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
           </div>
         </section>
 
@@ -1139,7 +1184,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.3.4</span>
+            <span class="version-text" id="versionText">当前版本 1.4.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1160,7 +1205,7 @@
       <div class="modal-body">
         <div class="style-intro">
           <strong>选风格，不改模型</strong>
-          <p>上传参考图后，选一张风格卡片就能直接改图，提示词可以留空。纯文生图仍需写明主体。它不会启用额外收费模型，也不会下载 LoRA 文件。</p>
+          <p>可以一次上传 1–6 张参考图。选一张风格卡片就能直接改图，提示词可以留空。纯文生图仍需写明主体。它不会启用额外收费模型，也不会下载 LoRA 文件。</p>
         </div>
 
         <div class="model-guide">
@@ -1184,6 +1229,13 @@
               <span class="badge neutral">海报 / 卡片</span>
             </div>
             <p>故事绘本、纸艺卡片、复古海报和高级编辑设计。适合封面、配图和社交媒体卡片。</p>
+          </div>
+          <div class="guide-item">
+            <div class="guide-title">
+              <strong>旅行照片海报</strong>
+              <span class="badge neutral">3:4 · 需要照片</span>
+            </div>
+            <p>上半保留真实旅行照片，下半延展到米白纸面和黑色手绘线，只设计一个由照片景物转化出的互动。</p>
           </div>
           <div class="guide-item">
             <div class="guide-title">
@@ -1281,6 +1333,11 @@
         prompt: "高级纸艺拼贴卡片风格，分层纸雕结构，细纸纹理与柔和阴影，精致留白，杂志级平面构图"
       },
       {
+        id: "travel-poster", name: "旅行照片海报", category: "design", preview: "travel",
+        desc: "真实照片 · 纸面延展", requiresReference: true, forceSize: "3:4",
+        prompt: "将上传的旅行照片制作成一张3:4竖版创意海报。上半部分尽量保留原照片的主体、构图、色彩和真实摄影质感；下半部分使用温暖的米白色纸张，搭配少量黑色手绘线条。从原图中选择一种景物，让它连续延伸到纸面，并转化成一种可以使用的东西。只设计一个清晰、有趣的互动，例如让晚霞变成盖在稻田上的薄被，由一个微小的线稿人物牵住一角。上下景物必须自然相连，人物动作要合理。保留适当留白，不添加无关装饰。配一句与动作有关的简短手写英文，整体克制、自然，有独立杂志的拼贴感。"
+      },
+      {
         id: "watercolor", name: "水彩手绘", category: "art", preview: "watercolor",
         desc: "水色晕染与纸张纹理",
         prompt: "高级水彩手绘风格，自然水色晕染，透明叠色，纸张纤维纹理，边缘轻松，画面通透有呼吸感"
@@ -1364,9 +1421,9 @@
     const helpModal = $("helpModal");
     const referenceInput = $("referenceInput");
     const referencePreview = $("referencePreview");
-    const referenceImage = $("referenceImage");
-    const referenceName = $("referenceName");
     const referenceZone = $("uploadZone");
+    const uploadTitle = $("uploadTitle");
+    const uploadHint = $("uploadHint");
     const toastEl = $("toast");
 
     const isPreview = new URLSearchParams(location.search).has("preview");
@@ -1374,7 +1431,8 @@
     let currentModel = models[0];
     let selectedStyleId = "none";
     let selectedStyleCategory = "popular";
-    let referenceDataUrl = "";
+    let referenceItems = [];
+    const MAX_REFERENCES = 6;
     let busy = false;
     let toastTimer = null;
     let currentResult = null;
@@ -1427,7 +1485,7 @@
 
       const popularIds = [
         "none", "oil", "illustration", "cinematic",
-        "papercard", "watercolor", "anime", "blindbox"
+        "papercard", "travel-poster", "watercolor", "anime", "blindbox"
       ];
       const cards = selectedStyleCategory === "popular"
         ? STYLE_CARDS.filter((style) => popularIds.includes(style.id))
@@ -1458,9 +1516,14 @@
 
         button.addEventListener("click", () => {
           selectedStyleId = style.id;
+          if (style.forceSize) sizeSelect.value = style.forceSize;
           renderStyleCards();
           updatePromptMode();
-          if (style.id !== "none") showToast(`已选择风格：${style.name}`);
+          if (style.requiresReference && !referenceItems.length) {
+            showToast(`“${style.name}”需要先上传照片`);
+          } else if (style.id !== "none") {
+            showToast(`已选择风格：${style.name}`);
+          }
         });
         styleGrid.appendChild(button);
       }
@@ -1540,7 +1603,7 @@
       const cents = estimateCents();
       if (currentModel.model === "gpt-image-2.5-flare"
           && qualitySelect.value === "low" && resolutionSelect.value === "1k") {
-        if (referenceDataUrl) {
+        if (referenceItems.length) {
           priceTitle.textContent = "图生图预扣 ¥0.24｜实扣按参考图计算";
           priceDetail.textContent = "参考图越复杂实扣越高，以结果页为准";
         } else {
@@ -1560,7 +1623,7 @@
     }
 
     function updatePromptMode() {
-      const canGenerateFromReference = !!referenceDataUrl && selectedStyleId !== "none";
+      const canGenerateFromReference = referenceItems.length > 0 && selectedStyleId !== "none";
       $("promptTitle").textContent = canGenerateFromReference
         ? "补充要求（可选）" : "你希望生成什么？";
       promptInput.placeholder = canGenerateFromReference
@@ -1583,22 +1646,56 @@
     }
 
     function resetReference() {
-      referenceDataUrl = "";
+      referenceItems = [];
       referenceInput.value = "";
-      referenceImage.removeAttribute("src");
-      referencePreview.hidden = true;
-      referenceZone.hidden = false;
+      renderReferences();
       updatePromptMode();
     }
 
-    function setReferenceFromFile(file) {
-      if (!file) return;
+    function renderReferences() {
+      referencePreview.replaceChildren();
+      referencePreview.hidden = referenceItems.length === 0;
+      for (let index = 0; index < referenceItems.length; index++) {
+        const item = referenceItems[index];
+        const tile = document.createElement("div");
+        tile.className = "reference-item";
+        const image = document.createElement("img");
+        image.src = item.dataUrl;
+        image.alt = `参考图 ${index + 1}`;
+        const number = document.createElement("span");
+        number.textContent = index + 1;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "reference-remove";
+        remove.textContent = "×";
+        remove.setAttribute("aria-label", `移除参考图 ${index + 1}`);
+        remove.addEventListener("click", () => {
+          referenceItems.splice(index, 1);
+          renderReferences();
+          updatePromptMode();
+        });
+        tile.append(image, number, remove);
+        referencePreview.appendChild(tile);
+      }
+      referenceZone.hidden = referenceItems.length >= MAX_REFERENCES;
+      uploadTitle.textContent = referenceItems.length ? "继续添加参考图" : "上传参考图";
+      uploadHint.textContent = `已添加 ${referenceItems.length}/${MAX_REFERENCES} 张 · 单张自动压缩至最长边 1024`;
+    }
+
+    function processReferenceFile(file) {
+      return new Promise((resolve) => {
+      if (!file) {
+        resolve(false);
+        return;
+      }
       if (!file.type.startsWith("image/")) {
         showToast("请选择图片文件");
+        resolve(false);
         return;
       }
       if (file.size > 15 * 1024 * 1024) {
         showToast("参考图不能超过 15 MB");
+        resolve(false);
         return;
       }
       const reader = new FileReader();
@@ -1610,17 +1707,35 @@
           canvas.width = Math.max(1, Math.round(image.width * scale));
           canvas.height = Math.max(1, Math.round(image.height * scale));
           canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
-          referenceDataUrl = canvas.toDataURL("image/jpeg", .82);
-          referenceImage.src = referenceDataUrl;
-          referenceName.textContent = `${file.name || "reference.jpg"} · 已压缩`;
-          referencePreview.hidden = false;
-          referenceZone.hidden = true;
+          referenceItems.push({
+            dataUrl: canvas.toDataURL("image/jpeg", .82),
+            name: file.name || `reference-${referenceItems.length + 1}.jpg`
+          });
+          renderReferences();
           updatePromptMode();
+          resolve(true);
         };
-        image.onerror = () => showToast("图片读取失败，请换一张");
+        image.onerror = () => {
+          showToast("图片读取失败，请换一张");
+          resolve(false);
+        };
         image.src = String(reader.result || "");
       };
+      reader.onerror = () => resolve(false);
       reader.readAsDataURL(file);
+      });
+    }
+
+    async function addReferenceFiles(files) {
+      const available = Math.max(0, MAX_REFERENCES - referenceItems.length);
+      const selected = Array.from(files || []).slice(0, available);
+      if (files && files.length > available) {
+        showToast(`最多添加 ${MAX_REFERENCES} 张参考图`);
+      }
+      for (const file of selected) {
+        await processReferenceFile(file);
+      }
+      referenceInput.value = "";
     }
 
     function showEmptyResult() {
@@ -1692,7 +1807,8 @@
       info.textContent = settings
         ? `${settings.modelName} · ${settings.size} · ${settings.resolution.toUpperCase()}`
           + `${settings.quality ? " · " + settings.quality : ""}`
-          + ` · ${settings.hasReference ? "图生图" : "文生图"}`
+          + ` · ${settings.hasReference
+            ? `图生图 ×${settings.referenceCount || 1}` : "文生图"}`
           + `${settings.styleName ? " · " + settings.styleName : ""}`
         : `${data.size || ""} · ${String(data.resolution || "").toUpperCase()}`;
       meta.append(cost, info);
@@ -1749,12 +1865,18 @@
       const selectedStyle = STYLE_CARDS.find((style) => style.id === selectedStyleId)
         || STYLE_CARDS[0];
       const hasStyle = selectedStyle.id !== "none";
-      const canUseStyleOnly = !!referenceDataUrl && hasStyle;
+      const referenceCount = referenceItems.length;
+      const canUseStyleOnly = referenceCount > 0 && hasStyle;
       if (!prompt && !canUseStyleOnly) {
         promptInput.focus();
-        showToast(referenceDataUrl
+        showToast(referenceCount
           ? "请写一句想怎么改，或先选择一张风格卡片"
           : "文生图需要先写清楚想生成什么");
+        return;
+      }
+      if (selectedStyle.requiresReference && !referenceCount) {
+        referenceZone.scrollIntoView({ behavior: "smooth", block: "center" });
+        showToast(`“${selectedStyle.name}”需要先上传参考图`);
         return;
       }
       if (!requiredProviderReady()) {
@@ -1765,8 +1887,8 @@
       }
 
       const style = hasStyle ? selectedStyle.prompt : "";
-      const referencePrefix = referenceDataUrl
-        ? "请严格以参考图作为原始依据，保留原图中的主体身份、姿势、主要物体、构图和关键细节，再按下面的风格要求完成改图。"
+      const referencePrefix = referenceCount
+        ? `共有 ${referenceCount} 张参考图，请按编号理解它们。严格保留参考图中的主体身份、姿势、主要物体、构图和关键细节，再按下面的风格要求完成改图。`
         : "";
       const fullPrompt = [referencePrefix, style, prompt].filter(Boolean).join("\n\n");
       const cents = estimateCents();
@@ -1781,7 +1903,8 @@
         size: sizeSelect.value,
         resolution: resolutionSelect.value,
         quality: qualityField.hidden ? "" : qualitySelect.value,
-        hasReference: !!referenceDataUrl,
+        hasReference: referenceCount > 0,
+        referenceCount,
         styleName: hasStyle ? selectedStyle.name : ""
       };
       busy = true;
@@ -1806,7 +1929,7 @@
         resolutionSelect.value,
         qualityField.hidden ? "" : qualitySelect.value,
         1,
-        referenceDataUrl,
+        JSON.stringify(referenceItems.map((item) => item.dataUrl)),
         generationCallId
       );
     }
@@ -1917,9 +2040,7 @@
         referenceInput.click();
       }
     });
-    $("replaceReferenceBtn").addEventListener("click", () => referenceInput.click());
-    $("removeReferenceBtn").addEventListener("click", resetReference);
-    referenceInput.addEventListener("change", () => setReferenceFromFile(referenceInput.files[0]));
+    referenceInput.addEventListener("change", () => addReferenceFiles(referenceInput.files));
 
     $("loginBtn").addEventListener("click", () => {
       if (bridge()) bridge().openLogin();
@@ -1980,11 +2101,12 @@
       fillSelect(sizeSelect, SIZE_OPTIONS, "1:1");
       renderModels("gpt-image-2.5-flare");
       renderStyleCards();
+      renderReferences();
       updatePromptMode();
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.3.4";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.4.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
