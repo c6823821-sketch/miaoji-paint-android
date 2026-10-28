@@ -1360,7 +1360,7 @@
             <div class="beauty-photo-zone" id="beautyPhotoZone" role="button" tabindex="0">
               <div class="upload-icon">＋</div>
               <strong>上传一张人像照片</strong>
-              <span>支持 JPG、PNG、WEBP · 会上传到妙极云端用于本次修图</span>
+              <span>上传不会自动生成或扣费；选择方案后需点“一键美颜”</span>
             </div>
             <div class="beauty-photo-preview" id="beautyPhotoPreview" hidden>
               <img id="beautyPhotoImage" alt="待修人像照片">
@@ -1459,7 +1459,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.6.0</span>
+            <span class="version-text" id="versionText">当前版本 1.6.1</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2102,6 +2102,7 @@
           beautyPhotoImage.src = beautyPhotoDataUrl;
           beautyPhotoPreview.hidden = false;
           beautyPhotoZone.hidden = true;
+          showToast("照片已加载，选择方案后点“一键美颜”");
         };
         image.onerror = () => showToast("照片读取失败");
         image.src = String(reader.result || "");
@@ -2766,7 +2767,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.1";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

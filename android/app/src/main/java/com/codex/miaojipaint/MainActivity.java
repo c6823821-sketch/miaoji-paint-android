@@ -234,7 +234,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.6.0";
+                return "1.6.1";
             }
         }
 
@@ -434,20 +434,24 @@ public class MainActivity extends Activity {
 
             long started = System.currentTimeMillis();
             int lastProgress = -1;
+            long lastEmitSeconds = -10;
             while (System.currentTimeMillis() - started < MAX_POLL_MILLIS) {
                 sleep(3000);
                 JSONObject task = queryTask(key, taskId);
                 String status = task.optString("status", "unknown");
                 int progress = task.optInt("progress", 0);
-                if (progress != lastProgress || !"running".equals(status)) {
+                long waitedSeconds = (System.currentTimeMillis() - started) / 1000;
+                boolean heartbeatDue = waitedSeconds - lastEmitSeconds >= 10;
+                if (progress != lastProgress || heartbeatDue) {
                     lastProgress = progress;
+                    lastEmitSeconds = waitedSeconds;
                     String label;
                     if ("queued".equals(status)) {
-                        label = "已排队，等待生成…";
+                        label = "已排队，等待生成 · 已等待 " + waitedSeconds + " 秒";
                     } else if ("running".equals(status)) {
-                        label = "正在生成… " + progress + "%";
+                        label = "正在生成… " + progress + "% · 已等待 " + waitedSeconds + " 秒";
                     } else {
-                        label = "正在处理结果…";
+                        label = "正在处理结果 · 已等待 " + waitedSeconds + " 秒";
                     }
                     emit(callId, "status", label, null);
                 }
@@ -624,7 +628,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "1.6.0";
+            return "1.6.1";
         }
     }
 
