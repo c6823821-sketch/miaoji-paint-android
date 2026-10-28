@@ -234,7 +234,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.6.1";
+                return "1.6.2";
             }
         }
 
@@ -431,6 +431,9 @@ public class MainActivity extends Activity {
             String taskId = data == null ? root.optString("task_id", "") : data.optString("task_id", "");
             if (taskId.isEmpty()) throw new IllegalStateException("服务器没有返回任务编号");
             int estimated = data == null ? 0 : data.optInt("estimated_cents", 0);
+            String shortTaskId = taskId.length() > 8 ? taskId.substring(0, 8) : taskId;
+            emit(callId, "status",
+                    "任务 " + shortTaskId + " 已提交，等待云端生成…", null);
 
             long started = System.currentTimeMillis();
             int lastProgress = -1;
@@ -447,11 +450,14 @@ public class MainActivity extends Activity {
                     lastEmitSeconds = waitedSeconds;
                     String label;
                     if ("queued".equals(status)) {
-                        label = "已排队，等待生成 · 已等待 " + waitedSeconds + " 秒";
+                        label = "任务 " + shortTaskId + " · 已排队 · 已等待 "
+                                + waitedSeconds + " 秒";
                     } else if ("running".equals(status)) {
-                        label = "正在生成… " + progress + "% · 已等待 " + waitedSeconds + " 秒";
+                        label = "任务 " + shortTaskId + " · 正在生成 " + progress
+                                + "% · 已等待 " + waitedSeconds + " 秒";
                     } else {
-                        label = "正在处理结果 · 已等待 " + waitedSeconds + " 秒";
+                        label = "任务 " + shortTaskId + " · 正在处理结果 · 已等待 "
+                                + waitedSeconds + " 秒";
                     }
                     emit(callId, "status", label, null);
                 }
@@ -628,7 +634,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "1.6.1";
+            return "1.6.2";
         }
     }
 

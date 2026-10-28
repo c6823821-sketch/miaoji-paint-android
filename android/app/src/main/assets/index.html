@@ -1400,7 +1400,7 @@
 
             <textarea id="beautyPrompt" maxlength="2000"
               placeholder="可选补充：例如只修黑眼圈，保留泪沟；眼影用低饱和大地色；不要改变脸型和唇形"></textarea>
-            <div class="identity-lock">身份锁定已开启：保持原脸型骨相、五官比例、眼型、鼻型、唇形、肤色基础、痣与个人特征，不做网红脸模板化重绘。</div>
+            <div class="identity-lock">身份锁定已开启：保持原脸型骨相、五官比例、眼型、鼻型、唇形、肤色基础、痣与个人特征，不做网红脸模板化重绘。照片最长边超过 1600 像素时会等比压缩，以兼顾上传速度和面部细节。</div>
           </div>
         </section>
       </div>
@@ -1459,7 +1459,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.6.1</span>
+            <span class="version-text" id="versionText">当前版本 1.6.2</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2093,12 +2093,12 @@
       reader.onload = () => {
         const image = new Image();
         image.onload = () => {
-          const scale = Math.min(1, 1280 / Math.max(image.width, image.height));
+          const scale = Math.min(1, 1600 / Math.max(image.width, image.height));
           const canvas = document.createElement("canvas");
           canvas.width = Math.max(1, Math.round(image.width * scale));
           canvas.height = Math.max(1, Math.round(image.height * scale));
           canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
-          beautyPhotoDataUrl = canvas.toDataURL("image/jpeg", .9);
+          beautyPhotoDataUrl = canvas.toDataURL("image/jpeg", .92);
           beautyPhotoImage.src = beautyPhotoDataUrl;
           beautyPhotoPreview.hidden = false;
           beautyPhotoZone.hidden = true;
@@ -2767,7 +2767,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.1";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.2";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
