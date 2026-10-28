@@ -1459,7 +1459,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.6.3</span>
+            <span class="version-text" id="versionText">当前版本 1.6.4</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2249,7 +2249,6 @@
       beautyGenerateBtn.textContent = "修图中…";
       showBeautyGenerating();
       generationMode = "beauty";
-      generationMode = "image";
       activeGenerationSettings = {
         modelName: model.display_name,
         size: "auto",
@@ -2489,6 +2488,7 @@
 
     function startGeneration() {
       if (busy) return;
+      generationMode = "image";
       const prompt = promptInput.value.trim();
       const selectedStyle = STYLE_CARDS.find((style) => style.id === selectedStyleId)
         || STYLE_CARDS[0];
@@ -2767,7 +2767,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.3";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.4";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
