@@ -17,6 +17,8 @@
 - 图片生成完成后只在应用内预览，必须手动点击“保存到手机”。
 - “登录 / 充值”直达妙极官网登录/注册页面。
 - GitHub Releases 检查更新。
+- 独立“一键美颜”板块：自然精修、轻盈裸妆、上镜全妆、卧蚕提亮、眼妆加强和轮廓小脸。
+- 美颜时强制保留人物身份、骨相、五官比例、表情、发型与构图，并支持效果强度调节。
 
 ## 计费提示
 
@@ -31,6 +33,8 @@
 | ![工作区](docs/screenshot-workspace.png) | ![设置](docs/screenshot-settings.png) |
 
 ![风格提示词编辑](docs/screenshot-style-prompt.png)
+
+![一键美颜板块](docs/screenshot-beauty.png)
 
 ![风格卡片说明](docs/screenshot-style-guide.png)
 

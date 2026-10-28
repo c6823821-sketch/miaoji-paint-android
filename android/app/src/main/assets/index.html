@@ -152,6 +152,34 @@
       margin: 0 auto;
       padding: 24px 18px 122px;
     }
+    .page-tabs {
+      position: sticky;
+      top: 68px;
+      z-index: 16;
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 12px;
+      background: rgba(245, 243, 237, .9);
+      border-bottom: 1px solid rgba(23, 32, 30, .07);
+      backdrop-filter: blur(18px);
+    }
+    .page-tab {
+      min-height: 36px;
+      padding: 0 15px;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 254, 250, .8);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .page-tab.active {
+      color: #fff;
+      border-color: var(--ink);
+      background: var(--ink);
+    }
     .page-heading { margin-bottom: 18px; }
     .eyebrow {
       margin: 0 0 7px;
@@ -812,6 +840,111 @@
     .error-panel strong { font-size: 13px; }
     .error-panel p { max-width: 280px; margin: 0; font-size: 10px; line-height: 1.65; }
 
+    .beauty-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(310px, .85fr);
+      align-items: start;
+      gap: 16px;
+    }
+    .beauty-photo-zone {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 9px;
+      border: 1.5px dashed rgba(13, 118, 110, .3);
+      border-radius: 17px;
+      background: linear-gradient(145deg, #f7fbf9, #faf8f2);
+      text-align: center;
+      cursor: pointer;
+    }
+    .beauty-photo-zone strong { font-size: 13px; }
+    .beauty-photo-zone span { color: var(--muted); font-size: 9px; }
+    .beauty-photo-preview { position: relative; }
+    .beauty-photo-preview img {
+      width: 100%;
+      max-height: 48vh;
+      border-radius: 16px;
+      display: block;
+      object-fit: contain;
+      background: #ece8de;
+    }
+    .beauty-photo-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .beauty-preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .beauty-preset {
+      padding: 11px;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 13px;
+      color: var(--ink);
+      background: #f8f6f0;
+      text-align: left;
+      cursor: pointer;
+    }
+    .beauty-preset.selected {
+      border-color: var(--green);
+      background: #eef8f4;
+      box-shadow: 0 0 0 2px rgba(13, 118, 110, .1);
+    }
+    .beauty-preset strong { display: block; font-size: 10px; }
+    .beauty-preset span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.45;
+    }
+    .beauty-strength {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      background: #f8f6f0;
+    }
+    .beauty-strength-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+    .beauty-strength-head strong { flex: 1; font-size: 10px; }
+    .beauty-strength-head span { color: var(--green-dark); font-size: 10px; font-weight: 850; }
+    #beautyStrength {
+      width: 100%;
+      accent-color: var(--green);
+    }
+    #beautyPrompt {
+      width: 100%;
+      min-height: 90px;
+      margin-top: 12px;
+      resize: vertical;
+      border: 1px solid rgba(23, 32, 30, .12);
+      border-radius: 13px;
+      outline: 0;
+      padding: 11px;
+      color: var(--ink);
+      background: #faf8f2;
+      font-size: 11px;
+      line-height: 1.65;
+    }
+    .identity-lock {
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: 12px;
+      color: #395d52;
+      background: #eaf6f1;
+      font-size: 9px;
+      line-height: 1.6;
+    }
+    .beauty-result-card { min-height: 430px; }
+    .beauty-result-body { min-height: 370px; }
+
     .action-dock {
       position: fixed;
       z-index: 18;
@@ -1040,6 +1173,7 @@
 
     @media (max-width: 820px) {
       .workspace { grid-template-columns: 1fr; }
+      .beauty-layout { grid-template-columns: 1fr; }
       .result-card { min-height: auto; }
       .result-body, .result-empty, .generating, .error-panel { min-height: 300px; }
       .action-dock { width: calc(100% - 18px); }
@@ -1047,6 +1181,7 @@
 
     @media (max-width: 560px) {
       .appbar { min-height: 61px; padding-left: 12px; padding-right: 12px; }
+      .page-tabs { top: 61px; }
       .brand-copy span, .status-pill { display: none; }
       .brand-mark { width: 33px; height: 33px; border-radius: 11px; }
       .login-button { padding: 0 10px; }
@@ -1088,7 +1223,12 @@
     </div>
   </header>
 
-  <main class="page">
+  <nav class="page-tabs" aria-label="功能板块">
+    <button class="page-tab active" type="button" data-page="imagePage">AI 生图</button>
+    <button class="page-tab" type="button" data-page="beautyPage">一键美颜</button>
+  </nav>
+
+  <main class="page" id="imagePage">
     <section class="page-heading">
       <p class="eyebrow">AI 图像创作</p>
       <h1>图像生成</h1>
@@ -1202,12 +1342,100 @@
     </div>
   </main>
 
-  <div class="action-dock">
+  <main class="page" id="beautyPage" hidden>
+    <section class="page-heading">
+      <p class="eyebrow">人像精修</p>
+      <h1>一键美颜</h1>
+      <p>保留原人物身份、骨相、表情、发型和构图，只在你选择的范围内精准生成自然妆感与轮廓调整。</p>
+    </section>
+
+    <div class="beauty-layout">
+      <div class="stack">
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">原始照片</div>
+            <div class="card-subtitle">建议使用光线均匀、五官清晰的正面照</div>
+          </div>
+          <div class="card-body">
+            <div class="beauty-photo-zone" id="beautyPhotoZone" role="button" tabindex="0">
+              <div class="upload-icon">＋</div>
+              <strong>上传一张人像照片</strong>
+              <span>支持 JPG、PNG、WEBP · 会上传到妙极云端用于本次修图</span>
+            </div>
+            <div class="beauty-photo-preview" id="beautyPhotoPreview" hidden>
+              <img id="beautyPhotoImage" alt="待修人像照片">
+              <div class="beauty-photo-actions">
+                <button class="secondary-button" id="replaceBeautyPhotoBtn" type="button">更换照片</button>
+                <button class="secondary-button" id="removeBeautyPhotoBtn" type="button">移除</button>
+              </div>
+            </div>
+            <input id="beautyPhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">美颜方案</div>
+            <div class="card-subtitle">先选一个主效果，再调整强度</div>
+          </div>
+          <div class="card-body">
+            <label class="field-label" for="beautyModelSelect">修图模型</label>
+            <select class="text-field" id="beautyModelSelect"></select>
+
+            <div class="beauty-preset-grid" id="beautyPresets" style="margin-top:12px"></div>
+            <details class="config-group">
+              <summary>查看本方案修图要求</summary>
+              <div class="config-body">
+                <p class="help-copy" id="beautyPresetPrompt" style="margin-top:0"></p>
+              </div>
+            </details>
+
+            <div class="beauty-strength">
+              <div class="beauty-strength-head">
+                <strong>效果强度</strong>
+                <span id="beautyStrengthValue">55%</span>
+              </div>
+              <input id="beautyStrength" type="range" min="0" max="100" value="55" step="5">
+            </div>
+
+            <textarea id="beautyPrompt" maxlength="2000"
+              placeholder="可选补充：例如只修黑眼圈，保留泪沟；眼影用低饱和大地色；不要改变脸型和唇形"></textarea>
+            <div class="identity-lock">身份锁定已开启：保持原脸型骨相、五官比例、眼型、鼻型、唇形、肤色基础、痣与个人特征，不做网红脸模板化重绘。</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card beauty-result-card">
+          <div class="card-head">
+            <div class="card-title">修图结果</div>
+            <div class="card-subtitle" id="beautyResultStatus">等待生成</div>
+          </div>
+          <div class="result-body beauty-result-body" id="beautyResultBody">
+            <div class="result-empty">
+              <div class="result-empty-icon">人</div>
+              <strong>美颜结果会显示在这里</strong>
+              <p>上传照片、选择方案后生成。结果不会自动保存到手机。</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="action-dock" id="imageActionDock">
     <div class="price-copy">
       <strong id="priceTitle">正在读取价格…</strong>
       <span id="priceDetail">实际费用以服务端结算为准</span>
     </div>
     <button class="primary-button" id="generateButton" type="button">生成图片</button>
+  </div>
+  <div class="action-dock" id="beautyActionDock" hidden>
+    <div class="price-copy">
+      <strong id="beautyPriceTitle">按妙极任务预扣结算</strong>
+      <span id="beautyPriceDetail">人像生成会按参考图输入成本计费</span>
+    </div>
+    <button class="primary-button" id="beautyGenerateBtn" type="button">一键美颜</button>
   </div>
 
   <div class="modal-mask" id="settingsModal">
@@ -1231,7 +1459,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.5.1</span>
+            <span class="version-text" id="versionText">当前版本 1.6.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1279,7 +1507,7 @@
           </div>
           <div class="guide-item">
             <div class="guide-title">
-              <strong>旅行记忆拼贴</strong>
+              <strong>旅行手账拼贴</strong>
               <span class="badge neutral">3:4 · 需要照片</span>
             </div>
             <p>上半保留真实旅行照片，下半延展到米白纸面和黑色手绘线，只设计一个由照片景物转化出的互动。</p>
@@ -1380,9 +1608,9 @@
         prompt: "高级纸雕艺术卡片。画面由多层不同厚度和颜色的纸材构成，层与层之间保持真实空间距离，产生柔和投影和纸纤维边缘。主景用剪纸轮廓建立，细节通过镂空、刻线和少量叠色完成；主体占画面约一半，留出呼吸空间。光线从左上侧柔和进入，让纸面产生轻微起伏与细微纹理，但不过度做旧。配色控制在三到四种，采用米白、墨绿、暖红或金色中的一个重点色。整体有手工制作的可信触感、编辑设计感和收藏价值。除用户明确要求外，不生成文字或水印。"
       },
       {
-        id: "travel-memory", name: "旅行记忆拼贴", category: "design", preview: "travel",
-        desc: "真实照片 · 纸面延展", requiresReference: true, forceSize: "3:4",
-        prompt: "将上传的旅行照片制作成一张3:4竖版创意拼贴海报。严格保留上半部分原照片的人物身份、发型、服装、姿势、主体、构图、色彩和真实摄影质感，不得换人、增加另一个人、改变人物年龄或服装。下半部分使用温暖但干净的米白色纸面，以少量克制的黑色手绘线条为主，只从原图中选择一种主要景物延伸过边界，并转化成一件能使用的东西。只设计一个清楚、自然的互动，且必须与上半人物的动作关系连续；如果原图没有人物，才可使用一个很小的线稿人物。上下景物必须沿边界自然连接，动作合理，不能出现两套互不相关的场景。大面积留白，只保留必要线条，不添加无关装饰、完整插画或厚重纹理。配一句与动作有关的简短手写英文。整体克制、自然，有独立杂志的拼贴感，上下明暗、色温和透视协调。"
+        id: "travel-memory", name: "旅行手账拼贴", category: "design", preview: "travel",
+        desc: "真实照片 · 纸面手绘延展", requiresReference: true, forceSize: "3:4",
+        prompt: "将上传的旅行照片制作成一张3:4竖版创意海报。上半部分尽量保留原照片的主体、构图、色彩和真实摄影质感；下半部分使用温暖的米白色纸张，搭配少量黑色手绘线条。从原图中选择一种景物，让它连续延伸到纸面，并转化成一种可以使用的东西。只设计一个清晰、有趣的互动，例如让晚霞变成盖在稻田上的薄被，由一个微小的线稿人物牵住一角。上下景物必须自然相连，人物动作要合理。保留适当留白，不添加无关装饰。配一句与动作有关的简短手写英文，整体克制、自然，有独立杂志的拼贴感。"
       },
       {
         id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
@@ -1446,6 +1674,39 @@
       }
     });
 
+    const BEAUTY_PRESETS = [
+      {
+        id: "natural-retouch", name: "自然精修",
+        desc: "肤色、黑眼圈、小瑕疵，保留毛孔",
+        prompt: "只做自然商业人像精修：轻微均匀肤色，减弱黑眼圈、痘印、泛红和临时瑕疵，保留真实毛孔、皮肤纹理、痣、双眼皮褶和个人特征；眼睛下眼睑自然提亮，不磨成塑料皮，不改变眼型、鼻型、唇形、脸宽和年龄感"
+      },
+      {
+        id: "nude-makeup", name: "轻盈裸妆",
+        desc: "眉眼、腮红、唇色自然增强",
+        prompt: "增加干净的轻盈裸妆：均匀轻薄的底妆，自然柔和的眉毛，低饱和浅棕眼影，极细内眼线，少量睫毛膏，健康淡粉腮红和自然玫瑰唇色；妆感必须贴合原肤色与光线，不能厚重、廉价或掩盖个人面部特征"
+      },
+      {
+        id: "photo-glam", name: "上镜全妆",
+        desc: "精致眼妆、立体光影与上镜妆面",
+        prompt: "增加精致上镜妆容：干净的半哑光底妆，保留真实皮肤纹理，立体修容和高光，层次细腻的低饱和眼影，精细眼线、自然卷翘睫毛、柔和腮红和质感唇妆；只优化妆面和光线，不换脸，不放大眼睛，不缩鼻，不做统一网红脸"
+      },
+      {
+        id: "aegyo-sal", name: "卧蚕提亮",
+        desc: "只在眼睑下方增加自然卧蚕",
+        prompt: "只重点优化卧蚕：在下眼睑下方加入自然、轻薄的卧蚕阴影与细窄珠光提亮，位置贴合原有眼型和下眼睑弧度；不得加深泪沟、不得画成一条粗白线、不得放大眼睛或改变眼型，其他五官和皮肤保持不变"
+      },
+      {
+        id: "eye-makeup", name: "眼妆加强",
+        desc: "眼影、眼线、睫毛，不改变眼型",
+        prompt: "重点加强眼妆：使用与原肤色协调的低饱和大地色眼影，眼尾自然晕染，细眼线和自然卷翘睫毛，眼头少量提亮；睫毛根根分明，不能结块，不改变瞳孔、双眼皮宽度、眼裂大小和眼睑结构"
+      },
+      {
+        id: "face-contour", name: "轮廓小脸",
+        desc: "轻微修容和下颌线，保留骨相",
+        prompt: "仅通过轻微摄影修容和自然光影优化轮廓：少量收敛脸颊两侧阴影，强化下颌线和鼻梁高光，使脸型更干净上镜；必须保留原有颧骨、下颌骨、脸长宽比例、五官位置和身份特征，禁止直接液化缩脸、尖下巴、削骨式瘦脸或改变头肩比"
+      }
+    ];
+
     const SIZE_OPTIONS = [
       ["1:1", "1:1 正方形"], ["3:4", "3:4 竖图"], ["4:3", "4:3 横图"],
       ["9:16", "9:16 竖屏"], ["16:9", "16:9 宽屏"], ["2:3", "2:3 竖图"],
@@ -1472,6 +1733,25 @@
     const generateButton = $("generateButton");
     const resultBody = $("resultBody");
     const resultStatus = $("resultStatus");
+    const imagePage = $("imagePage");
+    const beautyPage = $("beautyPage");
+    const imageActionDock = $("imageActionDock");
+    const beautyActionDock = $("beautyActionDock");
+    const beautyPhotoZone = $("beautyPhotoZone");
+    const beautyPhotoPreview = $("beautyPhotoPreview");
+    const beautyPhotoImage = $("beautyPhotoImage");
+    const beautyPhotoInput = $("beautyPhotoInput");
+    const beautyModelSelect = $("beautyModelSelect");
+    const beautyPresets = $("beautyPresets");
+    const beautyPresetPrompt = $("beautyPresetPrompt");
+    const beautyStrength = $("beautyStrength");
+    const beautyStrengthValue = $("beautyStrengthValue");
+    const beautyPrompt = $("beautyPrompt");
+    const beautyResultBody = $("beautyResultBody");
+    const beautyResultStatus = $("beautyResultStatus");
+    const beautyGenerateBtn = $("beautyGenerateBtn");
+    const beautyPriceTitle = $("beautyPriceTitle");
+    const beautyPriceDetail = $("beautyPriceDetail");
     const settingsModal = $("settingsModal");
     const helpModal = $("helpModal");
     const referenceInput = $("referenceInput");
@@ -1488,6 +1768,10 @@
     let selectedStyleCategory = "popular";
     let referenceItems = [];
     const MAX_REFERENCES = 6;
+    let beautyPhotoDataUrl = "";
+    let beautyPresetId = "natural-retouch";
+    let beautyBusy = false;
+    let generationMode = "image";
     let busy = false;
     let toastTimer = null;
     let currentResult = null;
@@ -1719,6 +2003,273 @@
 
       $("miaojiState").classList.toggle("off", !hasMiaoji);
       $("miaojiState").textContent = hasMiaoji ? "妙极 API Key 已配置" : "妙极未配置";
+    }
+
+    function showAppPage(pageId) {
+      imagePage.hidden = pageId !== "imagePage";
+      beautyPage.hidden = pageId !== "beautyPage";
+      imageActionDock.hidden = pageId !== "imagePage";
+      beautyActionDock.hidden = pageId !== "beautyPage";
+      document.querySelectorAll(".page-tab").forEach((button) => {
+        button.classList.toggle("active", button.dataset.page === pageId);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function selectedBeautyModel() {
+      return models.find((model) => model.model === beautyModelSelect.value) || models[0];
+    }
+
+    function fillBeautyModelSelect() {
+      const previous = beautyModelSelect.value;
+      fillSelect(
+        beautyModelSelect,
+        models.map((model) => [model.model, model.display_name]),
+        previous || "gpt-image-2.5-flare"
+      );
+      updateBeautyPrice();
+    }
+
+    function beautyQuality(model) {
+      return model.allowed_qualities.includes("low") ? "low" : "";
+    }
+
+    function updateBeautyPrice() {
+      const model = selectedBeautyModel();
+      const quality = beautyQuality(model);
+      const values = model.estimate_cents || {};
+      const cents = Number((values[quality] || values[""] || {})["1k"] || 0);
+      beautyPriceTitle.textContent = cents > 0
+        ? `人像图生图 · 预扣约 ¥${(cents / 100).toFixed(2)}`
+        : "人像图生图 · 按任务预扣";
+      beautyPriceDetail.textContent = "参考图和提示词长度会影响实扣，以结果页为准";
+    }
+
+    function renderBeautyPresets() {
+      beautyPresets.replaceChildren();
+      for (const preset of BEAUTY_PRESETS) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "beauty-preset" + (preset.id === beautyPresetId ? " selected" : "");
+        const name = document.createElement("strong");
+        name.textContent = preset.name;
+        const desc = document.createElement("span");
+        desc.textContent = preset.desc;
+        button.append(name, desc);
+        button.addEventListener("click", () => {
+          beautyPresetId = preset.id;
+          renderBeautyPresets();
+        });
+        beautyPresets.appendChild(button);
+      }
+      const selected = BEAUTY_PRESETS.find((preset) => preset.id === beautyPresetId)
+        || BEAUTY_PRESETS[0];
+      beautyPresetPrompt.textContent = selected.prompt;
+    }
+
+    function updateBeautyStrengthLabel() {
+      beautyStrengthValue.textContent = `${beautyStrength.value}%`;
+    }
+
+    function resetBeautyPhoto() {
+      beautyPhotoDataUrl = "";
+      beautyPhotoInput.value = "";
+      beautyPhotoImage.removeAttribute("src");
+      beautyPhotoPreview.hidden = true;
+      beautyPhotoZone.hidden = false;
+    }
+
+    function setBeautyPhoto(file) {
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showToast("请选择人像图片");
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        showToast("照片不能超过 15 MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.onload = () => {
+          const scale = Math.min(1, 1280 / Math.max(image.width, image.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+          beautyPhotoDataUrl = canvas.toDataURL("image/jpeg", .9);
+          beautyPhotoImage.src = beautyPhotoDataUrl;
+          beautyPhotoPreview.hidden = false;
+          beautyPhotoZone.hidden = true;
+        };
+        image.onerror = () => showToast("照片读取失败");
+        image.src = String(reader.result || "");
+      };
+      reader.onerror = () => showToast("照片读取失败");
+      reader.readAsDataURL(file);
+    }
+
+    function showBeautyEmpty() {
+      beautyResultStatus.textContent = "等待生成";
+      beautyResultBody.innerHTML = `
+        <div class="result-empty">
+          <div class="result-empty-icon">人</div>
+          <strong>美颜结果会显示在这里</strong>
+          <p>上传照片、选择方案后生成。结果不会自动保存到手机。</p>
+        </div>`;
+    }
+
+    function showBeautyGenerating() {
+      beautyResultStatus.textContent = "正在修图";
+      beautyResultBody.innerHTML = `
+        <div class="generating">
+          <div class="spinner"></div>
+          <strong id="beautyGeneratingText">正在扫描面部并保留身份特征…</strong>
+          <p>只修改你选择的局部，不替换人物。</p>
+          <div class="progress-track"><span></span></div>
+        </div>`;
+    }
+
+    function updateBeautyGeneratingText(message) {
+      const element = $("beautyGeneratingText");
+      if (element) element.textContent = message || "正在保留面部身份并局部修图…";
+    }
+
+    function showBeautyError(message, data) {
+      beautyResultStatus.textContent = "修图失败";
+      beautyResultBody.replaceChildren();
+      const panel = document.createElement("div");
+      panel.className = "error-panel";
+      const title = document.createElement("strong");
+      title.textContent = "这次没有修图成功";
+      const copy = document.createElement("p");
+      copy.textContent = message || "请稍后重试";
+      panel.append(title, copy);
+      if (data && data.openRecharge) {
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "primary-button";
+        action.textContent = "打开登录 / 充值";
+        action.addEventListener("click", () => bridge() && bridge().openLogin());
+        panel.appendChild(action);
+      }
+      beautyResultBody.appendChild(panel);
+    }
+
+    function showBeautyResult(data) {
+      beautyResultStatus.textContent = "修图完成";
+      beautyResultBody.replaceChildren();
+      const image = document.createElement("img");
+      image.className = "result-image";
+      image.alt = "美颜修图结果";
+      image.referrerPolicy = "no-referrer";
+      image.src = data.imageUrl;
+
+      const meta = document.createElement("div");
+      meta.className = "result-meta";
+      const cost = document.createElement("strong");
+      cost.textContent = `本次实扣 ${formatMoney(data.chargedCents)}`;
+      const info = document.createElement("span");
+      const settings = activeGenerationSettings;
+      info.textContent = settings
+        ? `${settings.modelName} · ${settings.styleName} · ${settings.strength}%`
+        : "美颜修图";
+      meta.append(cost, info);
+
+      const actions = document.createElement("div");
+      actions.className = "result-actions";
+      const save = document.createElement("button");
+      save.type = "button";
+      save.className = "primary-button";
+      save.textContent = "保存到手机";
+      const again = document.createElement("button");
+      again.type = "button";
+      again.className = "secondary-button";
+      again.textContent = "再修一次";
+      again.addEventListener("click", startBeautyGeneration);
+      actions.append(save, again);
+      save.addEventListener("click", () => {
+        if (!bridge()) return;
+        const callId = id("save");
+        saveCalls.set(callId, { save });
+        save.disabled = true;
+        save.textContent = "保存中…";
+        bridge().saveImage(
+          data.imageUrl,
+          data.mimeType || "image/png",
+          "妙极美颜_" + timestampName(),
+          callId
+        );
+      });
+      beautyResultBody.append(image, meta, actions);
+    }
+
+    function finishBeautyBusy() {
+      beautyBusy = false;
+      beautyGenerateBtn.disabled = false;
+      beautyGenerateBtn.textContent = "一键美颜";
+    }
+
+    function startBeautyGeneration() {
+      if (beautyBusy) return;
+      if (!beautyPhotoDataUrl) {
+        showToast("请先上传一张人像照片");
+        beautyPhotoZone.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      if (!bridge() || !bridge().hasKey()) {
+        openModal(settingsModal);
+        updateConnectionState();
+        showToast("请先配置妙极 API Key");
+        return;
+      }
+      const preset = BEAUTY_PRESETS.find((item) => item.id === beautyPresetId)
+        || BEAUTY_PRESETS[0];
+      const model = selectedBeautyModel();
+      const strength = Number(beautyStrength.value);
+      const strengthText = strength <= 25
+        ? "极轻微，只修正最明显的问题"
+        : strength <= 50
+          ? "自然轻修，保留绝大部分真实特征"
+          : strength <= 75
+            ? "明显精致但仍像本人，必须保留真实皮肤和骨相"
+            : "棚拍级精修效果，但不得网红脸、换脸或过度液化";
+      const identityLock = "Image 1 is the only identity and edit target. Preserve the exact same person and facial identity: keep the original face shape and bone structure, eye shape and spacing, nose, lips, jawline, ears, hairline, skin tone, moles, expression, age, pose, camera angle, framing, background and lighting direction. Do not replace the face, do not generate another person, do not enlarge eyes, narrow the nose, sharpen the chin, erase personal characteristics, smooth skin into plastic, or apply a generic influencer beauty template. Change only the requested makeup or local retouch. Keep realistic skin texture and natural light continuity.";
+      const fullPrompt = [
+        identityLock,
+        `Beauty treatment: ${preset.prompt}.`,
+        `Effect strength: ${strength}% (${strengthText}).`,
+        beautyPrompt.value.trim()
+      ].filter(Boolean).join("\n\n");
+
+      beautyBusy = true;
+      beautyGenerateBtn.disabled = true;
+      beautyGenerateBtn.textContent = "修图中…";
+      showBeautyGenerating();
+      generationMode = "beauty";
+      generationMode = "image";
+      activeGenerationSettings = {
+        modelName: model.display_name,
+        size: "auto",
+        resolution: "1k",
+        quality: beautyQuality(model),
+        hasReference: true,
+        referenceCount: 1,
+        styleName: preset.name,
+        strength
+      };
+      generationCallId = id("beauty");
+      bridge().generate(
+        fullPrompt,
+        model.model,
+        "auto",
+        "1k",
+        beautyQuality(model),
+        1,
+        JSON.stringify([beautyPhotoDataUrl]),
+        generationCallId
+      );
     }
 
     function resetReference() {
@@ -2025,6 +2576,7 @@
         if (event.event === "models" && event.data && Array.isArray(event.data.items)) {
           models = event.data.items;
           renderModels("gpt-image-2.5-flare");
+          fillBeautyModelSelect();
         }
         return;
       }
@@ -2076,14 +2628,25 @@
 
       if (event.callId !== generationCallId) return;
       if (event.event === "status") {
-        updateGeneratingText(event.message);
+        if (generationMode === "beauty") updateBeautyGeneratingText(event.message);
+        else updateGeneratingText(event.message);
       } else if (event.event === "result") {
-        showResult(event.data || {});
-        finishBusy();
+        if (generationMode === "beauty") {
+          showBeautyResult(event.data || {});
+          finishBeautyBusy();
+        } else {
+          showResult(event.data || {});
+          finishBusy();
+        }
         generationCallId = "";
       } else if (event.event === "error") {
-        showError(event.message, event.data);
-        finishBusy();
+        if (generationMode === "beauty") {
+          showBeautyError(event.message, event.data);
+          finishBeautyBusy();
+        } else {
+          showError(event.message, event.data);
+          finishBusy();
+        }
         generationCallId = "";
       }
     };
@@ -2101,6 +2664,9 @@
     qualitySelect.addEventListener("change", updatePrice);
     resolutionSelect.addEventListener("change", updatePrice);
     sizeSelect.addEventListener("change", updatePrice);
+    document.querySelectorAll(".page-tab").forEach((button) => {
+      button.addEventListener("click", () => showAppPage(button.dataset.page));
+    });
     promptInput.addEventListener("input", updateCharCount);
     $("clearPromptBtn").addEventListener("click", () => {
       promptInput.value = "";
@@ -2117,6 +2683,20 @@
       }
     });
     referenceInput.addEventListener("change", () => addReferenceFiles(referenceInput.files));
+
+    beautyPhotoZone.addEventListener("click", () => beautyPhotoInput.click());
+    beautyPhotoZone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        beautyPhotoInput.click();
+      }
+    });
+    $("replaceBeautyPhotoBtn").addEventListener("click", () => beautyPhotoInput.click());
+    $("removeBeautyPhotoBtn").addEventListener("click", resetBeautyPhoto);
+    beautyPhotoInput.addEventListener("change", () => setBeautyPhoto(beautyPhotoInput.files[0]));
+    beautyStrength.addEventListener("input", updateBeautyStrengthLabel);
+    beautyModelSelect.addEventListener("change", updateBeautyPrice);
+    beautyGenerateBtn.addEventListener("click", startBeautyGeneration);
 
     $("loginBtn").addEventListener("click", () => {
       if (bridge()) bridge().openLogin();
@@ -2176,13 +2756,17 @@
     function initialize() {
       fillSelect(sizeSelect, SIZE_OPTIONS, "1:1");
       renderModels("gpt-image-2.5-flare");
+      fillBeautyModelSelect();
+      renderBeautyPresets();
+      updateBeautyStrengthLabel();
+      showBeautyEmpty();
       renderStyleCards();
       renderReferences();
       updatePromptMode();
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.5.1";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.6.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
