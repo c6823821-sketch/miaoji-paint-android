@@ -1736,7 +1736,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.2</span>
+            <span class="version-text" id="versionText">当前版本 1.7.3</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -3584,7 +3584,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.2";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.3";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
