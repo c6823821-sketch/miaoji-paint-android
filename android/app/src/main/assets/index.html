@@ -1231,7 +1231,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.5.0</span>
+            <span class="version-text" id="versionText">当前版本 1.5.1</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1442,7 +1442,7 @@
     ];
     STYLE_CARDS.forEach((style) => {
       if (style.id !== "none") {
-        style.previewImage = `styles/${style.id}.jpg`;
+        style.previewImage = `style-${style.id}.jpg`;
       }
     });
 
@@ -2182,7 +2182,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.5.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.5.1";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
