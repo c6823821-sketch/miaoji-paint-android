@@ -482,9 +482,17 @@
     }
     .style-preview {
       position: relative;
-      height: 86px;
+      height: auto;
+      aspect-ratio: 4 / 3;
       overflow: hidden;
       background: #ddd8cd;
+    }
+    .style-preview img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transform: scale(1.01);
     }
     .style-preview::after {
       content: "";
@@ -1052,7 +1060,7 @@
       .settings-grid { grid-template-columns: 1fr 1fr; }
       .settings-grid .field:first-child { grid-column: 1 / -1; }
       .style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .style-preview { height: 92px; }
+      .style-preview { height: auto; }
       .reference-preview { grid-template-columns: 78px minmax(0, 1fr); }
       .reference-preview img { width: 78px; height: 78px; }
       .action-dock { min-height: 68px; padding: 9px; }
@@ -1223,7 +1231,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.4.1</span>
+            <span class="version-text" id="versionText">当前版本 1.5.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1352,24 +1360,24 @@
         desc: "完全按你的文字生成", prompt: ""
       },
       {
-        id: "oil", name: "油画厚涂", category: "popular", preview: "oil",
-        desc: "笔触、油彩与厚涂质感",
-        prompt: "经典油画风格，明显而有层次的厚涂笔触，丰富油彩质感，博物馆级画面，戏剧性明暗和深邃色彩"
+        id: "oil", name: "古典油画", category: "popular", preview: "oil",
+        desc: "厚涂、罩染与博物馆光感",
+        prompt: "采用传统布面油画语言，厚涂堆叠与透明罩染结合。先用大块色面建立体积，再在衣褶、皮肤、岩石、木材和金属等关键处保留清楚可读的笔触。主光从侧后方进入，形成温暖的亮部、丰富中间色和带色相的透明暗部，必要时加入一束克制的冷色轮廓光。近景细节密集，远处逐渐概括，画面具有博物馆原作级别的色层、肌理和空气感。避免数码平滑、塑料高光、过度锐化和俗艳滤镜。除用户明确要求外，不生成文字、签名或水印。"
       },
       {
-        id: "illustration", name: "精品插画", category: "popular", preview: "storybook",
-        desc: "出版级构图与配色",
-        prompt: "高质量出版级插画，精致构图，和谐高级配色，丰富手绘细节，画面完整，具有叙事感"
+        id: "illustration", name: "叙事插画", category: "popular", preview: "storybook",
+        desc: "出版级构图与视觉叙事",
+        prompt: "创作出版级叙事插画。画面先建立清晰视觉中心，再用一条自然动线引导视线穿过前景、中景和背景。主体造型经过提炼但细节充足，边缘有手绘的温度；配色采用一个主色调、两种邻近色和少量高饱和强调色，明暗关系明确。加入可信的布料纹理、木纹、石材、植物和环境光，细节只集中在叙事关键处，背景适度概括。构图具有编辑设计感，画面完整、克制、有故事但不过度拥挤。除用户明确要求外，不出现文字、边框、logo或水印。"
       },
       {
         id: "cinematic", name: "电影剧照", category: "photo", preview: "film",
-        desc: "逆光、景深与电影色彩",
-        prompt: "电影剧照风格，电影摄影机质感，戏剧性逆光，自然景深，电影调色，真实皮肤与材质细节"
+        desc: "真实镜头、叙事光与电影调色",
+        prompt: "真实电影剧照质感，仿佛使用35mm电影摄影机和35–50mm镜头拍摄。光源必须有明确动机：窗光、路灯、落日或场景实景灯；主体边缘有柔和轮廓光，背景自然虚化但保留环境信息。人物皮肤有细微毛孔和真实高光，服装、头发、灰尘与空气微粒可信。采用低饱和电影调色，高光偏暖、阴影带冷色，保留宽容度和层次，不使用AI式过度磨皮。构图像一个故事的关键停顿，主体有动作和情绪，画面没有摆拍塑料感。除用户明确要求外，不出现字幕、logo或水印。"
       },
       {
-        id: "papercard", name: "纸艺卡片", category: "design", preview: "papercard",
-        desc: "纸雕层次与精致留白",
-        prompt: "高级纸艺拼贴卡片风格，分层纸雕结构，细纸纹理与柔和阴影，精致留白，杂志级平面构图"
+        id: "papercard", name: "纸雕艺术卡", category: "design", preview: "papercard",
+        desc: "多层纸雕、真实纸纤维与光影",
+        prompt: "高级纸雕艺术卡片。画面由多层不同厚度和颜色的纸材构成，层与层之间保持真实空间距离，产生柔和投影和纸纤维边缘。主景用剪纸轮廓建立，细节通过镂空、刻线和少量叠色完成；主体占画面约一半，留出呼吸空间。光线从左上侧柔和进入，让纸面产生轻微起伏与细微纹理，但不过度做旧。配色控制在三到四种，采用米白、墨绿、暖红或金色中的一个重点色。整体有手工制作的可信触感、编辑设计感和收藏价值。除用户明确要求外，不生成文字或水印。"
       },
       {
         id: "travel-memory", name: "旅行记忆拼贴", category: "design", preview: "travel",
@@ -1377,61 +1385,66 @@
         prompt: "将上传的旅行照片制作成一张3:4竖版创意拼贴海报。严格保留上半部分原照片的人物身份、发型、服装、姿势、主体、构图、色彩和真实摄影质感，不得换人、增加另一个人、改变人物年龄或服装。下半部分使用温暖但干净的米白色纸面，以少量克制的黑色手绘线条为主，只从原图中选择一种主要景物延伸过边界，并转化成一件能使用的东西。只设计一个清楚、自然的互动，且必须与上半人物的动作关系连续；如果原图没有人物，才可使用一个很小的线稿人物。上下景物必须沿边界自然连接，动作合理，不能出现两套互不相关的场景。大面积留白，只保留必要线条，不添加无关装饰、完整插画或厚重纹理。配一句与动作有关的简短手写英文。整体克制、自然，有独立杂志的拼贴感，上下明暗、色温和透视协调。"
       },
       {
-        id: "watercolor", name: "水彩手绘", category: "art", preview: "watercolor",
-        desc: "水色晕染与纸张纹理",
-        prompt: "高级水彩手绘风格，自然水色晕染，透明叠色，纸张纤维纹理，边缘轻松，画面通透有呼吸感"
+        id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
+        desc: "湿画晕染、留白与纸纤维",
+        prompt: "传统透明水彩原作质感，使用冷压棉浆水彩纸。先以湿画法铺出大块空气感色面，再用干笔在视觉中心补充结构、纹理和少量铅笔线。颜色通过透明叠色形成，不靠厚重白颜料；高光利用纸张留白，边缘有自然水痕、轻微回渗和颜料沉积，但不弄脏画面。主色和邻近色保持和谐，只在一个小区域使用饱和度较高的暖色或冷色作为惊喜。构图有呼吸感，主体细节集中，背景逐渐虚化。避免数码渐变、塑料高光和均匀颗粒。除用户明确要求外，不出现文字或水印。"
       },
       {
-        id: "ink", name: "水墨国风", category: "art", preview: "ink",
-        desc: "宣纸、墨韵与大留白",
-        prompt: "中国水墨画风格，宣纸质感，墨色浓淡与飞白变化，写意笔触，大面积留白，东方审美构图"
+        id: "ink", name: "现代水墨", category: "art", preview: "ink",
+        desc: "宣纸、墨韵、飞白与留白",
+        prompt: "现代水墨画语言，表现于有细微纤维的宣纸。以焦、浓、重、淡、清五种墨阶建立空间，湿笔形成柔和扩散，干笔保留飞白和纸面阻力。主体先以有力的大笔触确定气势，再用少量细线补充结构；远景用水墨淡染和留白暗示，不做完整写实描摹。画面保留大面积安静空间，黑白节奏明确，必要时只加入一处很小但克制的朱红或青绿作为视觉惊喜。构图具有现代东方审美，避免程序化梅花、假毛笔字和装饰性堆砌。除用户明确要求外，不出现文字、印章或水印。"
       },
       {
-        id: "anime", name: "动漫插画", category: "art", preview: "anime",
-        desc: "清爽色彩与精细背景",
-        prompt: "高质量动漫插画风格，干净线稿，通透色彩，精致背景，自然光影，完成度高的商业动画视觉"
+        id: "anime", name: "动画关键帧", category: "art", preview: "anime",
+        desc: "赛璐璐光、精细背景与镜头感",
+        prompt: "商业动画关键帧质感。角色线稿清晰并有粗细变化，赛璐璐色块干净，头发和眼睛具有分层高光，衣料褶皱符合动作。背景按动画美术标准绘制，近景材质详细、远景概括，使用室内外统一光源与明确色温。构图像一个正在发生的镜头，角色有自然动作、视线和情绪；前景可加入轻微遮挡，空气中有少量可信的光斑或粒子。色彩通透，不脏不乱，暗部有颜色，不把角色与背景生硬贴在一起。避免廉价滤镜、过度发光和随机装饰。除用户明确要求外，不出现文字或水印。"
       },
       {
-        id: "manga", name: "漫画线稿", category: "art", preview: "manga",
-        desc: "黑白网点与强烈线条",
-        prompt: "漫画线稿风格，粗细变化的墨线，网点阴影，强烈黑白构图，动感分镜感，纸张印刷质感"
+        id: "manga", name: "黑白漫画", category: "art", preview: "manga",
+        desc: "墨线、网点与戏剧性分镜",
+        prompt: "专业黑白漫画原稿质感。主轮廓用有压力的蘸水笔或 G 笔线条，内部结构用细线密排，阴影通过网点、排线和大面积黑场建立。前景、中景和背景必须用线条密度和黑白比例分层，视觉中心对比最强，次要区域大胆简化。动作方向明确，分镜式构图带有运动感和张力；必要时加入速度线、雨线或空气流线，但线条必须服从场景。纸张保留轻微印刷纤维，不使用灰色柔光塑料效果。避免杂乱描线、文字气泡和未经要求的对白。除用户明确要求外，不出现文字或水印。"
       },
       {
-        id: "pixel", name: "像素游戏", category: "art", preview: "pixel",
-        desc: "复古游戏像素画面",
-        prompt: "精致复古像素游戏美术，清晰的像素边缘，有限色板，立体光影，场景层次丰富，怀旧游戏画面"
+        id: "pixel", name: "像素叙事", category: "art", preview: "pixel",
+        desc: "有限色板、点阵光影与关卡感",
+        prompt: "高完成度像素叙事游戏美术，像素边缘干净，不使用模糊缩放。采用有限色板，每个材质有独立但统一的明暗阶；通过抖动、点阵渐变和局部高光塑造体积。画面构图像可游玩的游戏场景，前景、可行走区域、中景主体和远景剪影层次清楚，加入真实可信的小道具和光影线索，让观者能读出故事和下一步动作方向。夜景要有暖色实景光与冷色环境光对比，像素颗粒服务氛围但不污染画面。避免低分辨率马赛克、随机噪点和简单复古滤镜。除用户明确要求外，不出现文字、UI或水印。"
       },
       {
-        id: "film", name: "胶片写真", category: "photo", preview: "film",
-        desc: "自然颗粒与胶片色调",
-        prompt: "真实胶片摄影风格，柔和自然光，细腻皮肤与材质，轻微颗粒，胶片色彩，浅景深，纪实感"
+        id: "film", name: "胶片纪实", category: "photo", preview: "film",
+        desc: "35mm 颗粒、宽容度与真实肤色",
+        prompt: "真实35mm彩色负片摄影质感。采用自然光或现场实景光，曝光保留高光柔和过渡和暗部细节，肤色真实，避免统一橙色滤镜。画面有细密但克制的胶片颗粒、轻微光晕、真实镜头暗角和浅景深；焦点落在主体眼睛、手部动作或关键物体上，背景保留环境叙事。构图像抓拍到的真实瞬间，人物姿态自然，不整齐排列。材质上区分皮肤、棉布、旧木、金属和空气尘埃，整体具有纪实摄影的信任感和编辑选择感。避免数字磨皮、过度锐化和无意义虚化。除用户明确要求外，不出现文字或水印。"
       },
       {
-        id: "editorial", name: "高端画册", category: "design", preview: "editorial",
-        desc: "极简排版与高级质感",
-        prompt: "高端时尚画册视觉，极简编辑设计，克制配色，大块留白，精致材质，杂志封面级灯光和构图"
+        id: "editorial", name: "奢华编辑", category: "design", preview: "editorial",
+        desc: "艺术指导、材质对比与高级留白",
+        prompt: "博物馆级时尚编辑视觉。先确定一个强视觉概念，再用克制的艺术指导组织主体、道具和留白。材质之间形成清楚对比，例如哑光石材、拉丝金属、半透明玻璃、丝绒、纸张和真实皮肤；每一种材质都要有可信的高光、反射和微观纹理。光源经过设计，使用大面积柔光和少量硬光切面建立雕塑感。色板限制在象牙白、炭黑、金属色和一个低饱和强调色之间，细节集中在视觉中心和材质交界，背景保持安静。整体像高端杂志跨页或品牌艺术指导作品，避免堆砌奢侈品符号、俗气金色和文字。除用户明确要求外，不出现logo或水印。"
       },
       {
-        id: "poster", name: "复古海报", category: "design", preview: "poster",
-        desc: "几何构图与印刷颗粒",
-        prompt: "复古艺术海报风格，大胆几何构图，有限高对比色板，丝网印刷颗粒，强烈视觉中心，经典平面设计"
+        id: "poster", name: "丝网海报", category: "design", preview: "poster",
+        desc: "几何构成、套色错位与纸张颗粒",
+        prompt: "中世纪现代主义丝网印刷海报风格。画面由大胆几何色块和高度概括的剪影构成，使用三到五种克制的印刷色，通过叠色产生新的中间色。允许轻微套色错位、油墨边缘不齐和纸张纤维，让作品有真实手工印刷感；主体轮廓必须一眼可读，视觉中心强烈，负空间经过设计。光影被压缩成平面形状，纹理只出现在局部，避免写实渲染。构图具有旅行海报或文化展览海报的收藏感，所有元素共享同一视觉语言。除用户明确要求外，不生成文字、标题、logo或水印。"
       },
       {
-        id: "clay", name: "3D 黏土", category: "3d", preview: "clay",
-        desc: "柔软材质与棚拍布光",
-        prompt: "3D 黏土定格动画风格，柔软细腻的黏土材质，圆润造型，可爱比例，柔和棚拍灯光，精致微缩场景"
+        id: "clay", name: "黏土定格", category: "3d", preview: "clay",
+        desc: "指纹、微缩布景与定格光影",
+        prompt: "手工黏土定格动画场景。所有主体、道具和环境都像由真实黏土、软陶、毛毡、纸张和细木制作，表面保留轻微指纹、压痕、细小裂纹和不完全规整的边缘。场景是完整微缩布景，有前景遮挡、中景主体和背景层次，道具尺寸比例可信。采用柔和棚拍布光与小型实景灯，投射真实软影和局部硬影，镜头有微距景深。角色造型圆润但有结构，不幼稚；颜色低饱和，只用一个明亮色作为视觉惊喜。画面像定格动画中的关键帧，有故事和手作温度，避免塑料3D渲染和过度平滑。除用户明确要求外，不出现文字或水印。"
       },
       {
-        id: "blindbox", name: "盲盒手办", category: "3d", preview: "blindbox",
-        desc: "潮玩手办与精致展台",
-        prompt: "高端潮玩盲盒手办风格，精细 3D 造型，光滑树脂与柔软搪胶材质，精致底座和展台，棚拍产品光"
+        id: "blindbox", name: "收藏级手办", category: "3d", preview: "blindbox",
+        desc: "角色设定、树脂材质与展台布景",
+        prompt: "收藏级设计师手办产品视觉。角色造型先有鲜明轮廓和可识别道具，再补充服装层次、配件、材质分区和微小机关，让观者能不断发现细节。使用真实收藏玩具常见的哑光树脂、半透明搪胶、织物、金属和透明亚克力组合，各部分反射不同。摆放于有叙事线索的精致圆形展台，场景中只保留少量与角色身份相关的道具。棚拍柔光加一盏轮廓光勾出边缘，背景干净但带空间深度；材质精密、颜色克制，只有一个高饱和视觉点。整体像高端艺术玩具摄影，避免廉价塑料感、儿童玩具包装和随机装饰。除用户明确要求外，不出现文字、品牌或水印。"
       },
       {
-        id: "fantasy", name: "奇幻史诗", category: "art", preview: "fantasy",
-        desc: "宏大场景与神秘光效",
-        prompt: "奇幻史诗艺术风格，宏大场景，神秘魔法光效，精细服饰与建筑，电影概念设计，丰富层次和空气透视"
+        id: "fantasy", name: "奇幻概念", category: "art", preview: "fantasy",
+        desc: "世界尺度、层次光影与叙事细节",
+        prompt: "电影级奇幻概念设计。先通过巨大尺度参照建立世界感，例如微小人物面对宏大遗迹、漂浮建筑或古老生物；前景、中景、远景用空气透视和不同清晰度分层。主光来自明确来源，例如破云金色天光、魔法裂隙或远处火光，冷暖对比克制。服饰、盔甲、石材、树皮和生物表面都有可信结构与磨损，细节集中在叙事关键处；远景用大气、雾层和轮廓表达空间。画面神秘但不混乱，魔法效果具有材质和方向，不只是一团发光。整体像可继续制作电影的世界观概念图，避免游戏广告式堆砌和对称摆拍。除用户明确要求外，不出现文字或水印。"
       }
     ];
+    STYLE_CARDS.forEach((style) => {
+      if (style.id !== "none") {
+        style.previewImage = `styles/${style.id}.jpg`;
+      }
+    });
 
     const SIZE_OPTIONS = [
       ["1:1", "1:1 正方形"], ["3:4", "3:4 竖图"], ["4:3", "4:3 横图"],
@@ -1542,6 +1555,13 @@
 
         const preview = document.createElement("div");
         preview.className = `style-preview ${style.preview}`;
+        if (style.previewImage) {
+          const image = document.createElement("img");
+          image.src = style.previewImage;
+          image.alt = `${style.name}效果预览`;
+          image.loading = "lazy";
+          preview.appendChild(image);
+        }
         const check = document.createElement("span");
         check.className = "style-check";
         check.textContent = "✓";
@@ -2162,7 +2182,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.4.1";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.5.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
