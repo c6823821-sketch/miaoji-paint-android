@@ -208,15 +208,19 @@ async function main() {
   if (effect.statusRouted !== "任务 effect123 已提交 · 已等待 9 秒") {
     throw new Error(`Effect status routed to the wrong panel: ${effect.statusRouted}`);
   }
-  if (effect.cardCount !== 18 || effect.sampleImages !== 18) {
+  if (effect.cardCount !== 26 || effect.sampleImages !== 26) {
     throw new Error("Effect cards do not have visible sample images");
   }
   if (
     effect.femaleCardCount !== 12
-    || effect.maleCardCount !== 6
+    || effect.maleCardCount !== 14
     || !effect.maleNames.includes("暗线特工")
     || !effect.maleNames.includes("赛博机甲战士")
     || !effect.maleNames.includes("高定男装大片")
+    || !effect.maleNames.includes("暗夜机车骑士")
+    || !effect.maleNames.includes("上海滩侦探")
+    || !effect.maleNames.includes("山海经战神")
+    || !effect.maleNames.includes("星舰指挥官")
   ) {
     throw new Error("Male effect filter or presets are missing");
   }
@@ -259,7 +263,10 @@ async function main() {
     ];
     const transformIds = [
       "torn-cartoon", "double-exposure", "acrylic-relief",
-      "screenprint", "paper-diorama", "ink-deconstruct"
+      "screenprint", "paper-diorama", "ink-deconstruct",
+      "papercraft-travel", "iso-block-world", "pixel-dissolve",
+      "pen-wash-travel", "watercolor-card", "impasto-diorama",
+      "photo-relic", "zine-postcard"
     ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
     const transform = STYLE_CARDS.filter((style) => style.category === "transform");
@@ -291,11 +298,11 @@ async function main() {
     || !presets.detailedPrompts
     || !presets.previewAssets
     || presets.renderedFoodCards !== 6
-    || presets.transformCount !== 6
+    || presets.transformCount !== 14
     || !presets.transformIdsPresent
     || !presets.transformPrompts
     || !presets.transformPreviews
-    || presets.renderedTransformCards !== 6
+    || presets.renderedTransformCards !== 14
     || !presets.travelGeneric
   ) {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);

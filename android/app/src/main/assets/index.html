@@ -1449,19 +1449,19 @@
         <section class="card style-library">
           <div class="card-head">
             <div class="card-title">风格卡片</div>
-            <div class="card-subtitle">点选后只追加提示词，不切换模型</div>
+            <div class="card-subtitle">公开 Skill 提示词 · 不切换模型</div>
           </div>
           <div class="style-filters" id="styleFilters">
             <button class="filter-chip active" type="button" data-category="popular">热门</button>
             <button class="filter-chip" type="button" data-category="art">绘画插画</button>
             <button class="filter-chip" type="button" data-category="photo">摄影质感</button>
             <button class="filter-chip" type="button" data-category="design">卡片设计</button>
-            <button class="filter-chip" type="button" data-category="transform">创意重构</button>
+            <button class="filter-chip" type="button" data-category="transform">创意重构 14</button>
             <button class="filter-chip" type="button" data-category="food">美食灵感</button>
             <button class="filter-chip" type="button" data-category="3d">3D 手办</button>
           </div>
           <div class="style-grid" id="styleGrid"></div>
-          <p class="style-note">上传参考图后，点一张风格卡片就能直接改图，不写提示词也可以。这些是热门风格的提示词版，不是额外 LoRA 模型。</p>
+          <p class="style-note">这些是公开 Skill 的提示词工作流，不是免费模型，也不会下载 LoRA 到手机。生成仍走妙极 API，费用按任务实际扣费。</p>
           <div class="selected-style-editor" id="selectedStyleEditor" hidden>
             <div class="selected-style-head">
               <strong id="selectedStyleTitle">本风格追加的提示词</strong>
@@ -1650,7 +1650,7 @@
         <section class="card">
           <div class="card-head">
             <div class="card-title">热门特效库</div>
-            <div class="card-subtitle">18 种 · 实际生成成品缩略图</div>
+            <div class="card-subtitle">26 种 · 12 种女生向 · 14 种男士向</div>
           </div>
           <div class="card-body">
             <div class="style-filters effect-filters" id="effectFilters">
@@ -1765,7 +1765,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.6</span>
+            <span class="version-text" id="versionText">当前版本 1.7.7</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1985,6 +1985,46 @@
         id: "ink-deconstruct", name: "墨迹轮廓解构", category: "transform", preview: "ink",
         desc: "只留轮廓、手势线与一处朱红",
         prompt: "把照片解构为一张克制而现代的墨迹轮廓海报，不描边、不照抄照片。先提取主体最有识别度的轮廓、动作方向和一处内部结构，随后删掉至少七成细节；大面积使用有细微纤维的暖灰纸张和安静留白。主体由两三笔有速度的湿墨、一个准确的手势轮廓和极少量干笔肌理构成，黑白灰节奏必须清楚；只加入一处小面积朱红作为视觉锚点。光影通过墨的浓淡、纸面和留白暗示，而不是灰阶滤镜。构图有强烈方向感和未完成感，像当代东方艺术展览海报；禁止程序化山水、假书法、印章、文字、随机飞溅和无意义人物重复。"
+      },
+      {
+        id: "papercraft-travel", name: "纸艺旅行微缩景", category: "transform", preview: "papercard",
+        desc: "卡纸切层、泡棉纵深与真实投影", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片重建成真实搭建的纸艺旅行微缩景观，不是给原图叠一层纸张纹理。先读取人物、建筑、道路、水面、山脊与天际线的空间关系，再把场景转化为不同厚度和色阶的卡纸、特种纸与少量透明纸模型。建筑只保留两到三个识别特征，人物保留清楚轮廓和动作，树木、花草、人群、窗户等复杂细节必须合并成少量大形，禁止逐片复刻。层与层之间用泡棉垫高，保留切边、折痕、白边、接缝、轻微手工误差和可信投影；颜色从原图提取并压缩为四到六种。采用微距棚拍和侧上方柔光，纸张纤维与真实层次清楚，背景干净但仍有空间。原图若不适合完整模型，只把最有叙事价值的主体做成半立体纸景，禁止无关装饰、贴纸堆砌、塑料3D、文字和水印。"
+      },
+      {
+        id: "iso-block-world", name: "等距疗愈积木", category: "transform", preview: "clay",
+        desc: "圆角模块重建，保留主体辨识度", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片彻底重构成一个等距视角的三维疗愈积木世界，而不是在原图上加积木贴纸。先拆解照片的主体、道路、建筑、植被、水面和前后空间，再用圆角立方体、低矮台阶、软胶块与少量弧形模块重新搭建；主体必须一眼可辨，人物保留姿态和服装色块，建筑保留两到三个独有轮廓。所有模块都有可信厚度、圆润倒角、轻微手工接缝与真实接触阴影，材质像哑光树脂与细致黏土，不使用塑料游戏渲染。构图采用稳定等距轴测，前景中景和背景分层但不拥挤，保留大面积安静米白或浅灰背景。颜色从原图提取，最多五种主色加一处小面积亮色。细节用于模块边缘、凹槽、接缝和光影，避免儿童玩具、糖果色、随机树木和与源图无关的元素；不生成文字、logo、水印。"
+      },
+      {
+        id: "pixel-dissolve", name: "像素消隐风景", category: "transform", preview: "pixel",
+        desc: "照片逐步碎成点阵，不是复古滤镜", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片重构为一张有方向性的像素消隐景观，不是给原图套马赛克滤镜。先确定照片的主轴、视觉重心和最值得保留的两个识别特征；一侧保留相对完整、可信的摄影空间，另一侧让景物沿明确方向逐级碎成大小不同、间距有节奏的方形色块。像素块必须从真实景物轮廓、明暗和色彩关系推导，近处连通、远处离散，边界自然却不机械，形成像景观正在重构或消失的叙事。使用从原图提取的有限色板，每块保持干净平涂但有轻微印刷边缘，纸张保留大面积负空间和少量纤维。构图像当代旅行艺术海报，缩略图仍然识别原场景；禁止普通低分辨率像素画、均匀网格、复古游戏UI、随机彩色噪点、文字和水印。"
+      },
+      {
+        id: "pen-wash-travel", name: "钢笔淡彩旅行", category: "transform", preview: "watercolor",
+        desc: "淡墨铺色、钢笔游线与大面积留白", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片转译成成熟的旅行写生页，像艺术家在现场完成的钢笔淡彩，而不是照片描边。先用极少量、轻重有变化的黑色钢笔线抓住主体轮廓、建筑结构、道路方向、衣褶和植物生长姿势，再以透明水彩或淡墨快速铺出大块空气、阴影和色温。线不必闭合，结构准确但保留停顿、重描和手部误差；颜色比原图更克制，只保留一处清晰的饱和色作为记忆锚点。中景适度详细，远景和重复细节大胆省略，百分之五十以上留给有细微纤维的暖白纸面。人物保留姿态和身份线索但不逐根画头发，建筑只保留核心比例与一两个标志细节。整体安静、松弛、有旅行者的观察感；禁止照片滤镜、密集速写、漫画勾线、假书法、文字、印章和水印。"
+      },
+      {
+        id: "watercolor-card", name: "水彩旅行档案卡", category: "transform", preview: "watercolor",
+        desc: "穿孔票根、编辑档案与棉花纸", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片做成一张完整的水彩旅行档案卡，不是普通竖版海报。先读取照片最关键的景物、光线和方向，在水彩纸的视觉中心绘制一张准确但经过概括的透明水彩或淡彩速写，保留主体轮廓、环境关系和空气感，颜色从原图提取并通过透明叠色形成。画面下方或侧边加入一条干净的可撕票根／穿孔档案区，包含真实但非识别的抽象编号线、地点坐标占位和少量几何色票；只允许极简短、清楚、与原图有关的英文手写批注，不生成假大标题。纸面是冷压棉浆水彩纸，边缘有轻微纤维、颜料沉积和水痕，套色与打孔有少量手工错位。构图像收藏级旅行档案卡，留白充足，所有平面元素服从同一印刷语言；禁止拍立得堆叠、胶带、邮票森林、贴纸、浮夸复古做旧、密集文字和水印。"
+      },
+      {
+        id: "impasto-diorama", name: "厚涂油画微缩景", category: "transform", preview: "oil",
+        desc: "油彩地形、刀痕云层与实体光线", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片重构为一座真正有体积的厚涂油画微缩景观，不是给照片加油画滤镜。先识别主体、地平线、山脊、建筑、道路和空气层次，再用刮刀与厚颜料重新堆出地形；山脉、屋顶、树冠、云层、衣褶和水面都像可以被侧面看见的实体油彩，但主体轮廓和照片空间关系仍清楚。近景使用最厚的颜料峰、拖拽边和刮刀切面，中景保留可读结构，远景减少笔触并交给空气透视。光线像照射真实浮雕一样从一侧进入，亮部有颜料厚度，暗部保持透明层次与有色阴影。颜色从原图提取，允许高饱和小面积强调，不能变成俗艳滤镜。最终像美术馆收藏的实体油画模型被专业拍摄，背景克制；禁止数码平滑、塑料3D、漫画化、满屏乱笔、文字、签名和水印。"
+      },
+      {
+        id: "photo-relic", name: "纸上记忆版画", category: "transform", preview: "editorial",
+        desc: "真实照片 × 墨线记忆版画", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片重构成一张安静、诗意的 Photo Relic 编辑作品：真实照片与一张由它提炼出的纸上记忆版画并置，不是照片加复古滤镜。先识别三到六条最关键的空间事实：主体关系、比例、方向、遮挡、光线、色彩角色和一处负空间。保留一小块真实摄影作为可信锚点，不重绘、不换景、不过度磨皮；另一部分在暖象牙纤维纸上用细密墨线、淡彩、干刷或邮票式微缩版画重构这些关系，只保留足以辨认主体的最小线索，删掉大部分表皮细节。版画与照片必须共享至少一条轮廓、轴线、光向或节奏，并有一处自然的纸张边界或轻微错位。加入一行非常克制的英文作品题名和一个细小档案编号，全部用做旧但清楚的打字机或凸版字，不成为大标题。整体像博物馆档案页与当代艺术书的结合，留白大、情绪静、层次少；禁止拼贴胶带、拍立得、假邮票墙、密集做旧、无意义符号、logo和水印。"
+      },
+      {
+        id: "zine-postcard", name: "杂志撕纸明信片", category: "transform", preview: "papercard",
+        desc: "撕纸边界、轮廓延伸与少量色块", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片重构成一张有编辑设计感的撕纸旅行明信片，必须明显改变画面的媒介和空间，而不是在原图上加边框。先读取原图最值得保留的主体、构图、光线和最独特的一条视觉线索，例如山脊、道路、水面、屋檐、树枝、栏杆或人物动作；保留至少一半真实摄影的主体与气质，再沿一条自然轮廓把照片撕开，让被选中的线索连续进入暖白纸面，并转化成克制的石墨、墨线、单色网点或一小块平涂色。撕裂边必须有真实纸纤维、厚度、轻微卷曲和投影，连接处不能错位；纸面细节只保留一个视觉惊喜、少量辅助线和大量留白。可以加入一句两到五个英文单词的小型手写旁注，但不做大标题。整体像独立杂志的旅行散文页，自然、克制、聪明；禁止旅行贴纸、地图针、拍立得堆叠、胶带、邮票森林、卡通、霓虹、无关人物和廉价复古滤镜。"
       },
       {
         id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
@@ -2285,6 +2325,102 @@
         grade: { brightness: 1.02, contrast: 1.14, saturate: .7, sepia: .02, hue: -2 },
         overlay: "radial-gradient(circle at 73% 16%, rgba(239,238,228,.54), transparent 30%), linear-gradient(145deg, rgba(83,89,85,.24), rgba(19,23,21,.28))",
         prompt: "Create a luxury menswear editorial from Image 1 while preserving the exact adult man's face, ethnicity, age and recognizable identity. Styling: sculptural black wool coat over a fine knit, precise tailoring and one restrained metal accessory. Scene: brutalist stone gallery with a single brushed-metal sphere and deep architectural shadow, no other people. Lighting: large soft frontal source with one hard side cut to reveal fabric drape, cheekbone and stone texture; keep pores and natural skin variation. Pose: calm confident half-seated or standing three-quarter angle, hands relaxed and anatomically correct. Camera: medium-format fashion photography, 75mm lens, generous but controlled negative space. Color: charcoal, warm ivory and brushed silver. High-end and understated, no gold luxury cliché, no brand logo, no readable text, no plastic skin."
+      },
+      {
+        id: "night-rider",
+        name: "暗夜机车骑士",
+        desc: "雨夜霓虹 · 技术皮衣 · 电影级蓝金光",
+        source: "公开图鉴机制：夜行机车电影人像",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#4fa6d8", "#171b2b"],
+        grade: { brightness: .98, contrast: 1.2, saturate: .9, sepia: 0, hue: -8 },
+        overlay: "radial-gradient(circle at 76% 17%, rgba(89,184,255,.6), transparent 30%), linear-gradient(145deg, rgba(29,82,118,.38), rgba(13,15,26,.36))",
+        prompt: "Transform Image 1 into a restrained cinematic motorcycle-rider portrait while preserving the exact adult Chinese man's identity, age, face shape, bone structure and recognizable ethnicity. Styling: black technical leather jacket with believable worn seams, gloves and a dark reflective helmet held at his side, never covering the face. Scene: rain-soaked city street at night, a motorcycle softly out of focus behind him, cyan and amber practical light, wet asphalt reflections and distant traffic bokeh. Lighting: cool blue rim light from behind, narrow amber side light on the cheekbone, clean front fill that keeps pores and eyes readable. Camera: 50mm chest-up three-quarter portrait, controlled depth of field. Color: electric blue, sodium amber and deep graphite. Premium action-film still, realistic materials and anatomy, no readable signs, no brand logo, no extra people, no text, no watermark."
+      },
+      {
+        id: "shanghai-detective",
+        name: "上海滩侦探",
+        desc: "民国街巷 · 风衣礼帽 · 雨雾暖灯",
+        source: "公开图鉴机制：1930 年代上海黑色电影",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#b99a69", "#25333b"],
+        grade: { brightness: .96, contrast: 1.18, saturate: .82, sepia: .08, hue: -2 },
+        overlay: "radial-gradient(circle at 73% 18%, rgba(255,215,153,.52), transparent 31%), linear-gradient(150deg, rgba(107,81,51,.3), rgba(18,39,48,.34))",
+        prompt: "Turn Image 1 into a 1930s Shanghai detective film portrait while preserving the exact adult Chinese man's identity, age, face shape and natural expression. Wardrobe: tailored charcoal trench coat, vest, narrow tie and a felt fedora; keep the full face and eyes readable under the brim, no costume caricature. Scene: narrow old Shanghai lane after rain, period tram and layered stone facades reduced to soft background shapes, all signage and lettering removed. Lighting: warm streetlamp key from one side, cool fog fill from the other, wet pavement reflections and fine atmospheric haze. Camera: 40mm chest-up three-quarter film still, subtle 35mm grain, realistic fabric weight and skin texture. Color: tobacco, ivory, slate blue and ink black. Quiet confidence, cinematic mystery, no weapon close-up, no extra faces, no readable text, no watermark."
+      },
+      {
+        id: "mythic-warrior",
+        name: "山海经战神",
+        desc: "青铜玄甲 · 墨色异象 · 东方史诗",
+        source: "公开图鉴机制：东方神话电影角色",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#bd4f33", "#242725"],
+        grade: { brightness: .99, contrast: 1.24, saturate: 1.02, sepia: .04, hue: -4 },
+        overlay: "radial-gradient(circle at 74% 16%, rgba(255,111,72,.5), transparent 29%), linear-gradient(145deg, rgba(87,47,32,.34), rgba(20,25,25,.36))",
+        prompt: "Transform Image 1 into a grounded Chinese mythic-warrior film portrait while preserving the exact adult Chinese man's identity, age, face shape, eyes and expression. Armor: refined black lacquer and aged bronze scale armor with bone-like clasps, one restrained vermilion seam and visible scratches and repair marks; no helmet, no shoulder shape that hides the face. Scene: an ink-black mountain world inspired by Shanhaijing, distant enormous mountain silhouettes and antique banners with no readable characters, ash and mist crossing the foreground. Lighting: low warm firelight sculpting the face, cool silver rim from behind, controlled red glow along the armor seam, believable metal and skin contrast. Camera: cinematic 65mm medium portrait, realistic weight and contact. Color: black lacquer, aged bronze, bone ivory and vermilion. Epic but restrained, no game UI, no giant weapon close-up, no glowing eyes, no extra people, no text, no watermark."
+      },
+      {
+        id: "deep-sea-pilot",
+        name: "深海潜航员",
+        desc: "深潜压力服 · 生物蓝光 · 海底驾驶舱",
+        source: "公开图鉴机制：深海科幻角色摄影",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#41d1cc", "#102d3c"],
+        grade: { brightness: 1.0, contrast: 1.2, saturate: .92, sepia: 0, hue: -8 },
+        overlay: "radial-gradient(circle at 72% 18%, rgba(72,239,226,.58), transparent 30%), linear-gradient(145deg, rgba(20,107,119,.38), rgba(5,26,40,.4))",
+        prompt: "Turn Image 1 into a high-end deep-sea pilot portrait while preserving the exact adult Chinese man's recognizable face, ethnicity, age and facial structure. Wardrobe: detailed pressure-suit collar with machined metal clamps, damp technical fabric and a clear curved visor that leaves the face fully visible and undistorted. Scene: compact submersible cockpit at crushing ocean depth, glass reflecting bioluminescent plankton and a huge shadowy marine form outside, interior switches reduced to abstract shapes without readable labels. Lighting: soft amber instrument glow on the face, cyan exterior bioluminescence as rim light, tiny water droplets and realistic glass reflections. Camera: 55mm chest-up three-quarter angle, cinematic science-fiction realism, tactile metal, rubber and skin. Color: abyssal blue-green, steel, amber and black. No fish-tank fantasy, no cartoon helmet, no extra people, no text, no watermark."
+      },
+      {
+        id: "space-commander",
+        name: "星舰指挥官",
+        desc: "轨道舰桥 · 炭灰制服 · 琥珀控制光",
+        source: "公开图鉴机制：太空歌剧舰长肖像",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#d7a760", "#1e2938"],
+        grade: { brightness: .99, contrast: 1.18, saturate: .82, sepia: .03, hue: -5 },
+        overlay: "radial-gradient(circle at 75% 16%, rgba(255,205,127,.52), transparent 31%), linear-gradient(145deg, rgba(62,78,101,.3), rgba(8,17,30,.38))",
+        prompt: "Create a cinematic space-fleet commander portrait from Image 1 while preserving the exact adult Chinese man's identity, age, facial proportions and expression. Wardrobe: sculptural charcoal command uniform with precise seams, one restrained metal rank bar and no recognizable military insignia. Scene: dark orbital command bridge, a huge curved window revealing a blue planet limb and distant stars, consoles reduced to clean amber and cyan abstract light without readable text. Lighting: soft cool starlight fill, warm amber console key from below, crisp silver rim along the cheek and shoulder, realistic skin pores and fabric texture. Camera: 55mm chest-up three-quarter portrait, deep but controlled focus. Color: charcoal, lunar silver, deep navy and amber. Calm authority, premium science-fiction film still, no game render, no holographic clutter, no extra people, no text, no watermark."
+      },
+      {
+        id: "polar-explorer",
+        name: "极地远征者",
+        desc: "暴雪蓝调 · 重型极地装备 · 头灯暖光",
+        source: "公开图鉴机制：极地探险电影角色",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#9bc7de", "#1b3449"],
+        grade: { brightness: 1.02, contrast: 1.17, saturate: .86, sepia: 0, hue: -7 },
+        overlay: "radial-gradient(circle at 74% 15%, rgba(228,249,255,.66), transparent 30%), linear-gradient(145deg, rgba(105,157,190,.32), rgba(13,38,58,.4))",
+        prompt: "Turn Image 1 into a realistic polar-expedition leader portrait while preserving the exact adult Chinese man's identity, age, bone structure and facial expression. Wardrobe: advanced weathered parka with a real fur-free hood, insulated collar, goggles resting above the eyes, frost on selected fabric edges and a small warm headlamp; the face must stay clearly visible. Scene: blue-hour whiteout on an Arctic ridge, wind-driven snow streaks, a faint expedition module buried in the background and believable ice crystals. Lighting: warm headlamp bounce across the face, icy sky fill, narrow cyan rim, strong environmental contrast while preserving skin texture. Camera: 50mm chest-up three-quarter angle, cinematic documentary realism, authentic cold-weather layers and condensation. Color: glacier blue, charcoal, ivory and a single warm amber light. No fantasy creature, no orange ski-ad cliché, no extra people, no text, no watermark."
+      },
+      {
+        id: "republic-gentleman",
+        name: "民国世家公子",
+        desc: "老上海夜色 · 暗纹长衫 · 电车暖灯",
+        source: "公开图鉴机制：民国电影男主造型",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#c5b28d", "#25252b"],
+        grade: { brightness: .98, contrast: 1.16, saturate: .78, sepia: .1, hue: -4 },
+        overlay: "radial-gradient(circle at 73% 16%, rgba(255,221,165,.54), transparent 30%), linear-gradient(150deg, rgba(107,88,61,.28), rgba(23,25,32,.38))",
+        prompt: "Transform Image 1 into an elegant 1920s Shanghai gentleman portrait while preserving the exact adult Chinese man's identity, age, face shape and expression. Wardrobe: refined dark long coat over a high-collared shirt and understated waistcoat, fine wool and silk with believable drape, no flashy period costume. Hair: neat side-parted styling with natural texture. Scene: old Shanghai tram stop at night, iron canopy, rain-darkened stone and a softly out-of-focus tram with all markings removed. Lighting: warm tungsten streetlamp as key, cool blue night sky as fill, a narrow practical rim on the jaw and collar. Camera: 65mm medium portrait, cinematic 1930s-inspired composition with modern photographic clarity. Color: ink black, warm ivory, tobacco and muted teal. Quiet intelligence and restrained luxury, no exaggerated nostalgia, no cigarette, no readable signs, no extra people, no text, no watermark."
+      },
+      {
+        id: "canyon-hunter",
+        name: "荒野赏金猎人",
+        desc: "赤铜峡谷 · 层叠皮革 · 逆光风沙",
+        source: "公开图鉴机制：电影西部废土猎人",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#d79254", "#412f29"],
+        grade: { brightness: 1.01, contrast: 1.2, saturate: .88, sepia: .13, hue: 6 },
+        overlay: "radial-gradient(circle at 76% 16%, rgba(255,189,112,.62), transparent 31%), linear-gradient(145deg, rgba(149,88,49,.34), rgba(53,40,34,.32))",
+        prompt: "Turn Image 1 into a cinematic canyon-bounty-hunter portrait while preserving the exact adult Chinese man's identity, age, face shape and natural expression. Wardrobe: layered weathered canvas, worn leather vest, scarf and a low-brim hat, practical repair stitches and believable dust; no visible weapon and no exaggerated cowboy costume. Scene: red-copper canyon at late afternoon, dry wind, fine dust crossing the foreground and a lonely trail winding into layered rock. Lighting: hard warm sun from behind creating a narrow rim, soft reflected canyon light on the face, readable eyes and realistic skin texture. Camera: 50mm chest-up three-quarter environmental portrait, shallow depth while keeping the canyon legible. Color: copper ochre, burnt sienna, weathered olive and faded sky. Serious modern Western film still, no game render, no fantasy monster, no text, no watermark."
       }
     ];
     EFFECT_PRESETS.forEach((effect) => {
@@ -3829,7 +3965,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.6";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.7";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
