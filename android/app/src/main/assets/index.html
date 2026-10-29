@@ -1117,6 +1117,113 @@
     }
     #effectPrompt { min-height: 106px; }
 
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 11px;
+    }
+    .history-card {
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 16px;
+      background: #f8f6f0;
+    }
+    .history-card-image {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: linear-gradient(145deg, #dce8e3, #b8c9c3);
+      cursor: zoom-in;
+    }
+    .history-card-image img,
+    .history-viewer img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      background: #eceae3;
+    }
+    .history-card-image .history-image-fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 15px;
+      color: #4d5b57;
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+    .history-card-image.unavailable img { display: none; }
+    .history-card-image.unavailable .history-image-fallback { display: grid; }
+    .history-card-body { padding: 11px; }
+    .history-card-body strong {
+      display: block;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .history-card-meta {
+      display: block;
+      min-height: 29px;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.5;
+    }
+    .history-card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 9px;
+    }
+    .history-card-actions button { flex: 1; min-height: 33px; padding: 0 8px; font-size: 9px; }
+    .history-pending {
+      margin-bottom: 11px;
+      padding: 12px 13px;
+      border: 1px dashed rgba(13, 118, 110, .36);
+      border-radius: 14px;
+      color: var(--green-dark);
+      background: rgba(230, 245, 239, .72);
+      font-size: 10px;
+      line-height: 1.55;
+    }
+    .history-viewer {
+      margin-bottom: 14px;
+      padding: 12px;
+      border: 1px solid rgba(23, 32, 30, .12);
+      border-radius: 18px;
+      background: #f8f6f0;
+    }
+    .history-viewer-stage {
+      min-height: 220px;
+      max-height: 56vh;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+    .history-viewer img {
+      width: 100%;
+      height: auto;
+      max-height: 56vh;
+      object-fit: contain;
+      cursor: default;
+    }
+    .history-viewer-copy {
+      padding: 11px 3px 2px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .history-viewer-copy div { flex: 1; min-width: 0; }
+    .history-viewer-copy strong { display: block; font-size: 12px; }
+    .history-viewer-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+    .history-viewer-actions { display: flex; gap: 7px; }
+    .history-viewer-actions button { min-height: 36px; padding: 0 12px; font-size: 10px; }
+
     .action-dock {
       position: fixed;
       z-index: 18;
@@ -1400,6 +1507,7 @@
     <button class="page-tab active" type="button" data-page="imagePage">AI 生图</button>
     <button class="page-tab" type="button" data-page="beautyPage">一键美颜</button>
     <button class="page-tab" type="button" data-page="effectPage">热门特效</button>
+    <button class="page-tab" type="button" data-page="historyPage">最近生成</button>
   </nav>
 
   <main class="page" id="imagePage">
@@ -1723,6 +1831,42 @@
     </div>
   </main>
 
+  <main class="page" id="historyPage" hidden>
+    <section class="page-heading">
+      <p class="eyebrow">最近生成 · 自动保留 10 张</p>
+      <h1>云端结果回收站</h1>
+      <p>提交后即使退出应用，任务编号也会保存在手机里。重新打开会继续向云端取图；这里只做预览，点按钮才会保存到系统相册。</p>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div class="card-title">最近生成</div>
+        <div class="card-subtitle" id="historyStatus">读取中…</div>
+      </div>
+      <div class="card-body">
+        <div class="history-pending" id="historyPending" hidden></div>
+        <div class="history-viewer" id="historyViewer" hidden>
+          <div class="history-viewer-stage">
+            <img id="historyViewerImage" alt="最近生成大图" referrerpolicy="no-referrer">
+          </div>
+          <div class="history-viewer-copy">
+            <div>
+              <strong id="historyViewerTitle">生成结果</strong>
+              <span id="historyViewerMeta"></span>
+            </div>
+            <div class="history-viewer-actions">
+              <button class="secondary-button" id="historyViewerRefreshBtn" type="button">重新拉取</button>
+              <button class="primary-button" id="historyViewerSaveBtn" type="button">保存到手机</button>
+              <button class="secondary-button" id="historyViewerCloseBtn" type="button">收起</button>
+            </div>
+          </div>
+        </div>
+        <div class="history-grid" id="historyGrid"></div>
+        <p class="help-copy">记录仅保留最近 10 个成功取回的任务。图片地址失效时，可以点“重新拉取”从云端任务重新获取。</p>
+      </div>
+    </section>
+  </main>
+
   <div class="action-dock" id="imageActionDock">
     <div class="price-copy">
       <strong id="priceTitle">正在读取价格…</strong>
@@ -1766,7 +1910,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.8</span>
+            <span class="version-text" id="versionText">当前版本 1.7.9</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2487,6 +2631,7 @@
     const imagePage = $("imagePage");
     const beautyPage = $("beautyPage");
     const effectPage = $("effectPage");
+    const historyPage = $("historyPage");
     const imageActionDock = $("imageActionDock");
     const beautyActionDock = $("beautyActionDock");
     const effectActionDock = $("effectActionDock");
@@ -2529,6 +2674,16 @@
     const effectGenerateBtn = $("effectGenerateBtn");
     const effectPriceTitle = $("effectPriceTitle");
     const effectPriceDetail = $("effectPriceDetail");
+    const historyGrid = $("historyGrid");
+    const historyStatus = $("historyStatus");
+    const historyPending = $("historyPending");
+    const historyViewer = $("historyViewer");
+    const historyViewerImage = $("historyViewerImage");
+    const historyViewerTitle = $("historyViewerTitle");
+    const historyViewerMeta = $("historyViewerMeta");
+    const historyViewerRefreshBtn = $("historyViewerRefreshBtn");
+    const historyViewerSaveBtn = $("historyViewerSaveBtn");
+    const historyViewerCloseBtn = $("historyViewerCloseBtn");
     const settingsModal = $("settingsModal");
     const helpModal = $("helpModal");
     const referenceInput = $("referenceInput");
@@ -2560,8 +2715,12 @@
     let generationCallId = "";
     let activeGenerationSettings = null;
     let updateCallId = "";
+    let pendingResumeCallId = "";
+    let selectedHistoryTaskId = "";
     const modelCalls = new Set();
     const saveCalls = new Map();
+    const historyRefreshCalls = new Map();
+    const HISTORY_STORAGE_KEY = "miaoji_recent_generations_v1";
 
     function bridge() {
       return window.Android || null;
@@ -2793,12 +2952,14 @@
       imagePage.hidden = pageId !== "imagePage";
       beautyPage.hidden = pageId !== "beautyPage";
       effectPage.hidden = pageId !== "effectPage";
+      historyPage.hidden = pageId !== "historyPage";
       imageActionDock.hidden = pageId !== "imagePage";
       beautyActionDock.hidden = pageId !== "beautyPage";
       effectActionDock.hidden = pageId !== "effectPage";
       document.querySelectorAll(".page-tab").forEach((button) => {
         button.classList.toggle("active", button.dataset.page === pageId);
       });
+      if (pageId === "historyPage") renderHistory();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -3649,6 +3810,296 @@
         + `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
     }
 
+    function generationModeLabel(mode) {
+      if (mode === "beauty") return "一键美颜";
+      if (mode === "effect") return "热门特效";
+      return "AI 生图";
+    }
+
+    function readPendingTask() {
+      if (!bridge() || typeof bridge().getPendingTask !== "function") return null;
+      try {
+        const raw = bridge().getPendingTask();
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function loadHistoryRecords() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY) || "[]");
+        if (!Array.isArray(parsed)) return [];
+        return parsed
+          .filter((item) => item && item.taskId && item.imageUrl)
+          .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0))
+          .slice(0, 10);
+      } catch {
+        return [];
+      }
+    }
+
+    function persistHistoryRecords(records) {
+      try {
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(records.slice(0, 10)));
+        return true;
+      } catch {
+        showToast("最近生成记录写入失败，请释放一些应用空间");
+        return false;
+      }
+    }
+
+    function normalizeHistoryRecord(data, modeFallback) {
+      const settings = activeGenerationSettings || {};
+      const mode = data.mode || modeFallback || generationMode;
+      return {
+        taskId: String(data.taskId || ""),
+        imageUrl: String(data.imageUrl || ""),
+        mimeType: data.mimeType || "image/png",
+        mode,
+        title: data.title || settings.styleName
+          || (mode === "beauty" ? "美颜修图" : mode === "effect" ? "特效照片" : "AI 生图"),
+        model: data.model || settings.modelName || "",
+        size: data.size || settings.size || "",
+        resolution: data.resolution || settings.resolution || "",
+        quality: data.quality || settings.quality || "",
+        chargedCents: Number(data.chargedCents || 0),
+        createdAt: Number(data.createdAt || Date.now())
+      };
+    }
+
+    function upsertHistoryRecord(data, modeFallback) {
+      const record = normalizeHistoryRecord(data, modeFallback);
+      if (!record.taskId || !record.imageUrl) return false;
+      const records = loadHistoryRecords().filter((item) => item.taskId !== record.taskId);
+      const previous = loadHistoryRecords().find((item) => item.taskId === record.taskId);
+      if (previous && previous.title
+          && (!activeGenerationSettings || !activeGenerationSettings.styleName)) {
+        record.title = previous.title;
+      }
+      records.unshift(record);
+      const saved = persistHistoryRecords(records);
+      if (saved) renderHistory();
+      return saved;
+    }
+
+    function historyMeta(record) {
+      const when = new Date(record.createdAt || Date.now()).toLocaleString("zh-CN", {
+        month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
+      });
+      const parts = [
+        generationModeLabel(record.mode),
+        record.title && record.title !== generationModeLabel(record.mode) ? record.title : "",
+        when,
+        record.chargedCents > 0 ? `实扣 ${formatMoney(record.chargedCents)}` : ""
+      ].filter(Boolean);
+      return parts.join(" · ");
+    }
+
+    function historyRecordById(taskId) {
+      return loadHistoryRecords().find((item) => item.taskId === taskId) || null;
+    }
+
+    function saveHistoryRecord(record, trigger) {
+      if (!bridge() || !record || !record.imageUrl) {
+        showToast("这条记录没有可用图片");
+        return;
+      }
+      const callId = id("history_save");
+      const button = trigger || null;
+      saveCalls.set(callId, { save: button });
+      if (button) {
+        button.disabled = true;
+        button.textContent = "保存中…";
+      }
+      bridge().saveImage(
+        record.imageUrl,
+        record.mimeType || "image/png",
+        "妙极历史_" + timestampName(),
+        callId
+      );
+    }
+
+    function refreshHistoryRecord(record) {
+      if (!bridge() || !record || !record.taskId) return;
+      if (typeof bridge().refreshHistoryItem !== "function") {
+        showToast("当前版本不支持重新拉取");
+        return;
+      }
+      const callId = id("history_refresh");
+      historyRefreshCalls.set(callId, record.taskId);
+      showToast("正在从云端重新获取图片…");
+      bridge().refreshHistoryItem(record.taskId, callId);
+    }
+
+    function openHistoryViewer(record) {
+      if (!record) return;
+      selectedHistoryTaskId = record.taskId;
+      historyViewer.hidden = false;
+      historyViewerImage.src = record.imageUrl;
+      historyViewerImage.alt = record.title || "最近生成大图";
+      historyViewerTitle.textContent = record.title || generationModeLabel(record.mode);
+      historyViewerMeta.textContent = historyMeta(record);
+      historyViewer.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderHistory() {
+      if (!historyGrid) return;
+      const records = loadHistoryRecords();
+      const pending = readPendingTask();
+      historyGrid.replaceChildren();
+      historyPending.hidden = !pending;
+      if (pending) {
+        const taskLabel = String(pending.taskId || "").slice(0, 8);
+        historyPending.textContent = pending.state === "succeeded"
+          ? `任务 ${taskLabel} 已在云端完成，正在把结果写回“最近生成”。`
+          : `任务 ${taskLabel} 已提交。即使退出应用，重新打开后也会继续向云端取图。`;
+      } else {
+        historyPending.textContent = "";
+      }
+
+      if (selectedHistoryTaskId) {
+        const selected = records.find((item) => item.taskId === selectedHistoryTaskId);
+        if (selected) openHistoryViewer(selected);
+        else historyViewer.hidden = true;
+      }
+
+      historyStatus.textContent = `${records.length}/10 张`;
+      if (!records.length) {
+        const empty = document.createElement("div");
+        empty.className = "result-empty";
+        empty.innerHTML = `
+          <div class="result-empty-icon">▣</div>
+          <strong>还没有取回的图片</strong>
+          <p>这里只保存应用内预览记录，不会自动写入手机相册。任务仍在云端时也会在重开后自动恢复。</p>`;
+        historyGrid.appendChild(empty);
+        return;
+      }
+
+      for (const record of records) {
+        const card = document.createElement("article");
+        card.className = "history-card";
+
+        const visual = document.createElement("div");
+        visual.className = "history-card-image";
+        visual.role = "button";
+        visual.tabIndex = 0;
+        const image = document.createElement("img");
+        image.src = record.imageUrl;
+        image.alt = record.title || "最近生成图片";
+        image.loading = "lazy";
+        image.referrerPolicy = "no-referrer";
+        image.addEventListener("error", () => visual.classList.add("unavailable"));
+        const fallback = document.createElement("span");
+        fallback.className = "history-image-fallback";
+        fallback.textContent = "图片地址暂时失效，点“重新拉取”从云端任务恢复";
+        visual.append(image, fallback);
+        visual.addEventListener("click", () => openHistoryViewer(record));
+        visual.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openHistoryViewer(record);
+          }
+        });
+
+        const body = document.createElement("div");
+        body.className = "history-card-body";
+        const title = document.createElement("strong");
+        title.textContent = record.title || generationModeLabel(record.mode);
+        const meta = document.createElement("span");
+        meta.className = "history-card-meta";
+        meta.textContent = historyMeta(record);
+        const actions = document.createElement("div");
+        actions.className = "history-card-actions";
+        const refresh = document.createElement("button");
+        refresh.type = "button";
+        refresh.className = "secondary-button";
+        refresh.textContent = "重新拉取";
+        refresh.addEventListener("click", () => refreshHistoryRecord(record));
+        const save = document.createElement("button");
+        save.type = "button";
+        save.className = "primary-button";
+        save.textContent = "保存到手机";
+        save.addEventListener("click", () => saveHistoryRecord(record, save));
+        actions.append(refresh, save);
+        body.append(title, meta, actions);
+        card.append(visual, body);
+        historyGrid.appendChild(card);
+      }
+    }
+
+    function beginResumedGeneration(pending) {
+      const mode = pending.mode === "beauty" || pending.mode === "effect"
+        ? pending.mode : "image";
+      generationMode = mode;
+      activeGenerationSettings = {
+        modelName: pending.model || "上次使用的模型",
+        size: pending.size || "",
+        resolution: pending.resolution || "",
+        quality: pending.quality || "",
+        hasReference: mode !== "image",
+        referenceCount: mode === "image" ? 0 : 1,
+        styleName: ""
+      };
+      if (mode === "beauty") {
+        beautyBusy = true;
+        beautyGenerateBtn.disabled = true;
+        beautyGenerateBtn.textContent = "恢复中…";
+        showAppPage("beautyPage");
+        showBeautyGenerating();
+        updateBeautyGeneratingText("正在恢复退出前提交的云端任务…");
+      } else if (mode === "effect") {
+        effectBusy = true;
+        effectGenerateBtn.disabled = true;
+        effectGenerateBtn.textContent = "恢复中…";
+        showAppPage("effectPage");
+        showEffectGenerating();
+        updateEffectGeneratingText("正在恢复退出前提交的云端任务…");
+      } else {
+        busy = true;
+        generateButton.disabled = true;
+        generateButton.textContent = "恢复中…";
+        showAppPage("imagePage");
+        showGenerating();
+        updateGeneratingText("正在恢复退出前提交的云端任务…");
+      }
+      pendingResumeCallId = id("resume");
+      generationCallId = pendingResumeCallId;
+      bridge().resumePendingTask(pendingResumeCallId);
+      renderHistory();
+      showToast("发现未取回的任务，正在自动恢复");
+    }
+
+    function resumePendingGeneration() {
+      renderHistory();
+      if (!bridge() || generationCallId || busy || beautyBusy || effectBusy) return;
+      const pending = readPendingTask();
+      if (pending && pending.taskId) beginResumedGeneration(pending);
+    }
+
+    function showRecoverable(message) {
+      const target = generationMode === "beauty"
+        ? beautyResultBody
+        : generationMode === "effect"
+          ? effectResultBody
+          : resultBody;
+      const status = generationMode === "beauty"
+        ? beautyResultStatus
+        : generationMode === "effect"
+          ? effectResultStatus
+          : resultStatus;
+      status.textContent = "等待云端回传";
+      target.innerHTML = `
+        <div class="result-empty">
+          <div class="result-empty-icon">↻</div>
+          <strong>任务已保留</strong>
+          <p>${message}</p>
+          <button class="primary-button" type="button" id="openRecoveredHistory">查看最近生成</button>
+        </div>`;
+      const button = $("openRecoveredHistory");
+      if (button) button.addEventListener("click", () => showAppPage("historyPage"));
+    }
+
     function requiredProviderReady() {
       if (!bridge()) return isPreview;
       return bridge().hasKey();
@@ -3757,15 +4208,41 @@
       if (saveCalls.has(event.callId)) {
         const state = saveCalls.get(event.callId);
         if (event.event === "saved") {
-          state.save.textContent = "已保存到手机";
-          state.save.disabled = false;
+          if (state.save) {
+            state.save.textContent = "已保存到手机";
+            state.save.disabled = false;
+          }
           showToast(event.message || "已保存到相册");
           saveCalls.delete(event.callId);
         } else if (event.event === "save_error") {
-          state.save.textContent = "重新保存";
-          state.save.disabled = false;
+          if (state.save) {
+            state.save.textContent = "重新保存";
+            state.save.disabled = false;
+          }
           showToast(event.message || "保存失败");
           saveCalls.delete(event.callId);
+        }
+        return;
+      }
+
+      if (historyRefreshCalls.has(event.callId)) {
+        const taskId = historyRefreshCalls.get(event.callId);
+        historyRefreshCalls.delete(event.callId);
+        if (event.event === "history_item" && event.data) {
+          const existing = historyRecordById(taskId);
+          const merged = {
+            ...(existing || {}),
+            ...event.data,
+            taskId
+          };
+          upsertHistoryRecord(merged, existing ? existing.mode : "image");
+          if (selectedHistoryTaskId === taskId) {
+            const updated = historyRecordById(taskId);
+            if (updated) openHistoryViewer(updated);
+          }
+          showToast("图片已从云端重新取回");
+        } else {
+          showToast(event.message || "重新拉取失败");
         }
         return;
       }
@@ -3800,11 +4277,25 @@
       }
 
       if (event.callId !== generationCallId) return;
-      if (event.event === "status") {
+      if (event.event === "resume") {
+        const mode = event.data ? event.data.mode : "";
+        if (mode === "beauty" || mode === "effect" || mode === "image") {
+          generationMode = mode;
+        }
+      } else if (event.event === "status") {
         if (generationMode === "beauty") updateBeautyGeneratingText(event.message);
         else if (generationMode === "effect") updateEffectGeneratingText(event.message);
         else updateGeneratingText(event.message);
+        renderHistory();
       } else if (event.event === "result") {
+        const historySaved = upsertHistoryRecord(
+          event.data || {},
+          generationMode
+        );
+        if (historySaved && event.data && event.data.taskId
+            && bridge() && typeof bridge().clearPendingTask === "function") {
+          bridge().clearPendingTask(event.data.taskId);
+        }
         if (generationMode === "beauty") {
           showBeautyResult(event.data || {});
           finishBeautyBusy();
@@ -3816,7 +4307,16 @@
           finishBusy();
         }
         generationCallId = "";
+        pendingResumeCallId = "";
+        renderHistory();
+      } else if (event.event === "recoverable" || event.event === "pending") {
+        showRecoverable(event.message || "任务仍在云端处理，记录已经保留。");
+        renderHistory();
       } else if (event.event === "error") {
+        if (event.data && event.data.taskId
+            && bridge() && typeof bridge().clearPendingTask === "function") {
+          bridge().clearPendingTask(event.data.taskId);
+        }
         if (generationMode === "beauty") {
           showBeautyError(event.message, event.data);
           finishBeautyBusy();
@@ -3828,6 +4328,15 @@
           finishBusy();
         }
         generationCallId = "";
+        pendingResumeCallId = "";
+        renderHistory();
+      } else if (event.event === "pending_none") {
+        if (generationMode === "beauty") finishBeautyBusy();
+        else if (generationMode === "effect") finishEffectBusy();
+        else finishBusy();
+        generationCallId = "";
+        pendingResumeCallId = "";
+        renderHistory();
       }
     };
 
@@ -3915,6 +4424,19 @@
     effectSizeSelect.addEventListener("change", updateEffectSizeHint);
     effectGenerateBtn.addEventListener("click", startEffectGeneration);
 
+    historyViewerCloseBtn.addEventListener("click", () => {
+      selectedHistoryTaskId = "";
+      historyViewer.hidden = true;
+    });
+    historyViewerSaveBtn.addEventListener("click", () => {
+      const record = historyRecordById(selectedHistoryTaskId);
+      saveHistoryRecord(record, historyViewerSaveBtn);
+    });
+    historyViewerRefreshBtn.addEventListener("click", () => {
+      const record = historyRecordById(selectedHistoryTaskId);
+      refreshHistoryRecord(record);
+    });
+
     $("loginBtn").addEventListener("click", () => {
       if (bridge()) bridge().openLogin();
     });
@@ -3995,8 +4517,9 @@
       updatePromptMode();
       updateCharCount();
       updateConnectionState();
+      renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.8";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.9";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
@@ -4007,6 +4530,8 @@
         modelCalls.add(callId);
         bridge().loadModels(callId);
       }
+      window.__miaoAppReady = resumePendingGeneration;
+      setTimeout(resumePendingGeneration, 0);
     }
 
     initialize();

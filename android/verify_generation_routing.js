@@ -325,6 +325,109 @@ async function main() {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);
   }
 
+  console.log("checking recent history and pending recovery");
+  const history = await evaluate(`(() => {
+    const pixel = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    localStorage.removeItem(HISTORY_STORAGE_KEY);
+    activeGenerationSettings = {
+      modelName: "Test Model",
+      size: "1:1",
+      resolution: "1k",
+      quality: "low",
+      hasReference: false,
+      referenceCount: 0,
+      styleName: ""
+    };
+    for (let index = 0; index < 12; index++) {
+      upsertHistoryRecord({
+        taskId: "history-" + index,
+        imageUrl: pixel,
+        mode: "image",
+        createdAt: Date.now() + index,
+        chargedCents: 5
+      }, "image");
+    }
+    showAppPage("historyPage");
+    const countCapped = loadHistoryRecords().length;
+    const renderedCards = historyGrid.querySelectorAll(".history-card").length;
+
+    const pending = {
+      taskId: "resume-task-12345678",
+      mode: "effect",
+      state: "submitted",
+      model: "gpt-image-2.5-flare",
+      size: "3:4",
+      resolution: "1k",
+      quality: "low",
+      createdAt: Date.now()
+    };
+    window.Android = {
+      hasKey: () => true,
+      generate: () => {},
+      getPendingTask: () => JSON.stringify(pending),
+      resumePendingTask: (callId) => { window.__resumeCallId = callId; },
+      clearPendingTask: (taskId) => { window.__clearedTaskId = taskId; },
+      refreshHistoryItem: () => {},
+      saveImage: () => {},
+      openLogin: () => {},
+      clearKey: () => {},
+      saveKey: () => {}
+    };
+    pendingResumeCallId = "";
+    generationCallId = "";
+    busy = false;
+    beautyBusy = false;
+    effectBusy = false;
+    resumePendingGeneration();
+    const resumeCall = window.__resumeCallId;
+    const modeAfterResume = generationMode;
+    const restoreCallId = generationCallId;
+    window.__miaoNative(JSON.stringify({
+      callId: restoreCallId,
+      event: "result",
+      message: "图片已从云端取回",
+      data: {
+        taskId: pending.taskId,
+        imageUrl: pixel,
+        mimeType: "image/png",
+        mode: "effect",
+        createdAt: pending.createdAt,
+        chargedCents: 8,
+        model: pending.model,
+        size: pending.size,
+        resolution: pending.resolution,
+        quality: pending.quality
+      }
+    }));
+    return {
+      tabCount: document.querySelectorAll(".page-tab").length,
+      countCapped,
+      renderedCards,
+      resumeCalled: Boolean(resumeCall),
+      modeAfterResume,
+      recoveredInHistory: loadHistoryRecords().some(
+        (item) => item.taskId === pending.taskId
+      ),
+      clearedTaskId: window.__clearedTaskId,
+      effectStatus: effectResultStatus.textContent,
+      generationCallId
+    };
+  })()`);
+
+  if (
+    history.tabCount !== 4
+    || history.countCapped !== 10
+    || history.renderedCards !== 10
+    || !history.resumeCalled
+    || history.modeAfterResume !== "effect"
+    || !history.recoveredInHistory
+    || history.clearedTaskId !== "resume-task-12345678"
+    || history.effectStatus !== "特效生成完成"
+    || history.generationCallId !== ""
+  ) {
+    throw new Error(`History/recovery check failed: ${JSON.stringify(history)}`);
+  }
+
   console.log("PASS: routes stay separate and new image presets are present");
   socket.close();
 }

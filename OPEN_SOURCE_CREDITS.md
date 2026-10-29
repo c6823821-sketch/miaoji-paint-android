@@ -1,6 +1,6 @@
 # Open-source prompt credits
 
-The v1.7.8 visual presets adapt publicly available prompt workflows. They do
+The v1.7.9 visual presets adapt publicly available prompt workflows. They do
 not bundle model weights, LoRA files, or third-party applications. Image
 generation still runs through the user's own MiaoJi API key.
 

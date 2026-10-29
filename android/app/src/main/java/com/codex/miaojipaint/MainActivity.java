@@ -41,8 +41,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,13 +60,16 @@ public class MainActivity extends Activity {
     private static final String API_ROOT = "https://omnidoc.com.cn/api/v1";
     private static final String APP_PREFS = "miaoji_paint";
     private static final String KEY_API = "api_key";
+    private static final String KEY_PENDING_TASK = "pending_task";
     private static final int SAVE_PERMISSION_REQUEST = 41;
     private static final int FILE_CHOOSER_REQUEST = 42;
-    private static final int MAX_POLL_MILLIS = 15 * 60 * 1000;
+    private static final int MAX_POLL_MILLIS = 45 * 60 * 1000;
 
     private WebView webView;
     private SharedPreferences preferences;
     private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final Set<String> pollingTasks =
+            Collections.synchronizedSet(new HashSet<String>());
 
     private String pendingSaveUrl;
     private String pendingSaveMime;
@@ -234,7 +240,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.7.8";
+                return "1.7.9";
             }
         }
 
@@ -331,6 +337,81 @@ public class MainActivity extends Activity {
                     referenceImagesJson == null ? "[]" : referenceImagesJson,
                     callId
             ));
+        }
+
+        @JavascriptInterface
+        public String getPendingTask() {
+            JSONObject pending = loadPendingTask();
+            return pending == null ? "" : pending.toString();
+        }
+
+        @JavascriptInterface
+        public void resumePendingTask(String callId) {
+            final String key = apiKey().trim();
+            JSONObject pending = loadPendingTask();
+            String taskId = pending == null ? "" : pending.optString("taskId", "");
+            if (taskId.isEmpty()) {
+                emit(callId, "pending_none", "没有等待恢复的任务", null);
+                return;
+            }
+            emit(callId, "resume", "发现已提交的云端任务", pending);
+            if (key.isEmpty()) {
+                emit(callId, "error", "请重新填写妙极 API Key 后恢复任务",
+                        errorData("NO_API_KEY", false));
+                return;
+            }
+            final JSONObject task = pending;
+            executor.execute(() -> {
+                if ("succeeded".equals(task.optString("state", ""))
+                        && !task.optString("imageUrl", "").isEmpty()) {
+                    emit(callId, "result", "已恢复上次的生成结果",
+                            resultFromPending(task));
+                    return;
+                }
+                pollTask(key, taskId, callId, task);
+            });
+        }
+
+        @JavascriptInterface
+        public void clearPendingTask(String taskId) {
+            clearPendingTaskInternal(taskId);
+        }
+
+        @JavascriptInterface
+        public void refreshHistoryItem(String taskId, String callId) {
+            String key = apiKey().trim();
+            if (key.isEmpty()) {
+                emit(callId, "history_error", "请先填写妙极 API Key", null);
+                return;
+            }
+            if (taskId == null || taskId.trim().isEmpty()) {
+                emit(callId, "history_error", "任务编号为空", null);
+                return;
+            }
+            final String cleanTaskId = taskId.trim();
+            executor.execute(() -> {
+                try {
+                    JSONObject task = queryTask(key, cleanTaskId);
+                    String status = task.optString("status", "");
+                    if (!"succeeded".equals(status)) {
+                        emit(callId, "history_error",
+                                "任务当前状态：" + status, null);
+                        return;
+                    }
+                    JSONObject result = resultFromTask(task, cleanTaskId, "", "", "",
+                            "", 0);
+                    JSONObject pending = loadPendingTask();
+                    if (pending != null
+                            && cleanTaskId.equals(pending.optString("taskId", ""))) {
+                        result.put("mode", pending.optString("mode", "image"));
+                        result.put("createdAt", pending.optLong("createdAt",
+                                System.currentTimeMillis()));
+                    }
+                    emit(callId, "history_item", "已从云端刷新图片", result);
+                } catch (Exception error) {
+                    emit(callId, "history_error", friendlyError(error), null);
+                }
+            });
         }
 
         @JavascriptInterface
@@ -433,18 +514,69 @@ public class MainActivity extends Activity {
             if (taskId.isEmpty()) throw new IllegalStateException("服务器没有返回任务编号");
             int estimated = data == null ? 0 : data.optInt("estimated_cents", 0);
             String shortTaskId = taskId.length() > 8 ? taskId.substring(0, 8) : taskId;
-            emit(callId, "status",
-                    "任务 " + shortTaskId + " 已提交，等待云端生成…", null);
+            JSONObject pending = new JSONObject();
+            pending.put("taskId", taskId);
+            pending.put("mode", modeForCallId(callId));
+            pending.put("createdAt", System.currentTimeMillis());
+            pending.put("estimatedCents", estimated);
+            pending.put("model", model);
+            pending.put("size", size);
+            pending.put("resolution", resolution);
+            pending.put("quality", quality);
+            pending.put("state", "submitted");
+            savePendingTask(pending);
 
-            long started = System.currentTimeMillis();
-            int lastProgress = -1;
-            long lastEmitSeconds = -10;
-            while (System.currentTimeMillis() - started < MAX_POLL_MILLIS) {
+            JSONObject statusData = new JSONObject();
+            statusData.put("taskId", taskId);
+            statusData.put("mode", pending.optString("mode", "image"));
+            statusData.put("createdAt", pending.optLong("createdAt",
+                    System.currentTimeMillis()));
+            emit(callId, "status",
+                    "任务 " + shortTaskId + " 已提交，任务编号已保存；离开应用也会继续保留。",
+                    statusData);
+            pollTask(key, taskId, callId, pending);
+        } catch (Exception error) {
+            emit(callId, "error", friendlyError(error), null);
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    }
+
+    private void pollTask(String key, String taskId, String callId, JSONObject pending) {
+        if (!pollingTasks.add(taskId)) return;
+        String mode = pending.optString("mode", modeForCallId(callId));
+        long createdAt = pending.optLong("createdAt", System.currentTimeMillis());
+        long deadline = System.currentTimeMillis() + MAX_POLL_MILLIS;
+        String shortTaskId = taskId.length() > 8 ? taskId.substring(0, 8) : taskId;
+        int lastProgress = -1;
+        long lastEmitSeconds = -10;
+        int networkFailures = 0;
+        try {
+            while (System.currentTimeMillis() < deadline) {
                 sleep(3000);
-                JSONObject task = queryTask(key, taskId);
+                if (Thread.currentThread().isInterrupted()) return;
+
+                JSONObject task;
+                try {
+                    task = queryTask(key, taskId);
+                    networkFailures = 0;
+                } catch (Exception queryError) {
+                    networkFailures++;
+                    long waitedSeconds = (System.currentTimeMillis() - createdAt) / 1000;
+                    if (waitedSeconds - lastEmitSeconds >= 10) {
+                        lastEmitSeconds = waitedSeconds;
+                        JSONObject data = taskStatusData(taskId, mode, createdAt);
+                        data.put("networkRetry", networkFailures);
+                        emit(callId, "status",
+                                "任务 " + shortTaskId + " 已保存在云端，网络暂时中断，正在自动重试…",
+                                data);
+                    }
+                    continue;
+                }
+
                 String status = task.optString("status", "unknown");
                 int progress = task.optInt("progress", 0);
-                long waitedSeconds = (System.currentTimeMillis() - started) / 1000;
+                long waitedSeconds = (System.currentTimeMillis() - createdAt) / 1000;
                 boolean heartbeatDue = waitedSeconds - lastEmitSeconds >= 10;
                 if (progress != lastProgress || heartbeatDue) {
                     lastProgress = progress;
@@ -460,26 +592,24 @@ public class MainActivity extends Activity {
                         label = "任务 " + shortTaskId + " · 正在处理结果 · 已等待 "
                                 + waitedSeconds + " 秒";
                     }
-                    emit(callId, "status", label, null);
+                    emit(callId, "status", label, taskStatusData(taskId, mode, createdAt));
                 }
 
                 if ("succeeded".equals(status)) {
-                    JSONArray images = task.optJSONArray("images");
-                    JSONObject image = images != null && images.length() > 0
-                            ? images.optJSONObject(0) : null;
-                    String imageUrl = image == null ? "" : image.optString("url", "");
-                    if (imageUrl.isEmpty()) throw new IllegalStateException("任务已成功，但没有图片地址");
+                    JSONObject result = resultFromTask(task, taskId, "", "", "", "", 0);
+                    result.put("mode", mode);
+                    result.put("createdAt", createdAt);
 
-                    JSONObject result = new JSONObject();
-                    result.put("taskId", taskId);
-                    result.put("imageUrl", imageUrl);
-                    result.put("chargedCents", task.optInt("charged_cents", 0));
-                    result.put("estimatedCents", task.optInt("estimated_cents", estimated));
-                    result.put("model", task.optString("model", model));
-                    result.put("size", task.optString("size", size));
-                    result.put("resolution", task.optString("resolution", resolution));
-                    result.put("quality", task.optString("quality", quality));
-                    emit(callId, "result", "图片生成完成", result);
+                    pending.put("state", "succeeded");
+                    pending.put("imageUrl", result.optString("imageUrl", ""));
+                    pending.put("chargedCents", result.optInt("chargedCents", 0));
+                    pending.put("estimatedCents", result.optInt("estimatedCents", 0));
+                    pending.put("model", result.optString("model", ""));
+                    pending.put("size", result.optString("size", ""));
+                    pending.put("resolution", result.optString("resolution", ""));
+                    pending.put("quality", result.optString("quality", ""));
+                    savePendingTask(pending);
+                    emit(callId, "result", "图片已从云端取回", result);
                     return;
                 }
 
@@ -492,19 +622,122 @@ public class MainActivity extends Activity {
 
                     // 妙极会约在 15 分钟内自动恢复 upstream_timeout 的已出图任务。
                     if ("upstream_timeout".equals(code)) {
-                        emit(callId, "status", "暂时超时，系统正在后台恢复…", null);
+                        emit(callId, "status", "暂时超时，系统正在后台恢复…",
+                                taskStatusData(taskId, mode, createdAt));
                         continue;
                     }
-                    emit(callId, "error", message, errorData(code, false));
+                    clearPendingTaskInternal(taskId);
+                    JSONObject data = errorData(code, false);
+                    data.put("taskId", taskId);
+                    data.put("mode", mode);
+                    emit(callId, "error", message, data);
                     return;
                 }
             }
-            throw new IllegalStateException("等待超时，请稍后到任务记录中查看");
+
+            JSONObject data = taskStatusData(taskId, mode, createdAt);
+            emit(callId, "recoverable",
+                    "任务仍在云端处理，已保留任务记录；重新打开应用会自动继续恢复。",
+                    data);
         } catch (Exception error) {
-            emit(callId, "error", friendlyError(error), null);
+            if (Thread.currentThread().isInterrupted()) return;
+            JSONObject data = taskStatusData(taskId, mode, createdAt);
+            try {
+                data.put("code", "PENDING_RECOVERABLE");
+            } catch (JSONException ignored) {
+            }
+            emit(callId, "recoverable",
+                    "任务已提交，暂时没有取回结果；任务记录已经保留，可在“最近生成”里继续恢复。",
+                    data);
         } finally {
-            if (connection != null) connection.disconnect();
+            pollingTasks.remove(taskId);
         }
+    }
+
+    private JSONObject resultFromTask(JSONObject task, String taskId, String model,
+                                      String size, String resolution, String quality,
+                                      int estimated) throws JSONException {
+        JSONArray images = task.optJSONArray("images");
+        JSONObject image = images != null && images.length() > 0
+                ? images.optJSONObject(0) : null;
+        String imageUrl = image == null ? "" : image.optString("url", "");
+        if (imageUrl.isEmpty()) {
+            throw new IllegalStateException("任务已成功，但没有图片地址");
+        }
+        JSONObject result = new JSONObject();
+        result.put("taskId", taskId);
+        result.put("imageUrl", imageUrl);
+        result.put("mimeType", image == null
+                ? "image/png" : safe(image.optString("mime_type", ""), "image/png"));
+        result.put("chargedCents", task.optInt("charged_cents", 0));
+        result.put("estimatedCents", task.optInt("estimated_cents", estimated));
+        result.put("model", task.optString("model", model));
+        result.put("size", task.optString("size", size));
+        result.put("resolution", task.optString("resolution", resolution));
+        result.put("quality", task.optString("quality", quality));
+        return result;
+    }
+
+    private JSONObject resultFromPending(JSONObject pending) {
+        JSONObject result = new JSONObject();
+        try {
+            result.put("taskId", pending.optString("taskId", ""));
+            result.put("imageUrl", pending.optString("imageUrl", ""));
+            result.put("mimeType", "image/png");
+            result.put("chargedCents", pending.optInt("chargedCents", 0));
+            result.put("estimatedCents", pending.optInt("estimatedCents", 0));
+            result.put("model", pending.optString("model", ""));
+            result.put("size", pending.optString("size", ""));
+            result.put("resolution", pending.optString("resolution", ""));
+            result.put("quality", pending.optString("quality", ""));
+            result.put("mode", pending.optString("mode", "image"));
+            result.put("createdAt", pending.optLong("createdAt",
+                    System.currentTimeMillis()));
+        } catch (JSONException ignored) {
+        }
+        return result;
+    }
+
+    private JSONObject taskStatusData(String taskId, String mode, long createdAt) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("taskId", taskId);
+            data.put("mode", mode);
+            data.put("createdAt", createdAt);
+        } catch (JSONException ignored) {
+        }
+        return data;
+    }
+
+    private synchronized JSONObject loadPendingTask() {
+        String raw = preferences.getString(KEY_PENDING_TASK, "");
+        if (raw == null || raw.trim().isEmpty()) return null;
+        try {
+            return new JSONObject(raw);
+        } catch (JSONException error) {
+            preferences.edit().remove(KEY_PENDING_TASK).apply();
+            return null;
+        }
+    }
+
+    private synchronized void savePendingTask(JSONObject pending) {
+        if (pending == null) return;
+        preferences.edit().putString(KEY_PENDING_TASK, pending.toString()).apply();
+    }
+
+    private synchronized void clearPendingTaskInternal(String taskId) {
+        JSONObject pending = loadPendingTask();
+        if (pending == null) return;
+        String expected = pending.optString("taskId", "");
+        if (taskId == null || taskId.trim().isEmpty() || taskId.equals(expected)) {
+            preferences.edit().remove(KEY_PENDING_TASK).apply();
+        }
+    }
+
+    private static String modeForCallId(String callId) {
+        if (callId != null && callId.startsWith("beauty")) return "beauty";
+        if (callId != null && callId.startsWith("effect")) return "effect";
+        return "image";
     }
 
     private void runUpdateCheck(String callId) {
@@ -635,7 +868,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "1.7.8";
+            return "1.7.9";
         }
     }
 
