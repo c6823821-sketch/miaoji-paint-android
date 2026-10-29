@@ -463,6 +463,7 @@
       scrollbar-width: none;
     }
     .style-filters::-webkit-scrollbar { display: none; }
+    .effect-filters { padding: 0 0 12px; }
     .filter-chip {
       min-height: 31px;
       padding: 0 11px;
@@ -1455,6 +1456,7 @@
             <button class="filter-chip" type="button" data-category="art">绘画插画</button>
             <button class="filter-chip" type="button" data-category="photo">摄影质感</button>
             <button class="filter-chip" type="button" data-category="design">卡片设计</button>
+            <button class="filter-chip" type="button" data-category="transform">创意重构</button>
             <button class="filter-chip" type="button" data-category="food">美食灵感</button>
             <button class="filter-chip" type="button" data-category="3d">3D 手办</button>
           </div>
@@ -1648,9 +1650,14 @@
         <section class="card">
           <div class="card-head">
             <div class="card-title">热门特效库</div>
-            <div class="card-subtitle">12 种 · 实际生成成品缩略图</div>
+            <div class="card-subtitle">18 种 · 实际生成成品缩略图</div>
           </div>
           <div class="card-body">
+            <div class="style-filters effect-filters" id="effectFilters">
+              <button class="filter-chip active" type="button" data-audience="all">全部</button>
+              <button class="filter-chip" type="button" data-audience="women">女生向</button>
+              <button class="filter-chip" type="button" data-audience="men">男士向</button>
+            </div>
             <div class="effect-grid" id="effectGrid"></div>
             <details class="config-group">
               <summary>查看本特效完整生成要求</summary>
@@ -1758,7 +1765,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.5</span>
+            <span class="version-text" id="versionText">当前版本 1.7.6</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1948,6 +1955,36 @@
         id: "visual-recipe", name: "无字食谱漫画", category: "food", preview: "storybook",
         desc: "三格分镜讲清准备、烹饪与成品", forceSize: "3:4",
         prompt: "把用户的菜品做成一张3:4竖版、无文字的三格视觉食谱。三格清晰等宽排列，按顺序分别表现：备料、烹饪动作、成品上桌。每一格都必须保持相同的人物手部、厨房空间、锅具、餐具和菜品状态连续，不能让工具数量、灶台位置或食物颜色无故跳变。用成熟的水粉与钢笔线绘制，线条有粗细和速度，食材切面、油温、蒸汽、酱汁浓稠度要用视觉证据表达清楚，让人不看文字也能理解步骤。每格只保留一个核心动作和少量必要道具，背景适度概括，食物始终是视觉中心。画面有真实的蒸汽方向、重力、刀工和锅具接触关系，避免错误多指手、漂浮餐具、重复食材和无意义火焰。三格之间用克制留白分隔，不生成对白气泡、标题、步骤数字、假文字或logo。"
+      },
+      {
+        id: "torn-cartoon", name: "撕纸漫画窗口", category: "transform", preview: "papercard",
+        desc: "照片撕开，露出一整个手绘世界",
+        prompt: "把上传照片重构成一张真实摄影与手绘世界互相穿过的撕纸作品，不是给原图套滤镜。先判断照片里最适合被撕开的区域和主体，保留至少一半真实摄影的主体、质感、原构图与光线；只设计一条自然、可信的撕裂边，纸张要有真实厚度、纤维、卷曲和投影。撕裂处必须露出一套与原照片视角、动作、光源完全对应的手绘世界：人物从纸后探出、景物跨过边界、阴影和接触关系继续延伸，不能只是把照片描成漫画。手绘部分使用成熟的出版插画语言，线条有轻重，颜色从原图提取但更集中；只保留一个主要视觉惊喜和适量留白。禁止多层撕纸堆叠、随机贴纸、胶带、假邮票和文字。"
+      },
+      {
+        id: "double-exposure", name: "双曝光记忆", category: "transform", preview: "editorial",
+        desc: "人物轮廓里装入一段完整叙事",
+        prompt: "制作一张真正经过重构的高级双曝光海报，不是把两张照片直接半透明叠在一起。先提炼人物或主体的清楚外轮廓，轮廓外保持干净留白或克制的环境色；轮廓内部只装入一个完整世界，例如道路、雨夜、山谷、房间或城市，并让这个世界的透视、光线和叙事顺着人物姿态展开。人物五官、发丝边缘和身份特征必须清楚可辨，内部景物在眼睛、肩线和衣褶处自然让位，不能遮成脏乱剪影。只选择一个主场景、一条视觉动线和两个明暗层次；颜色限制在三种主色加一处小面积高饱和强调。画面像编辑海报或电影记忆片段，避免廉价双重曝光、重复人脸、漫天粒子和装饰文字。"
+      },
+      {
+        id: "acrylic-relief", name: "透明亚克力雕塑", category: "transform", preview: "clay",
+        desc: "照片重建成多层透光实体雕塑",
+        prompt: "把上传照片中的主体重建成一件真实存在、可以收藏的多层透明亚克力雕塑。先识别主体轮廓、前后关系和最重要的三到五个形体，再把画面拆成七到十一片有厚度、有间距的透明彩色亚克力板，用金属螺栓、透明支架和隐藏底座固定。层与层之间产生真实折射、色光混合、边缘高光和投影；人物或物体从侧面看仍然可认，正面形成完整画面。摆放于克制的现代美术馆空间，使用白色墙面、浅灰石材和顶部窄光束，既照出透明材质也要保留雕塑投影。细节集中在切片边缘、气泡、磨砂区域和金属结构，避免像扁平PS半透明蒙版、廉价彩色玻璃或科幻全息投影。"
+      },
+      {
+        id: "screenprint", name: "三色丝网版画", category: "transform", preview: "poster",
+        desc: "三色套印、错版与真实油墨",
+        prompt: "把照片彻底重构为一张限量三色丝网版画，颜色只使用深海军蓝、朱红和暖象牙白，允许一个低比例叠色产生少量中间色。先用大块纯色和精确高反差形状概括主体，脸部、衣物、建筑和阴影必须一眼可读，但不能保留摄影连续调。加入可控制的套色错位、油墨厚边、细小漏印和丝网纹理，让每个颜色块都有真实印刷压力；纸张使用粗纤维美术纸，边缘保留轻微手印但不做旧。构图像当代文化海报或画廊版画，主体占画面约三分之二，负空间经过设计。不要文字、标题、logo、复古滤镜、彩色渐变或廉价波普贴图效果。"
+      },
+      {
+        id: "paper-diorama", name: "纸模型微缩片场", category: "transform", preview: "storybook",
+        desc: "整个人物和场景变成纸造模型",
+        prompt: "把上传照片重建成一个真实搭建的纸模型微缩片场，而不是给原图加纸张纹理。人物、服装、建筑、植物和道具全部由不同厚度的卡纸、特种纸和少量透明纸制作，保留切边、折痕、白边、接缝和小比例误差；层与层之间用真实泡棉垫高，产生可信阴影和纵深。人物要保留可识别轮廓和姿态，纸张颜色从原图提取并压缩为四到六种。使用微距棚拍，侧上方柔光制造纸纤维和层间阴影，背景干净但有空间，前景可以加入轻微失焦。画面像当代纸艺设计师制作的电影场景模型，避免普通拼贴、塑料3D、儿童手工和贴纸感。"
+      },
+      {
+        id: "ink-deconstruct", name: "墨迹轮廓解构", category: "transform", preview: "ink",
+        desc: "只留轮廓、手势线与一处朱红",
+        prompt: "把照片解构为一张克制而现代的墨迹轮廓海报，不描边、不照抄照片。先提取主体最有识别度的轮廓、动作方向和一处内部结构，随后删掉至少七成细节；大面积使用有细微纤维的暖灰纸张和安静留白。主体由两三笔有速度的湿墨、一个准确的手势轮廓和极少量干笔肌理构成，黑白灰节奏必须清楚；只加入一处小面积朱红作为视觉锚点。光影通过墨的浓淡、纸面和留白暗示，而不是灰阶滤镜。构图有强烈方向感和未完成感，像当代东方艺术展览海报；禁止程序化山水、假书法、印章、文字、随机飞溅和无意义人物重复。"
       },
       {
         id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
@@ -2176,6 +2213,78 @@
         grade: { brightness: 1.04, contrast: 1.07, saturate: 1.08, sepia: .12, hue: -5 },
         overlay: "radial-gradient(circle at 72% 17%, rgba(255,197,115,.68), transparent 32%), linear-gradient(150deg, rgba(150,57,42,.26), rgba(103,34,64,.22))",
         prompt: "Turn Image 1 into a luxurious Tang-inspired palace beauty portrait while preserving the person's exact identity and natural facial anatomy. Makeup: warm porcelain base with visible skin texture, softly arched brows, rose-gold and persimmon eyeshadow, elongated liner, delicate floral huadian mark in the center of the forehead, natural blush and a saturated pomegranate lip. Hair: historically inspired but clean high updo with gold hairpins, small pearls and silk flowers, no oversized stage costume. Wardrobe: deep vermilion and antique-gold silk with fine woven patterns. Scene: dim palace corridor with carved wood screens, candles and a few distant silk lanterns. Lighting: warm candle key light, cool moonlight rim, soft atmospheric haze. Color: vermilion, antique gold and ink shadow. Cinematic historical beauty portrait, realistic materials, respectful cultural styling, no text, no watermark."
+      },
+      {
+        id: "undercover-agent",
+        name: "暗线特工",
+        desc: "黑西装 · 雨幕玻璃 · 冷静电影感",
+        source: "原创男士向：都市特工电影",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#526c82", "#161d24"],
+        grade: { brightness: .98, contrast: 1.18, saturate: .82, sepia: 0, hue: -5 },
+        overlay: "radial-gradient(circle at 74% 18%, rgba(166,207,231,.58), transparent 30%), linear-gradient(145deg, rgba(34,62,80,.34), rgba(8,13,18,.32))",
+        prompt: "Turn Image 1 into a restrained cinematic undercover-agent portrait while preserving the exact adult man's identity, ethnicity, age, face shape, expression and facial features. Wardrobe: sharply tailored charcoal suit, black shirt without a tie, subtle watch, no visible weapon. Scene: modern corporate office at night behind rain-streaked glass, distant city lights reduced to soft bokeh. Lighting: cold window rim light, a narrow practical reflection across the eyes, soft frontal fill that keeps the face readable; rain shadows move across the suit. Camera: 50mm lens at chest-up three-quarter angle, controlled shallow depth of field. Color: graphite, steel blue and one tiny warm tungsten accent. Premium spy-film still, realistic fabric and skin, no text, no logos, no extra people, no plastic face."
+      },
+      {
+        id: "cyber-mecha",
+        name: "赛博机甲战士",
+        desc: "轻量机甲 · 蓝色回路 · 未来城市",
+        source: "高赞机制：轻量赛博机甲人像",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#58d7ea", "#25364c"],
+        grade: { brightness: 1.01, contrast: 1.22, saturate: .9, sepia: 0, hue: -8 },
+        overlay: "radial-gradient(circle at 72% 15%, rgba(92,229,255,.7), transparent 30%), linear-gradient(145deg, rgba(20,91,116,.34), rgba(12,17,37,.34))",
+        prompt: "Transform Image 1 into a high-end cyberpunk mecha portrait while preserving the exact adult man's recognizable face, ethnicity, bone structure, eyes and expression. Add partial graphite exoskeleton armor only on the shoulders, chest edge and one forearm, with believable hinges, cable routing, scratches and cyan circuit light; never cover or replace the face with a helmet. Wardrobe beneath armor: matte technical fabric. Scene: elevated city platform at blue hour, layered futuristic towers and flight lights in atmospheric haze. Lighting: cyan edge light from circuitry, soft cool key on the face, controlled reflections on metal. Camera: cinematic 65mm portrait, strong material contrast between skin and machined armor. No text, no logos, no extra people, no full-body robot, no plastic game render."
+      },
+      {
+        id: "wuxia-hero",
+        name: "国风侠客",
+        desc: "墨色长衣 · 山巅风起 · 武侠电影",
+        source: "高赞机制：东方武侠电影人像",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#c4c9c4", "#202827"],
+        grade: { brightness: 1.0, contrast: 1.16, saturate: .78, sepia: .08, hue: -3 },
+        overlay: "radial-gradient(circle at 71% 14%, rgba(231,226,204,.5), transparent 32%), linear-gradient(150deg, rgba(92,107,101,.22), rgba(18,28,27,.3))",
+        prompt: "Turn Image 1 into a grounded Chinese wuxia film portrait while preserving the exact adult man's identity, ethnicity, proportions and expression. Wardrobe: refined layered black linen and silk robes with worn leather belt, wind moving the fabric naturally, one restrained sword at the side rather than swung at camera. Hair: long but practical, tied back with loose strands. Scene: misted mountain ridge before sunrise, layered stone, wind-shaped clouds and a narrow path. Lighting: cool dawn sky fill with a warm edge light through mist; believable fabric weight and environmental contact. Camera: anamorphic medium shot with the man integrated into the landscape. Color: ink black, moss grey and pale sunrise ivory. Cinematic historical realism, respectful styling, no fantasy armor, no glowing magic, no text, no watermark."
+      },
+      {
+        id: "hong-kong-men",
+        name: "港片男主角",
+        desc: "雨夜霓虹 · 风衣 · 九十年代胶片",
+        source: "高赞机制：90 年代港片男主",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#d45845", "#247083"],
+        grade: { brightness: .97, contrast: 1.22, saturate: 1.06, sepia: .04, hue: -6 },
+        overlay: "radial-gradient(circle at 78% 18%, rgba(255,89,66,.58), transparent 28%), linear-gradient(145deg, rgba(14,104,123,.36), rgba(103,22,28,.26))",
+        prompt: "Transform Image 1 into a 1990s Hong Kong cinema leading-man portrait while preserving the exact adult man's face, ethnicity, age and recognizable identity. Wardrobe: dark rain-soaked trench coat over a simple shirt, collar slightly open. Scene: narrow Hong Kong street at night after rain, layered vermilion and teal practical neon with all text and logos removed, wet asphalt reflections and distant street-light bokeh. Lighting: directional magenta-red key, cyan rim light, deep but readable shadows and slight halation. Camera: 35mm film still, chest-up three-quarter composition, subtle grain and realistic skin texture. Color: lacquer red, teal, tungsten and ink black. Melancholic but confident, no staged umbrella, no readable signs, no duplicated face, no modern smartphone."
+      },
+      {
+        id: "wasteland",
+        name: "废土旅人",
+        desc: "风沙荒野 · 旧皮衣 · 硬朗日光",
+        source: "高赞机制：电影废土旅人",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#d0a25d", "#51463c"],
+        grade: { brightness: 1.02, contrast: 1.18, saturate: .92, sepia: .12, hue: 7 },
+        overlay: "radial-gradient(circle at 76% 16%, rgba(255,216,147,.64), transparent 30%), linear-gradient(145deg, rgba(179,123,60,.3), rgba(72,61,50,.27))",
+        prompt: "Turn Image 1 into a cinematic post-apocalyptic traveler portrait while keeping the exact adult man's identity, ethnicity, facial structure and expression. Wardrobe: weathered canvas jacket, layered scarf and utility straps, protective goggles resting on the forehead rather than hiding the eyes. Scene: open desert wasteland with a broken concrete landmark far in the background, fine airborne dust and wind-shaped sand. Lighting: hard warm sun from one side, cool deep shadow on the other, visible skin texture and fabric abrasion. Camera: 50mm environmental portrait, dust catching the backlight, natural contact between boots, clothing and ground. Color: ochre, weathered olive, charcoal and faded sky blue. Realistic survival-worn detail, no fantasy monster, no gun close-up, no text, no watermark, no plastic game render."
+      },
+      {
+        id: "brutalist-menswear",
+        name: "高定男装大片",
+        desc: "雕塑剪裁 · 石材空间 · 冷硬光影",
+        source: "高赞机制：奢华男装编辑",
+        badge: "男士新特效",
+        audience: "men",
+        colors: ["#c9c6bc", "#242826"],
+        grade: { brightness: 1.02, contrast: 1.14, saturate: .7, sepia: .02, hue: -2 },
+        overlay: "radial-gradient(circle at 73% 16%, rgba(239,238,228,.54), transparent 30%), linear-gradient(145deg, rgba(83,89,85,.24), rgba(19,23,21,.28))",
+        prompt: "Create a luxury menswear editorial from Image 1 while preserving the exact adult man's face, ethnicity, age and recognizable identity. Styling: sculptural black wool coat over a fine knit, precise tailoring and one restrained metal accessory. Scene: brutalist stone gallery with a single brushed-metal sphere and deep architectural shadow, no other people. Lighting: large soft frontal source with one hard side cut to reveal fabric drape, cheekbone and stone texture; keep pores and natural skin variation. Pose: calm confident half-seated or standing three-quarter angle, hands relaxed and anatomically correct. Camera: medium-format fashion photography, 75mm lens, generous but controlled negative space. Color: charcoal, warm ivory and brushed silver. High-end and understated, no gold luxury cliché, no brand logo, no readable text, no plastic skin."
       }
     ];
     EFFECT_PRESETS.forEach((effect) => {
@@ -2238,6 +2347,7 @@
     const effectPhotoInput = $("effectPhotoInput");
     const effectLiveBadge = $("effectLiveBadge");
     const effectGrid = $("effectGrid");
+    const effectFilters = $("effectFilters");
     const effectPromptPreview = $("effectPromptPreview");
     const effectStrength = $("effectStrength");
     const effectStrengthValue = $("effectStrengthValue");
@@ -2272,6 +2382,7 @@
     let beautyPresetId = "natural-retouch";
     let beautyBusy = false;
     let effectPhotoDataUrl = "";
+    let effectAudience = "all";
     let effectPresetId = "ice-city";
     let effectSourceSize = "";
     let effectBusy = false;
@@ -2328,6 +2439,7 @@
 
       const popularIds = [
         "none", "oil", "illustration", "cinematic", "papercard",
+        "torn-cartoon", "double-exposure", "acrylic-relief",
         "travel-memory", "ingredient-atlas", "tabletop-diorama",
         "recipe-zine", "watercolor", "anime", "blindbox"
       ];
@@ -2670,8 +2782,14 @@
     }
 
     function renderEffectCards() {
+      effectFilters.querySelectorAll(".filter-chip").forEach((button) => {
+        button.classList.toggle("active", button.dataset.audience === effectAudience);
+      });
       effectGrid.replaceChildren();
-      for (const effect of EFFECT_PRESETS) {
+      const effects = EFFECT_PRESETS.filter((effect) => (
+        effectAudience === "all" || (effect.audience || "women") === effectAudience
+      ));
+      for (const effect of effects) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "effect-card" + (effect.id === effectPresetId ? " selected" : "");
@@ -3556,6 +3674,12 @@
       selectedStyleCategory = button.dataset.category;
       renderStyleCards();
     });
+    effectFilters.addEventListener("click", (event) => {
+      const button = event.target.closest(".filter-chip");
+      if (!button) return;
+      effectAudience = button.dataset.audience;
+      renderEffectCards();
+    });
     qualitySelect.addEventListener("change", updatePrice);
     resolutionSelect.addEventListener("change", updatePrice);
     sizeSelect.addEventListener("change", updatePrice);
@@ -3705,7 +3829,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.5";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.6";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

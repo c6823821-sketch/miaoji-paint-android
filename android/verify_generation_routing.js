@@ -157,6 +157,13 @@ async function main() {
     applyEffectPreview();
     const previewChanged = beforeFilter !== effectPhotoImage.style.filter;
     const previewCalls = window.__nativeCount - callsBeforePreview;
+    document.querySelector('[data-audience="women"]').click();
+    const femaleCardCount = effectGrid.children.length;
+    document.querySelector('[data-audience="men"]').click();
+    const maleCardCount = effectGrid.children.length;
+    const maleNames = [...effectGrid.querySelectorAll(".effect-card-copy strong")]
+      .map((element) => element.textContent);
+    document.querySelector('[data-audience="all"]').click();
     startEffectGeneration();
     const callId = window.__nativeGenerate.at(-1);
     window.__miaoNative(JSON.stringify({
@@ -180,6 +187,9 @@ async function main() {
       statusRouted,
       cardCount: effectGrid.children.length,
       sampleImages,
+      femaleCardCount,
+      maleCardCount,
+      maleNames,
       previewChanged,
       previewCalls,
       generatedSize: window.__nativeGenerate[2],
@@ -198,8 +208,17 @@ async function main() {
   if (effect.statusRouted !== "任务 effect123 已提交 · 已等待 9 秒") {
     throw new Error(`Effect status routed to the wrong panel: ${effect.statusRouted}`);
   }
-  if (effect.cardCount !== 12 || effect.sampleImages !== 12) {
+  if (effect.cardCount !== 18 || effect.sampleImages !== 18) {
     throw new Error("Effect cards do not have visible sample images");
+  }
+  if (
+    effect.femaleCardCount !== 12
+    || effect.maleCardCount !== 6
+    || !effect.maleNames.includes("暗线特工")
+    || !effect.maleNames.includes("赛博机甲战士")
+    || !effect.maleNames.includes("高定男装大片")
+  ) {
+    throw new Error("Male effect filter or presets are missing");
   }
   if (!effect.previewChanged || effect.previewCalls !== 0) {
     throw new Error("Effect live preview did not update locally for free");
@@ -238,15 +257,27 @@ async function main() {
       "ingredient-atlas", "recipe-zine", "tabletop-diorama",
       "ingredient-section", "kitchen-moment", "visual-recipe"
     ];
+    const transformIds = [
+      "torn-cartoon", "double-exposure", "acrylic-relief",
+      "screenprint", "paper-diorama", "ink-deconstruct"
+    ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
+    const transform = STYLE_CARDS.filter((style) => style.category === "transform");
     const travel = STYLE_CARDS.find((style) => style.id === "travel-memory");
     document.querySelector('[data-category="food"]').click();
+    const renderedFoodCards = styleGrid.children.length;
+    document.querySelector('[data-category="transform"]').click();
     return {
       foodCount: food.length,
       foodIdsPresent: foodIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
       detailedPrompts: food.every((style) => style.prompt.length >= 250),
       previewAssets: food.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
-      renderedFoodCards: styleGrid.children.length,
+      renderedFoodCards,
+      transformCount: transform.length,
+      transformIdsPresent: transformIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
+      transformPrompts: transform.every((style) => style.prompt.length >= 220),
+      transformPreviews: transform.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
+      renderedTransformCards: styleGrid.children.length,
       travelGeneric: travel
         && travel.name === "旅途手记拼贴"
         && travel.prompt.includes("不要预设海边")
@@ -260,6 +291,11 @@ async function main() {
     || !presets.detailedPrompts
     || !presets.previewAssets
     || presets.renderedFoodCards !== 6
+    || presets.transformCount !== 6
+    || !presets.transformIdsPresent
+    || !presets.transformPrompts
+    || !presets.transformPreviews
+    || presets.renderedTransformCards !== 6
     || !presets.travelGeneric
   ) {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);
