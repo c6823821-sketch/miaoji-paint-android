@@ -88,7 +88,10 @@ async function main() {
         window.__nativeCount = (window.__nativeCount || 0) + 1;
       }
     };
+    window.confirm = () => true;
     beautyPhotoDataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    beautyQualitySelect.value = "high";
+    const qualityOptions = beautyQualitySelect.options.length;
     startBeautyGeneration();
     const callId = window.__nativeGenerate.at(-1);
     window.__miaoNative(JSON.stringify({
@@ -108,6 +111,8 @@ async function main() {
     }));
     return {
       mode: generationMode,
+      qualityOptions,
+      generatedQuality: window.__nativeGenerate[4],
       statusRouted,
       beautyStatus: beautyResultStatus.textContent,
       beautyHasSave: beautyResultBody.textContent.includes("保存到手机"),
@@ -116,6 +121,9 @@ async function main() {
   })()`);
 
   if (beauty.mode !== "beauty") throw new Error(`Beauty mode is ${beauty.mode}`);
+  if (beauty.qualityOptions < 2 || beauty.generatedQuality !== "high") {
+    throw new Error("Beauty quality selector did not reach the native request");
+  }
   if (beauty.statusRouted !== "任务 beauty123 已提交 · 已等待 12 秒") {
     throw new Error(`Beauty status routed to the wrong panel: ${beauty.statusRouted}`);
   }
@@ -138,6 +146,8 @@ async function main() {
     effectPhotoDataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
     effectSourceSize = closestEffectSize(1600, 900);
     effectSizeSelect.value = "source";
+    effectQualitySelect.value = "high";
+    const qualityOptions = effectQualitySelect.options.length;
     const callsBeforePreview = window.__nativeCount;
     renderEffectCards();
     const beforeFilter = effectPhotoImage.style.filter;
@@ -166,12 +176,14 @@ async function main() {
     }));
     return {
       mode: generationMode,
+      qualityOptions,
       statusRouted,
       cardCount: effectGrid.children.length,
       sampleImages,
       previewChanged,
       previewCalls,
       generatedSize: window.__nativeGenerate[2],
+      generatedQuality: window.__nativeGenerate[4],
       effectStatus: effectResultStatus.textContent,
       effectHasSave: effectResultBody.textContent.includes("保存到手机"),
       beautyStatus: beautyResultStatus.textContent,
@@ -180,6 +192,9 @@ async function main() {
   })()`);
 
   if (effect.mode !== "effect") throw new Error(`Effect mode is ${effect.mode}`);
+  if (effect.qualityOptions < 2 || effect.generatedQuality !== "high") {
+    throw new Error("Effect quality selector did not reach the native request");
+  }
   if (effect.statusRouted !== "任务 effect123 已提交 · 已等待 9 秒") {
     throw new Error(`Effect status routed to the wrong panel: ${effect.statusRouted}`);
   }
@@ -202,16 +217,19 @@ async function main() {
   console.log("checking image route");
   const image = await evaluate(`(() => {
     window.confirm = () => true;
+    const referenceFirst = document.querySelector("#imagePage .stack")
+      .firstElementChild.contains(referenceZone);
     promptInput.value = "路由检查";
     startGeneration();
     return {
       mode: generationMode,
-      hasGenerateCall: Boolean(window.__nativeGenerate)
+      hasGenerateCall: Boolean(window.__nativeGenerate),
+      referenceFirst
     };
   })()`);
 
-  if (image.mode !== "image" || !image.hasGenerateCall) {
-    throw new Error("AI image generation did not switch back to image mode");
+  if (image.mode !== "image" || !image.hasGenerateCall || !image.referenceFirst) {
+    throw new Error("AI image route or reference placement check failed");
   }
 
   console.log("PASS: beauty, effect, and AI image routes stay separate");

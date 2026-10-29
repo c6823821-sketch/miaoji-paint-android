@@ -944,6 +944,11 @@
     }
     .beauty-result-card { min-height: 430px; }
     .beauty-result-body { min-height: 370px; }
+    .portrait-settings {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(130px, .65fr);
+      gap: 10px;
+    }
 
     .portrait-preview-stage {
       position: relative;
@@ -1407,6 +1412,22 @@
       <div class="stack">
         <section class="card">
           <div class="card-head">
+            <div class="card-title">参考图</div>
+            <div class="card-subtitle">可选 · 最多 6 张 · 用于图生图或风格参考</div>
+          </div>
+          <div class="card-body">
+            <div class="reference-grid" id="referencePreview" hidden></div>
+            <div class="upload-zone" id="uploadZone" role="button" tabindex="0">
+              <div class="upload-icon">＋</div>
+              <strong id="uploadTitle">上传参考图</strong>
+              <span id="uploadHint">一次可选择多张，最多 6 张 · PNG / JPG / WEBP</span>
+            </div>
+            <input id="referenceInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
             <div class="card-title">提示词</div>
             <div class="card-subtitle">描述主体、环境、光线和构图</div>
           </div>
@@ -1444,22 +1465,6 @@
               <span>可直接修改，仅作用于本次</span>
             </div>
             <textarea id="stylePromptEditor" spellcheck="false"></textarea>
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="card-head">
-            <div class="card-title">参考图</div>
-            <div class="card-subtitle">可选 · 用于图生图或风格参考</div>
-          </div>
-          <div class="card-body">
-            <div class="reference-grid" id="referencePreview" hidden></div>
-            <div class="upload-zone" id="uploadZone" role="button" tabindex="0">
-              <div class="upload-icon">＋</div>
-              <strong id="uploadTitle">上传参考图</strong>
-              <span id="uploadHint">一次可选择多张，最多 6 张 · PNG / JPG / WEBP</span>
-            </div>
-            <input id="referenceInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
           </div>
         </section>
 
@@ -1547,8 +1552,16 @@
             <div class="card-subtitle">先选一个主效果，再调整强度</div>
           </div>
           <div class="card-body">
-            <label class="field-label" for="beautyModelSelect">修图模型</label>
-            <select class="text-field" id="beautyModelSelect"></select>
+            <div class="portrait-settings">
+              <div class="field">
+                <label class="field-label" for="beautyModelSelect">修图模型</label>
+                <select class="text-field" id="beautyModelSelect"></select>
+              </div>
+              <div class="field" id="beautyQualityField">
+                <label class="field-label" for="beautyQualitySelect">质量档位</label>
+                <select class="text-field" id="beautyQualitySelect"></select>
+              </div>
+            </div>
 
             <div class="beauty-preset-grid" id="beautyPresets" style="margin-top:12px"></div>
             <details class="config-group">
@@ -1665,8 +1678,16 @@
             <div class="card-subtitle">仍使用妙极最低价档</div>
           </div>
           <div class="card-body">
-            <label class="field-label" for="effectModelSelect">修图模型</label>
-            <select class="text-field" id="effectModelSelect"></select>
+            <div class="portrait-settings">
+              <div class="field">
+                <label class="field-label" for="effectModelSelect">修图模型</label>
+                <select class="text-field" id="effectModelSelect"></select>
+              </div>
+              <div class="field" id="effectQualityField">
+                <label class="field-label" for="effectQualitySelect">质量档位</label>
+                <select class="text-field" id="effectQualitySelect"></select>
+              </div>
+            </div>
             <label class="field-label field-gap" for="effectSizeSelect">生成比例</label>
             <select class="text-field" id="effectSizeSelect"></select>
             <p class="help-copy" id="effectRatioHint">默认跟随上传照片，自动匹配最接近的可用比例。</p>
@@ -1736,7 +1757,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.3</span>
+            <span class="version-text" id="versionText">当前版本 1.7.4</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2167,6 +2188,8 @@
     const beautyPhotoImage = $("beautyPhotoImage");
     const beautyPhotoInput = $("beautyPhotoInput");
     const beautyModelSelect = $("beautyModelSelect");
+    const beautyQualitySelect = $("beautyQualitySelect");
+    const beautyQualityField = $("beautyQualityField");
     const beautyPresets = $("beautyPresets");
     const beautyPresetPrompt = $("beautyPresetPrompt");
     const beautyStrength = $("beautyStrength");
@@ -2189,6 +2212,8 @@
     const effectStrengthValue = $("effectStrengthValue");
     const effectPrompt = $("effectPrompt");
     const effectModelSelect = $("effectModelSelect");
+    const effectQualitySelect = $("effectQualitySelect");
+    const effectQualityField = $("effectQualityField");
     const effectSizeSelect = $("effectSizeSelect");
     const effectRatioHint = $("effectRatioHint");
     const effectResultBody = $("effectResultBody");
@@ -2472,26 +2497,52 @@
 
     function fillBeautyModelSelect() {
       const previous = beautyModelSelect.value;
+      const previousQuality = beautyQualitySelect.value;
       fillSelect(
         beautyModelSelect,
         models.map((model) => [model.model, model.display_name]),
         previous || "gpt-image-2.5-flare"
       );
+      fillPortraitQualitySelect(
+        beautyQualitySelect,
+        beautyQualityField,
+        selectedBeautyModel(),
+        previousQuality
+      );
       updateBeautyPrice();
     }
 
-    function beautyQuality(model) {
-      return model.allowed_qualities.includes("low") ? "low" : "";
+    function fillPortraitQualitySelect(select, field, model, preferred = "") {
+      const qualities = model.allowed_qualities || [];
+      field.hidden = qualities.length === 0;
+      if (!qualities.length) {
+        select.replaceChildren();
+        return;
+      }
+      const wanted = qualities.includes(preferred) ? preferred : preferredQuality(model);
+      fillSelect(
+        select,
+        qualities.map((value) => [value, QUALITY_LABELS[value] || value]),
+        wanted
+      );
+    }
+
+    function selectedPortraitQuality(model, select) {
+      if (!model.allowed_qualities.length) return "";
+      return model.allowed_qualities.includes(select.value)
+        ? select.value
+        : preferredQuality(model);
     }
 
     function updateBeautyPrice() {
       const model = selectedBeautyModel();
-      const quality = beautyQuality(model);
+      const quality = selectedPortraitQuality(model, beautyQualitySelect);
       const values = model.estimate_cents || {};
       const cents = Number((values[quality] || values[""] || {})["1k"] || 0);
+      const qualityLabel = QUALITY_LABELS[quality] || "默认档";
       beautyPriceTitle.textContent = cents > 0
-        ? `人像图生图 · 预扣约 ¥${(cents / 100).toFixed(2)}`
-        : "人像图生图 · 按任务预扣";
+        ? `人像图生图 · ${qualityLabel} · 预扣约 ¥${(cents / 100).toFixed(2)}`
+        : `人像图生图 · ${qualityLabel} · 按任务预扣`;
       beautyPriceDetail.textContent = "参考图和提示词长度会影响实扣，以结果页为准";
     }
 
@@ -2501,23 +2552,41 @@
 
     function fillEffectModelSelect() {
       const previous = effectModelSelect.value;
+      const previousQuality = effectQualitySelect.value;
       fillSelect(
         effectModelSelect,
         models.map((model) => [model.model, model.display_name]),
         previous || "gpt-image-2.5-flare"
+      );
+      fillPortraitQualitySelect(
+        effectQualitySelect,
+        effectQualityField,
+        selectedEffectModel(),
+        previousQuality
       );
       updateEffectPrice();
     }
 
     function updateEffectPrice() {
       const model = selectedEffectModel();
-      const quality = beautyQuality(model);
+      const quality = selectedPortraitQuality(model, effectQualitySelect);
       const values = model.estimate_cents || {};
       const cents = Number((values[quality] || values[""] || {})["1k"] || 0);
+      const qualityLabel = QUALITY_LABELS[quality] || "默认档";
       effectPriceTitle.textContent = cents > 0
-        ? `热门特效图生图 · 预扣约 ¥${(cents / 100).toFixed(2)}`
-        : "热门特效图生图 · 按任务预扣";
+        ? `热门特效图生图 · ${qualityLabel} · 预扣约 ¥${(cents / 100).toFixed(2)}`
+        : `热门特效图生图 · ${qualityLabel} · 按任务预扣`;
       effectPriceDetail.textContent = "本地实时预览免费；点生成后才提交妙极并计费";
+    }
+
+    function confirmPortraitCharge(model, quality, label) {
+      const values = model.estimate_cents || {};
+      const cents = Number((values[quality] || values[""] || {})["1k"] || 0);
+      if (cents <= 6 || !quality || quality === "low") return true;
+      const qualityLabel = QUALITY_LABELS[quality] || "默认档";
+      return window.confirm(
+        `${label}当前为${qualityLabel}，官网预扣约 ¥${(cents / 100).toFixed(2)}。确定继续吗？`
+      );
     }
 
     function closestEffectSize(width, height) {
@@ -2766,6 +2835,7 @@
       }
       const effect = currentEffectPreset();
       const model = selectedEffectModel();
+      const quality = selectedPortraitQuality(model, effectQualitySelect);
       const strength = Number(effectStrength.value);
       const size = effectSizeSelect.value === "source"
         ? (effectSourceSize || "3:4")
@@ -2782,6 +2852,7 @@
         `Transformation strength: ${strength}% (${strengthText}).`,
         effectPrompt.value.trim()
       ].filter(Boolean).join("\n\n");
+      if (!confirmPortraitCharge(model, quality, "热门特效")) return;
 
       effectBusy = true;
       effectGenerateBtn.disabled = true;
@@ -2792,7 +2863,7 @@
         modelName: model.display_name,
         size,
         resolution: "1k",
-        quality: beautyQuality(model),
+        quality,
         hasReference: true,
         referenceCount: 1,
         styleName: effect.name,
@@ -2804,7 +2875,7 @@
         model.model,
         size,
         "1k",
-        beautyQuality(model),
+        quality,
         1,
         JSON.stringify([effectPhotoDataUrl]),
         generationCallId
@@ -3006,6 +3077,7 @@
       const preset = BEAUTY_PRESETS.find((item) => item.id === beautyPresetId)
         || BEAUTY_PRESETS[0];
       const model = selectedBeautyModel();
+      const quality = selectedPortraitQuality(model, beautyQualitySelect);
       const strength = Number(beautyStrength.value);
       const strengthText = strength <= 25
         ? "极轻微，只修正最明显的问题"
@@ -3021,6 +3093,7 @@
         `Effect strength: ${strength}% (${strengthText}).`,
         beautyPrompt.value.trim()
       ].filter(Boolean).join("\n\n");
+      if (!confirmPortraitCharge(model, quality, "一键美颜")) return;
 
       beautyBusy = true;
       beautyGenerateBtn.disabled = true;
@@ -3031,7 +3104,7 @@
         modelName: model.display_name,
         size: "auto",
         resolution: "1k",
-        quality: beautyQuality(model),
+        quality,
         hasReference: true,
         referenceCount: 1,
         styleName: preset.name,
@@ -3043,7 +3116,7 @@
         model.model,
         "auto",
         "1k",
-        beautyQuality(model),
+        quality,
         1,
         JSON.stringify([beautyPhotoDataUrl]),
         generationCallId
@@ -3485,7 +3558,15 @@
     $("removeBeautyPhotoBtn").addEventListener("click", resetBeautyPhoto);
     beautyPhotoInput.addEventListener("change", () => setBeautyPhoto(beautyPhotoInput.files[0]));
     beautyStrength.addEventListener("input", updateBeautyStrengthLabel);
-    beautyModelSelect.addEventListener("change", updateBeautyPrice);
+    beautyModelSelect.addEventListener("change", () => {
+      fillPortraitQualitySelect(
+        beautyQualitySelect,
+        beautyQualityField,
+        selectedBeautyModel()
+      );
+      updateBeautyPrice();
+    });
+    beautyQualitySelect.addEventListener("change", updateBeautyPrice);
     beautyGenerateBtn.addEventListener("click", startBeautyGeneration);
 
     effectPhotoZone.addEventListener("click", () => effectPhotoInput.click());
@@ -3499,7 +3580,15 @@
     $("removeEffectPhotoBtn").addEventListener("click", resetEffectPhoto);
     effectPhotoInput.addEventListener("change", () => setEffectPhoto(effectPhotoInput.files[0]));
     effectStrength.addEventListener("input", applyEffectPreview);
-    effectModelSelect.addEventListener("change", updateEffectPrice);
+    effectModelSelect.addEventListener("change", () => {
+      fillPortraitQualitySelect(
+        effectQualitySelect,
+        effectQualityField,
+        selectedEffectModel()
+      );
+      updateEffectPrice();
+    });
+    effectQualitySelect.addEventListener("change", updateEffectPrice);
     effectSizeSelect.addEventListener("change", updateEffectSizeHint);
     effectGenerateBtn.addEventListener("click", startEffectGeneration);
 
@@ -3584,7 +3673,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.3";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.4";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
