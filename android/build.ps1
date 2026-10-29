@@ -6,7 +6,7 @@ $BuildRoot = Join-Path $ProjectRoot "build"
 $AndroidSdk = "E:\Android\sdk"
 $BuildTools = Join-Path $AndroidSdk "build-tools\36.0.0"
 $AndroidJar = Join-Path $AndroidSdk "platforms\android-36\android.jar"
-$Aapt2 = Join-Path $BuildTools "aapt2.exe"
+$Aapt = Join-Path $BuildTools "aapt.exe"
 $D8 = Join-Path $BuildTools "d8.bat"
 $ZipAlign = Join-Path $BuildTools "zipalign.exe"
 $ApkSigner = Join-Path $BuildTools "apksigner.bat"
@@ -18,7 +18,7 @@ $Keystore = Join-Path $ProjectRoot "miaojipaint.keystore"
 $KeystorePassword = "miaojipaint2026"
 $Alias = "miaojipaint"
 
-foreach ($required in @($Aapt2, $D8, $ZipAlign, $ApkSigner, $AndroidJar, $Javac, $Jar, $KeyTool)) {
+foreach ($required in @($Aapt, $D8, $ZipAlign, $ApkSigner, $AndroidJar, $Javac, $Jar, $KeyTool)) {
     if (-not (Test-Path -LiteralPath $required)) {
         throw "Required build tool missing: $required"
     }
@@ -34,19 +34,16 @@ if (Test-Path -LiteralPath $BuildRoot) {
 }
 New-Item -ItemType Directory -Force -Path $BuildRoot, (Join-Path $BuildRoot "gen"), (Join-Path $BuildRoot "classes"), (Join-Path $BuildRoot "dex") | Out-Null
 
-$CompiledResources = Join-Path $BuildRoot "resources.zip"
-& $Aapt2 compile --dir (Join-Path $SourceRoot "res") -o $CompiledResources
-if ($LASTEXITCODE -ne 0) { throw "aapt2 compile failed" }
-
 $UnsignedApk = Join-Path $BuildRoot "app-unsigned.apk"
-& $Aapt2 link `
-    -o $UnsignedApk `
+& $Aapt package `
+    -f -m `
+    -F $UnsignedApk `
     -I $AndroidJar `
-    --manifest (Join-Path $SourceRoot "AndroidManifest.xml") `
+    -M (Join-Path $SourceRoot "AndroidManifest.xml") `
+    -S (Join-Path $SourceRoot "res") `
     -A (Join-Path $SourceRoot "assets") `
-    --java (Join-Path $BuildRoot "gen") `
-    $CompiledResources
-if ($LASTEXITCODE -ne 0) { throw "aapt2 link failed" }
+    -J (Join-Path $BuildRoot "gen")
+if ($LASTEXITCODE -ne 0) { throw "aapt package failed" }
 
 $JavaSources = @(Get-ChildItem -LiteralPath (Join-Path $SourceRoot "java") -Recurse -Filter "*.java" |
     ForEach-Object { $_.FullName })
@@ -99,7 +96,7 @@ if (-not (Test-Path -LiteralPath $Keystore)) {
     if ($LASTEXITCODE -ne 0) { throw "Keystore creation failed" }
 }
 
-$SignedApk = Join-Path $BuildRoot "miaoji-paint-v1.7.4.apk"
+$SignedApk = Join-Path $BuildRoot "miaoji-paint-v1.7.5.apk"
 & $ApkSigner sign `
     --ks $Keystore `
     --ks-key-alias $Alias `

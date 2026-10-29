@@ -1455,6 +1455,7 @@
             <button class="filter-chip" type="button" data-category="art">绘画插画</button>
             <button class="filter-chip" type="button" data-category="photo">摄影质感</button>
             <button class="filter-chip" type="button" data-category="design">卡片设计</button>
+            <button class="filter-chip" type="button" data-category="food">美食灵感</button>
             <button class="filter-chip" type="button" data-category="3d">3D 手办</button>
           </div>
           <div class="style-grid" id="styleGrid"></div>
@@ -1757,7 +1758,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.4</span>
+            <span class="version-text" id="versionText">当前版本 1.7.5</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1914,9 +1915,39 @@
         prompt: "高级纸雕艺术卡片。画面由多层不同厚度和颜色的纸材构成，层与层之间保持真实空间距离，产生柔和投影和纸纤维边缘。主景用剪纸轮廓建立，细节通过镂空、刻线和少量叠色完成；主体占画面约一半，留出呼吸空间。光线从左上侧柔和进入，让纸面产生轻微起伏与细微纹理，但不过度做旧。配色控制在三到四种，采用米白、墨绿、暖红或金色中的一个重点色。整体有手工制作的可信触感、编辑设计感和收藏价值。除用户明确要求外，不生成文字或水印。"
       },
       {
-        id: "travel-memory", name: "旅行手账拼贴", category: "design", preview: "travel",
-        desc: "真实照片 · 纸面手绘延展", requiresReference: true, forceSize: "3:4",
-        prompt: "将上传的旅行照片制作成一张3:4竖版创意海报。上半部分尽量保留原照片的主体、构图、色彩和真实摄影质感；下半部分使用温暖的米白色纸张，搭配少量黑色手绘线条。从原图中选择一种景物，让它连续延伸到纸面，并转化成一种可以使用的东西。只设计一个清晰、有趣的互动，例如让晚霞变成盖在稻田上的薄被，由一个微小的线稿人物牵住一角。上下景物必须自然相连，人物动作要合理。保留适当留白，不添加无关装饰。配一句与动作有关的简短手写英文，整体克制、自然，有独立杂志的拼贴感。"
+        id: "travel-memory", name: "旅途手记拼贴", category: "design", preview: "travel",
+        desc: "普通照片也能自然延展", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传的照片制作成一张3:4竖版《旅途手记》拼贴海报。不要预设海边、草原、晚霞、稻田或任何固定场景，先根据照片真实内容决定构图。上半部保留原照片中的人物、主体、原构图、原色彩和真实摄影质感，不换景、不重画、不磨皮。下半部使用温暖的米白纸面，只搭配少量克制的黑色铅笔或钢笔线。只从照片里选择一种已经真实存在的连续线索，例如桌面边缘、路面、栏杆、墙线、衣料、头发、蒸汽、烟雾、树枝或器皿轮廓，让它自然延伸到纸面。只有当这条线索能合理转化时，才设计一个小而有趣的互动；例如汤的热气变成被线稿人物拉住的轻纱、相机背带变成供小人行走的桥、桌边木纹变成一条路。如果照片不适合转化，就做安静的轮廓回声和局部材质延续，禁止为了奇幻而硬造人物。整张只保留一个互动、一个视觉惊喜和足够留白；写一句与动作有关的极简短手写英文。不要旅行邮票、地图针、拍立得堆叠、胶带森林、多段引语或廉价贴纸感。整体自然、克制，有独立杂志的编辑设计感。"
+      },
+      {
+        id: "ingredient-atlas", name: "食材标本册", category: "food", preview: "papercard",
+        desc: "菜品摄影 × 植物学观察页",
+        prompt: "创作一张高级食材档案页，像植物学标本册与当代食物编辑设计的结合，而不是普通菜单或可爱手账。以用户照片中的菜品为唯一真实主体，保留食物本身的形态、成熟度、油脂光泽、热气和摄影真实性。从菜品中准确选择两到四种真实可见或合理对应的食材，在纸面空白处做精致的铅笔、淡彩和细墨线观察图，包括完整外形与一个微小的剖面细节；不要凭空加入与菜品无关的食材。使用暖象牙色纤维纸，构图有清楚层级：主菜品占视觉中心，食材观察围绕但不包围主体，保留大面积安静留白。纸面只允许极少量抽象标记和手写编号，不生成可读长文字、产品标签、营养表或logo。颜色从菜品自身提取，限制在三种主色和一种小面积强调色。细节集中在食材纹理、切面、籽、叶脉、油滴和蒸汽上，避免剪贴画式图标、卡通表情和装饰贴纸堆砌。"
+      },
+      {
+        id: "recipe-zine", name: "食谱拼贴册", category: "food", preview: "travel",
+        desc: "撕裂纸、食材剪影与真实照片",
+        prompt: "把上传的食物照片重新编排成一张独立刊物式的食谱拼贴页，必须保留一张真实食物照片作为味觉锚点，不能把整道菜全部插画化。画面由三部分构成：一张真实照片、温暖粗糙的撕裂纸面、一个富有动势的黑色手绘细节。手绘只选择最有动作感的局部，例如挑起面条、切开流心、撒落香料或倾倒酱汁，线条要有真实运笔压力和速度。再选择两三种真实食材做成小比例实物剪影或精细观察图，其光源和透视必须与照片协调，不能像廉价贴图。照片与纸面之间用一条真实存在的线索相连：蒸汽、酱汁滴线、面条、碎屑、菜叶边缘或手部动作，只做一次自然延续。使用一个低饱和红色或深绿色色块建立节奏，边缘保留纸张纤维和轻微油渍，但不做旧到脏乱。禁止拍立得墙、胶带、邮票、贴纸、假英文、过量箭头和随机装饰。"
+      },
+      {
+        id: "tabletop-diorama", name: "餐桌微缩剧场", category: "food", preview: "clay",
+        desc: "把一道菜变成可走入的模型",
+        prompt: "将用户照片中的餐桌和菜品重构成一个真实拍摄的微缩模型布景，而不是普通合成海报。菜品仍是清晰可认的主角，食物纹理、油光、蒸汽和温度必须真实；从菜品中提取真实元素形成微型地形：面条成为峡谷或绳索，米饭形成雪坡，菜叶成为树冠，汤面成为湖，筷子、勺柄或杯口成为桥和栈道。只加入一个约两厘米高、造型简洁的工匠或线稿人物，让它做一个明确而合理的小动作，例如收拢一根面条、扶住倾倒的酱汁或拉紧蒸汽形成的帆。所有元素都像由实体材料搭建，保留手工接缝、真实投影、水汽和不对齐的小误差。使用微距倾斜移轴摄影，前景、主体和背景有可信景深，棚拍柔光加一处暖色实景光。构图避免儿童乐园、糖果树、塑料3D和无关小道具。"
+      },
+      {
+        id: "ingredient-section", name: "料理剖面图解", category: "food", preview: "editorial",
+        desc: "食材悬浮拆解、真实微距与层次",
+        prompt: "创作一张不依赖文字的料理爆炸剖面图，像高端食品实验室与编辑摄影的结合。以菜品为中心，将真实食材沿同一垂直轴线分层悬起或轻微拆开，让观者能直接看懂构成：完整主体、一个可信的切面、面皮或米粒层、馅料、酱汁、香料和配菜。每一层都要保持真实体积、重量、边缘和表面质地，油滴受重力拉丝，蒸汽有方向，碎屑数量和大小自然；漂浮必须服务于结构说明，不能变成杂乱魔法特效。剖面要准确，不出现重复食材、不可能的内部结构和假科学图例。背景使用炭黑石材、拉丝金属或磨砂玻璃之一，建立安静空间和清楚反差；主光为侧上方大面积柔光，边缘用窄轮廓光分开暗部。只允许极少量抽象编号线，不生成产品标签、箭头、营养数据或说明文字。"
+      },
+      {
+        id: "kitchen-moment", name: "厨房电影片段", category: "food", preview: "film",
+        desc: "动作、蒸汽与真实厨房瞬间",
+        prompt: "把上传的照片重构成电影里的一个真实烹饪瞬间，保留原菜品的身份、主料、关键餐具和整体色彩关系。重点不是摆盘，而是动作正在发生的决定性一刻：筷子刚挑起面、刀即将切开食材、热油接触葱花、汤被倒入碗中、手正撕开面包或酱汁沿勺边滑落。只选择一个明确动作，手部结构、握持方式、食材受力和蒸汽方向必须可信。光源有现场动机，例如清晨侧窗、厨房吊灯、灶火或冰箱冷光；蒸汽被逆光照亮，空气中有少量真实粉尘和油雾。皮肤有纹理，围裙有使用痕迹，木砧板有刀痕，锅具有轻微磨损；食物要有热度和水分，不使用塑料高光和均匀虚假蒸汽。35mm电影摄影，低饱和但有食欲的暖色，轻微胶片颗粒，构图像故事进行中的一个停顿，避免餐厅广告式摆拍和无关人物。"
+      },
+      {
+        id: "visual-recipe", name: "无字食谱漫画", category: "food", preview: "storybook",
+        desc: "三格分镜讲清准备、烹饪与成品", forceSize: "3:4",
+        prompt: "把用户的菜品做成一张3:4竖版、无文字的三格视觉食谱。三格清晰等宽排列，按顺序分别表现：备料、烹饪动作、成品上桌。每一格都必须保持相同的人物手部、厨房空间、锅具、餐具和菜品状态连续，不能让工具数量、灶台位置或食物颜色无故跳变。用成熟的水粉与钢笔线绘制，线条有粗细和速度，食材切面、油温、蒸汽、酱汁浓稠度要用视觉证据表达清楚，让人不看文字也能理解步骤。每格只保留一个核心动作和少量必要道具，背景适度概括，食物始终是视觉中心。画面有真实的蒸汽方向、重力、刀工和锅具接触关系，避免错误多指手、漂浮餐具、重复食材和无意义火焰。三格之间用克制留白分隔，不生成对白气泡、标题、步骤数字、假文字或logo。"
       },
       {
         id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
@@ -2296,8 +2327,9 @@
       });
 
       const popularIds = [
-        "none", "oil", "illustration", "cinematic",
-        "papercard", "travel-memory", "watercolor", "anime", "blindbox"
+        "none", "oil", "illustration", "cinematic", "papercard",
+        "travel-memory", "ingredient-atlas", "tabletop-diorama",
+        "recipe-zine", "watercolor", "anime", "blindbox"
       ];
       const cards = selectedStyleCategory === "popular"
         ? STYLE_CARDS.filter((style) => popularIds.includes(style.id))
@@ -2316,7 +2348,7 @@
           const image = document.createElement("img");
           image.src = style.previewImage;
           image.alt = `${style.name}效果预览`;
-          image.loading = "lazy";
+          image.loading = "eager";
           preview.appendChild(image);
         }
         const check = document.createElement("span");
@@ -3673,7 +3705,7 @@
       updateCharCount();
       updateConnectionState();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.4";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.5";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

@@ -232,7 +232,40 @@ async function main() {
     throw new Error("AI image route or reference placement check failed");
   }
 
-  console.log("PASS: beauty, effect, and AI image routes stay separate");
+  console.log("checking new image presets");
+  const presets = await evaluate(`(() => {
+    const foodIds = [
+      "ingredient-atlas", "recipe-zine", "tabletop-diorama",
+      "ingredient-section", "kitchen-moment", "visual-recipe"
+    ];
+    const food = STYLE_CARDS.filter((style) => style.category === "food");
+    const travel = STYLE_CARDS.find((style) => style.id === "travel-memory");
+    document.querySelector('[data-category="food"]').click();
+    return {
+      foodCount: food.length,
+      foodIdsPresent: foodIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
+      detailedPrompts: food.every((style) => style.prompt.length >= 250),
+      previewAssets: food.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
+      renderedFoodCards: styleGrid.children.length,
+      travelGeneric: travel
+        && travel.name === "旅途手记拼贴"
+        && travel.prompt.includes("不要预设海边")
+        && travel.prompt.includes("如果照片不适合转化")
+    };
+  })()`);
+
+  if (
+    presets.foodCount !== 6
+    || !presets.foodIdsPresent
+    || !presets.detailedPrompts
+    || !presets.previewAssets
+    || presets.renderedFoodCards !== 6
+    || !presets.travelGeneric
+  ) {
+    throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);
+  }
+
+  console.log("PASS: routes stay separate and new image presets are present");
   socket.close();
 }
 
