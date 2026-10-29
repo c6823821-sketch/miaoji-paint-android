@@ -1,6 +1,6 @@
 # Open-source prompt credits
 
-The v1.7.7 visual presets adapt publicly available prompt workflows. They do
+The v1.7.8 visual presets adapt publicly available prompt workflows. They do
 not bundle model weights, LoRA files, or third-party applications. Image
 generation still runs through the user's own MiaoJi API key.
 
@@ -27,6 +27,51 @@ generation still runs through the user's own MiaoJi API key.
 - License: MIT
 - Adapted preset: magazine torn-paper postcard / 杂志撕纸明信片.
 
+## Gathered Scenes Zine
+
+- Source: https://github.com/Zeejay0/gathered-scenes-zine-skill
+- Author: Zeejay0
+- License: Personal Non-Commercial License 1.0
+- Adapted preset: gathered-scenes zine / 实景采集杂志.
+- This app is the user's personal, non-commercial self-use build.
+
+## Photo Abstract Editorial
+
+- Source: https://github.com/ZzzLc0405/photo-abstract-editorial
+- Author: ZzzLc0405 / @AM.
+- License: personal, educational, research, and non-commercial use.
+- Adapted preset: abstract memory poster / 抽象记忆海报.
+
+## Heytea Doodle Poster
+
+- Source: https://github.com/yinxiaowai/heytea-doodle-poster
+- Author: AI尹小歪
+- License: MIT
+- Adapted preset: white-space doodle poster / 白场小人涂鸦.
+
+## Mono Color
+
+- Source: https://github.com/yanliudesign/mono-color-skill
+- Author: Yan Liu
+- License: MIT for instructions and code; repository example artwork is
+  demonstration-only and is not bundled in this app.
+- Adapted preset: mono-color editorial print / 单色孔版编辑.
+
+## XXD Panel 115
+
+- Source: https://github.com/nevertoday/xxd-panel-115
+- Author: nevertoday
+- License: PolyForm Noncommercial License 1.0.0
+- Adapted preset: pastel stamp journal / 粉彩章印手帐.
+- This app is the user's personal, non-commercial self-use build.
+
+## Photo x Line Art
+
+- Source: prompt published publicly in the supplied Douyin post by Mr.木子李子.
+- No separate repository or redistribution license was stated in that post.
+- Adapted preset: real-photo continuous line-art travel poster /
+  实景延伸线稿.
+
 ## GPT Image 2 Gallery
 
 - Source: https://github.com/ChaosRealmsAI/gpt-image-2-gallery
@@ -38,3 +83,11 @@ generation still runs through the user's own MiaoJi API key.
 
 Third-party licenses remain the property of their respective authors. This
 self-use app does not claim ownership of the source prompt methodologies.
+
+## Research note
+
+The first supplied Douyin post did not name its Skill in the public caption.
+Its six before/after examples visually match the torn-photo, source-derived
+illustration language of the Gathered Scenes family, so it is represented by
+the Gathered Scenes preset rather than presented as an independently verified
+repository.

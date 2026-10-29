@@ -263,17 +263,24 @@ async function main() {
     ];
     const transformIds = [
       "torn-cartoon", "double-exposure", "acrylic-relief",
-      "screenprint", "paper-diorama", "ink-deconstruct",
+      "screenprint", "paper-diorama", "ink-deconstruct"
+    ];
+    const skillIds = [
       "papercraft-travel", "iso-block-world", "pixel-dissolve",
       "pen-wash-travel", "watercolor-card", "impasto-diorama",
-      "photo-relic", "zine-postcard"
+      "photo-relic", "zine-postcard", "gathered-zine",
+      "heytea-doodle", "abstract-editorial", "mono-color",
+      "xxd-panel", "line-art-extension"
     ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
     const transform = STYLE_CARDS.filter((style) => style.category === "transform");
+    const skill = STYLE_CARDS.filter((style) => style.category === "skill");
     const travel = STYLE_CARDS.find((style) => style.id === "travel-memory");
     document.querySelector('[data-category="food"]').click();
     const renderedFoodCards = styleGrid.children.length;
     document.querySelector('[data-category="transform"]').click();
+    const renderedTransformCards = styleGrid.children.length;
+    document.querySelector('[data-category="skill"]').click();
     return {
       foodCount: food.length,
       foodIdsPresent: foodIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
@@ -284,7 +291,12 @@ async function main() {
       transformIdsPresent: transformIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
       transformPrompts: transform.every((style) => style.prompt.length >= 220),
       transformPreviews: transform.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
-      renderedTransformCards: styleGrid.children.length,
+      renderedTransformCards,
+      skillCount: skill.length,
+      skillIdsPresent: skillIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
+      skillPrompts: skill.every((style) => style.prompt.length >= 260),
+      skillPreviews: skill.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
+      renderedSkillCards: styleGrid.children.length,
       travelGeneric: travel
         && travel.name === "旅途手记拼贴"
         && travel.prompt.includes("不要预设海边")
@@ -298,11 +310,16 @@ async function main() {
     || !presets.detailedPrompts
     || !presets.previewAssets
     || presets.renderedFoodCards !== 6
-    || presets.transformCount !== 14
+    || presets.transformCount !== 6
     || !presets.transformIdsPresent
     || !presets.transformPrompts
     || !presets.transformPreviews
-    || presets.renderedTransformCards !== 14
+    || presets.renderedTransformCards !== 6
+    || presets.skillCount !== 14
+    || !presets.skillIdsPresent
+    || !presets.skillPrompts
+    || !presets.skillPreviews
+    || presets.renderedSkillCards !== 14
     || !presets.travelGeneric
   ) {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);
