@@ -269,7 +269,7 @@ async function main() {
       "papercraft-travel", "iso-block-world", "pixel-dissolve",
       "pen-wash-travel", "watercolor-card", "impasto-diorama",
       "photo-relic", "zine-postcard", "gathered-zine",
-      "heytea-doodle", "abstract-editorial", "mono-color",
+      "heytea-doodle", "abstract-editorial", "geo-editorial", "mono-color",
       "xxd-panel", "line-art-extension"
     ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
@@ -315,11 +315,11 @@ async function main() {
     || !presets.transformPrompts
     || !presets.transformPreviews
     || presets.renderedTransformCards !== 6
-    || presets.skillCount !== 14
+    || presets.skillCount !== 15
     || !presets.skillIdsPresent
     || !presets.skillPrompts
     || !presets.skillPreviews
-    || presets.renderedSkillCards !== 14
+    || presets.renderedSkillCards !== 15
     || !presets.travelGeneric
   ) {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);

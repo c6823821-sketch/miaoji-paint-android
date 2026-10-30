@@ -1760,7 +1760,7 @@
             <button class="filter-chip" type="button" data-category="photo">摄影质感</button>
             <button class="filter-chip" type="button" data-category="design">卡片设计</button>
             <button class="filter-chip" type="button" data-category="transform">创意重构 6</button>
-            <button class="filter-chip" type="button" data-category="skill">公开 Skill 14</button>
+            <button class="filter-chip" type="button" data-category="skill">公开 Skill 15</button>
             <button class="filter-chip" type="button" data-category="food">美食灵感</button>
             <button class="filter-chip" type="button" data-category="3d">3D 手办</button>
           </div>
@@ -2188,7 +2188,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.8.0</span>
+            <span class="version-text" id="versionText">当前版本 1.8.1</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2464,6 +2464,11 @@
         id: "abstract-editorial", name: "抽象记忆海报", category: "skill", preview: "editorial",
         desc: "原照片 × 极简关系图 × 编辑留白", requiresReference: true, forceSize: "3:4",
         prompt: "把上传照片做成一张 3:4 的 Photo Abstract Editorial。先提取三到六条真正决定画面的空间事实：主体关系、大小、方向、遮挡、间距、光位、色块与负空间。上半部或主画面保留真实照片，只允许等比缩放和必要的小幅裁切，不得重绘、改变主体、添加滤镜、替换背景或进行风格化。下半部使用平整、无纸张纹理的浅象牙色面板，仅用一组主抽象标记和最多两组辅助标记重建照片中的关系；人物只能变成不规则的短竖线或渐缩块，绝不能画成头像、四肢或衣服。颜色只从原照片提取，留白要充足，不使用对称装饰、随机符号或几何贴纸。只在抽象面板放一个两到五个英文单词的原创编辑衬线标题，例如根据画面写一个具体短句。整体干净、安静、当代；禁止渐变、颗粒、阴影、拼贴、胶带、图框、logo、长文字和水印。"
+      },
+      {
+        id: "geo-editorial", name: "旅行地理志", category: "skill", preview: "editorial",
+        desc: "真实旅拍 × 半透明地图 × 杂志地理", requiresReference: true,
+        prompt: "把上传的旅行摄影制作成一张独立旅行杂志（Editorial Photography / Travel Zine）式地理视觉作品。先识别照片中的真实地点、地貌、城市、海岸线或山脉；如果无法可靠判断，只标注照片中能确认的大范围区域，不伪造精确坐标。完整保留原始照片的人物、建筑、山体、天空、构图、色彩和光影，只允许等比缩放和必要的小幅裁切，不重绘主体，不换景，不把整张照片插画化。根据照片内容选择海岸线、城市街道、山脉等高线、河流或步道中的一种地图元素，以半透明描图纸般的细线图层自然叠加在天际线、天空、海面或其他留白处；地图约占画面15%-25%，不遮挡摄影主体，不做传统矩形地图卡片或手机界面。地图线采用低饱和象牙白、浅灰或照片衍生色，只加入少量英文地名、一个很小的朱红定位点和一个红点对应的地点标签。地图结构必须与照片地理逻辑一致；保留原始画幅比例，不强制裁成正方形。整体克制、自然、有纸张印刷的轻微质感和独立杂志编辑感，最多加一句与地点有关的简短英文手写说明；禁止大面积标题、图钉、护照章、胶带、贴纸、旅游图标、过度复古、满屏装饰、logo、水印和假GPS。"
       },
       {
         id: "mono-color", name: "单色孔版编辑", category: "skill", preview: "poster",
@@ -5280,7 +5285,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.8.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.8.1";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
