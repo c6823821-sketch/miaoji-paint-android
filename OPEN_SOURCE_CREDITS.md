@@ -1,8 +1,21 @@
 # Open-source prompt credits
 
-The v1.7.9 visual presets adapt publicly available prompt workflows. They do
+The visual presets adapt publicly available prompt workflows. They do
 not bundle model weights, LoRA files, or third-party applications. Image
 generation still runs through the user's own MiaoJi API key.
+
+## Spektrafilm
+
+- Source: https://github.com/andreavolpato/spektrafilm
+- Author: Andrea Volpato
+- License: CC BY-SA 4.0
+- Adapted component: eight 17x17x17 3D LUTs baked from spectral film and
+  paper combinations (Portra, Gold, Ektar, Pro 400H, Vision3, UltraMax,
+  C200, and Portra 160).
+- Modification: the Android version applies the LUTs locally to preserve the
+  uploaded photograph's dimensions and aspect ratio. The film feature does
+  not upload source images, call the MiaoJi API, or save automatically.
+- The derived LUT data remains available under CC BY-SA 4.0.
 
 ## Photo-to-poster Skills
 

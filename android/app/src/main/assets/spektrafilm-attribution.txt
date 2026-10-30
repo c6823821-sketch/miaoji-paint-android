@@ -1,0 +1,8 @@
+Derived from spektrafilm by Andrea Volpato
+https://github.com/andreavolpato/spektrafilm
+Licensed CC BY-SA 4.0
+Modified by Codex for MiaoJi Paint.
+
+The Android version uses 17x17x17 3D LUTs baked from the spectral film and
+paper simulation. Processing happens locally on the device. No source image
+is uploaded to the MiaoJi API by the film feature.

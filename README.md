@@ -10,6 +10,8 @@
 - 热门风格卡片：油画厚涂、水彩、水墨、动漫、漫画线稿、胶片、纸艺卡片、复古海报、3D 黏土、盲盒手办等。
 - 美食灵感分类：食材标本册、食谱拼贴册、餐桌微缩剧场、料理剖面图解、厨房电影片段、无字食谱漫画。
 - 创意重构分类：撕纸漫画窗口、双曝光记忆、透明亚克力雕塑、三色丝网版画、纸模型微缩片场、墨迹轮廓解构。
+- 独立“胶片冲印”板块：内置 8 套由 spektrafilm 光谱模拟烘焙的 17³ LUT，支持冲印强度和手动保存。
+- 胶片冲印全程在手机本地完成，不上传照片、不调用妙极 API、不扣费，也不会自动写入相册。
 - 每张风格卡片都有独立效果预览图，并根据社区高收藏类型的视觉语言重新编写详细提示词。
 - 风格卡片只追加提示词，不切换模型、不下载 LoRA、不产生额外模型费用。
 - 图生图可“上传图片 + 选择风格”直接生成，不需要填写提示词；提示词仅用于补充要求。
@@ -21,7 +23,7 @@
 - GitHub Releases 检查更新。
 - 独立“一键美颜”板块：自然精修、轻盈裸妆、上镜全妆、卧蚕提亮、眼妆加强和轮廓小脸。
 - 美颜时强制保留人物身份、骨相、五官比例、表情、发型与构图，并支持效果强度调节。
-- 热门特效扩展至 18 种，支持“全部 / 女生向 / 男士向”筛选，并加入 6 个男性成品特效。
+- 热门特效共 26 种，支持“全部 / 女生向 / 男士向”筛选。
 
 ## 计费提示
 
@@ -41,6 +43,12 @@
 
 ![风格卡片说明](docs/screenshot-style-guide.png)
 
+![胶片冲印板块](docs/screenshot-film.png)
+
+![胶片冲印结果](docs/screenshot-film-result.png)
+
+![八套胶片 LUT 样片](docs/film-preview.jpg)
+
 ## 构建
 
 需要 Android SDK、JDK 17 和 PowerShell。
@@ -59,4 +67,10 @@ powershell -ExecutionPolicy Bypass -File .\android\build.ps1
 
 ## 许可
 
-MIT
+应用代码采用 MIT 许可。
+
+“胶片冲印”板块的 8 套 LUT 派生自
+[spektrafilm](https://github.com/andreavolpato/spektrafilm)，原作者为
+Andrea Volpato，按 CC BY-SA 4.0 许可使用。派生 LUT 数据继续适用
+CC BY-SA 4.0；详见
+[OPEN_SOURCE_CREDITS.md](OPEN_SOURCE_CREDITS.md) 和应用内署名。

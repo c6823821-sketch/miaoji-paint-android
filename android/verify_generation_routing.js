@@ -325,6 +325,74 @@ async function main() {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);
   }
 
+  console.log("checking local film processing");
+  const film = await evaluate(`(async () => {
+    const sampleImages = [...filmGrid.querySelectorAll(".film-card-visual img")]
+      .filter((image) => {
+        const source = image.getAttribute("src") || "";
+        return source.startsWith("film-") && source.endsWith(".jpg");
+      }).length;
+    const lutStockIds = Object.keys(window.MIAOJI_FILM_LUTS.stocks).sort();
+    const source = document.createElement("canvas");
+    source.width = 2;
+    source.height = 1;
+    const sourceContext = source.getContext("2d");
+    sourceContext.fillStyle = "#78614a";
+    sourceContext.fillRect(0, 0, 1, 1);
+    sourceContext.fillStyle = "#3d7180";
+    sourceContext.fillRect(1, 0, 1, 1);
+    filmSourceImage = source;
+    filmPhotoWidth = 2;
+    filmPhotoHeight = 1;
+    filmStrength.value = "100";
+    filmPresetId = "portra";
+    const portra = await renderFilmCanvas(2, ++filmRenderVersion);
+    filmPresetId = "vision";
+    const vision = await renderFilmCanvas(2, ++filmRenderVersion);
+    filmPresetId = "portra";
+    const aiStatusBefore = resultStatus.textContent;
+    const cloudCallsBefore = window.__nativeCount;
+    let saveCalls = 0;
+    window.Android.saveImage = () => { saveCalls++; };
+    filmFullDataUrl = portra.dataUrl;
+    showFilmResult(portra.dataUrl, true, portra.width, portra.height);
+    const saveButton = filmResultBody.querySelector(".result-actions .secondary-button");
+    const saveEnabled = !saveButton.disabled;
+    saveButton.click();
+    showAppPage("filmPage");
+    return {
+      cardCount: filmGrid.children.length,
+      sampleImages,
+      lutStockIds,
+      lutSize: window.MIAOJI_FILM_LUTS.size,
+      portraDifferent: portra.dataUrl !== vision.dataUrl,
+      filmPageVisible: !filmPage.hidden,
+      pageStatus: filmResultStatus.textContent,
+      saveEnabled,
+      saveCalls: saveCalls > 0,
+      cloudCallsUnchanged: window.__nativeCount === cloudCallsBefore,
+      aiStatusUnchanged: resultStatus.textContent === aiStatusBefore,
+      cloudDocksHidden: imageActionDock.hidden && beautyActionDock.hidden && effectActionDock.hidden
+    };
+  })()`);
+
+  if (
+    film.cardCount !== 8
+    || film.sampleImages !== 8
+    || film.lutSize !== 17
+    || film.lutStockIds.length !== 8
+    || !film.portraDifferent
+    || !film.filmPageVisible
+    || !film.pageStatus.startsWith("原图完成")
+    || !film.saveEnabled
+    || !film.saveCalls
+    || !film.cloudCallsUnchanged
+    || !film.aiStatusUnchanged
+    || !film.cloudDocksHidden
+  ) {
+    throw new Error(`Film processing check failed: ${JSON.stringify(film)}`);
+  }
+
   console.log("checking recent history and pending recovery");
   const history = await evaluate(`(() => {
     const pixel = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
@@ -415,7 +483,7 @@ async function main() {
   })()`);
 
   if (
-    history.tabCount !== 4
+    history.tabCount !== 5
     || history.countCapped !== 10
     || history.renderedCards !== 10
     || !history.resumeCalled
@@ -428,7 +496,7 @@ async function main() {
     throw new Error(`History/recovery check failed: ${JSON.stringify(history)}`);
   }
 
-  console.log("PASS: routes stay separate and new image presets are present");
+  console.log("PASS: routes stay separate; presets and local film processing are present");
   socket.close();
 }
 

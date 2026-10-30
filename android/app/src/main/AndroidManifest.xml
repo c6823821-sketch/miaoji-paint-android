@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codex.miaojipaint"
-    android:versionCode="179"
-    android:versionName="1.7.9">
+    android:versionCode="180"
+    android:versionName="1.8.0">
 
     <uses-sdk
         android:minSdkVersion="26"

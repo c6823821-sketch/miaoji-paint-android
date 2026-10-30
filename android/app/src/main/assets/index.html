@@ -160,10 +160,13 @@
       justify-content: center;
       gap: 7px;
       padding: 9px 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
       background: rgba(245, 243, 237, .9);
       border-bottom: 1px solid rgba(23, 32, 30, .07);
       backdrop-filter: blur(18px);
     }
+    .page-tabs::-webkit-scrollbar { display: none; }
     .page-tab {
       min-height: 36px;
       padding: 0 15px;
@@ -1117,6 +1120,195 @@
     }
     #effectPrompt { min-height: 106px; }
 
+    .film-local-note {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      border: 1px solid rgba(13, 118, 110, .14);
+      border-radius: 15px;
+      color: #365b51;
+      background: linear-gradient(135deg, #e9f7f2, #fbf6ed);
+      font-size: 10px;
+      line-height: 1.65;
+    }
+    .film-local-note strong { white-space: nowrap; }
+    .film-upload {
+      min-height: 230px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 9px;
+      border: 1.5px dashed rgba(13, 118, 110, .3);
+      border-radius: 17px;
+      background: linear-gradient(145deg, #f6fbf8, #faf6ed);
+      text-align: center;
+      cursor: pointer;
+    }
+    .film-upload strong { font-size: 13px; }
+    .film-upload span { color: var(--muted); font-size: 9px; }
+    .film-photo-preview { position: relative; }
+    .film-photo-preview img {
+      width: 100%;
+      max-height: 48vh;
+      display: block;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #e9e5dc;
+    }
+    .film-photo-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .film-photo-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .film-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .film-card {
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 15px;
+      color: var(--ink);
+      background: #f8f6f0;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .film-card:active { transform: translateY(1px); }
+    .film-card.selected {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(13, 118, 110, .14);
+    }
+    .film-card-visual {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #ddd8cd;
+    }
+    .film-card-visual img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .film-card-check {
+      position: absolute;
+      right: 7px;
+      top: 7px;
+      width: 21px;
+      height: 21px;
+      display: none;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--green);
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .film-card.selected .film-card-check { display: grid; }
+    .film-card-copy { padding: 8px 9px 9px; }
+    .film-card-copy strong {
+      display: block;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+    .film-card-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 7px;
+      line-height: 1.35;
+    }
+    .film-stock-line {
+      margin-top: 12px;
+      padding: 11px 12px;
+      border-radius: 13px;
+      color: #37564d;
+      background: #f0f7f3;
+      font-size: 9px;
+      line-height: 1.55;
+    }
+    .film-result-card { min-height: 448px; }
+    .film-result-body {
+      min-height: 396px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .film-result-stage {
+      flex: 1;
+      min-height: 320px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 16px;
+      background:
+        linear-gradient(45deg, rgba(255,255,255,.38) 25%, transparent 25% 75%, rgba(255,255,255,.38) 75%),
+        #e7e3da;
+      background-size: 18px 18px;
+    }
+    .film-result-stage img {
+      width: 100%;
+      max-height: 68vh;
+      display: block;
+      object-fit: contain;
+    }
+    .film-processing {
+      width: min(320px, 88%);
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .film-processing strong { font-size: 12px; }
+    .film-processing p { margin: 0; color: var(--muted); font-size: 9px; }
+    .film-progress {
+      width: 100%;
+      height: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #ddd9cf;
+    }
+    .film-progress span {
+      width: 0;
+      height: 100%;
+      display: block;
+      border-radius: inherit;
+      background: var(--green);
+      transition: width .18s ease;
+    }
+    .film-preview-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: #34594f;
+      background: var(--green-soft);
+      font-size: 8px;
+      font-weight: 800;
+    }
+    .film-attribution {
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.6;
+    }
+    .film-attribution summary { cursor: pointer; font-weight: 750; }
+
     .history-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -1465,6 +1657,7 @@
       .brand-mark { width: 33px; height: 33px; border-radius: 11px; }
       .login-button { padding: 0 10px; }
       .page { padding: 18px 11px 118px; }
+      .page-tabs { justify-content: flex-start; }
       .page-heading h1 { font-size: 27px; }
       .page-heading p { font-size: 11px; }
       .card { border-radius: 17px; }
@@ -1475,6 +1668,7 @@
       .settings-grid .field:first-child { grid-column: 1 / -1; }
       .style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .effect-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .film-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .style-preview { height: auto; }
       .reference-preview { grid-template-columns: 78px minmax(0, 1fr); }
       .reference-preview img { width: 78px; height: 78px; }
@@ -1507,6 +1701,7 @@
     <button class="page-tab active" type="button" data-page="imagePage">AI 生图</button>
     <button class="page-tab" type="button" data-page="beautyPage">一键美颜</button>
     <button class="page-tab" type="button" data-page="effectPage">热门特效</button>
+    <button class="page-tab" type="button" data-page="filmPage">胶片冲印</button>
     <button class="page-tab" type="button" data-page="historyPage">最近生成</button>
   </nav>
 
@@ -1831,6 +2026,89 @@
     </div>
   </main>
 
+  <main class="page" id="filmPage" hidden>
+    <section class="page-heading">
+      <p class="eyebrow">本地光谱 LUT · 零 API 费用</p>
+      <h1>胶片冲印</h1>
+      <p>使用 spektrafilm 的光谱模拟底片与相纸组合。选择胶片风格、调整强度，再冲印原图；照片不会上传，也不会扣除妙极余额。</p>
+    </section>
+
+    <div class="film-local-note">
+      <strong>全程本机处理</strong>
+      <span>不上传、不调用妙极、不自动保存。只有点“保存到手机”才会写入系统相册。</span>
+    </div>
+
+    <div class="beauty-layout">
+      <div class="stack">
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">原始照片</div>
+            <div class="card-subtitle">单张 · 保留原始尺寸与比例</div>
+          </div>
+          <div class="card-body">
+            <div class="film-upload" id="filmPhotoZone" role="button" tabindex="0">
+              <div class="upload-icon">＋</div>
+              <strong>上传一张照片</strong>
+              <span>PNG / JPG / WEBP · 选择后立即在本机套用胶片预览</span>
+            </div>
+            <div class="film-photo-preview" id="filmPhotoPreview" hidden>
+              <img id="filmPhotoImage" alt="胶片冲印原始照片">
+              <div class="film-photo-meta">
+                <span id="filmPhotoInfo">等待读取尺寸</span>
+                <button class="text-button" id="removeFilmPhotoBtn" type="button">移除照片</button>
+              </div>
+              <div class="film-photo-actions">
+                <button class="secondary-button" id="replaceFilmPhotoBtn" type="button">更换照片</button>
+              </div>
+            </div>
+            <input id="filmPhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title">胶片与相纸</div>
+            <div class="card-subtitle">8 套真实 LUT · 点击卡片即可试片</div>
+          </div>
+          <div class="card-body">
+            <div class="film-grid" id="filmGrid"></div>
+            <div class="film-stock-line" id="filmStockLine"></div>
+            <div class="beauty-strength">
+              <div class="beauty-strength-head">
+                <strong>冲印强度</strong>
+                <span id="filmStrengthValue">100%</span>
+              </div>
+              <input id="filmStrength" type="range" min="0" max="100" value="100" step="5">
+            </div>
+            <details class="config-group">
+              <summary>关于 spektrafilm 与授权</summary>
+              <div class="config-body">
+                <p class="help-copy" style="margin-top:0">Derived from spektrafilm by Andrea Volpato · <a href="https://github.com/andreavolpato/spektrafilm" target="_blank" rel="noopener">GitHub 项目</a> · Licensed CC BY-SA 4.0 · Modified by Codex for MiaoJi Paint.</p>
+                <p class="help-copy">Android 版使用由 81 波长光谱胶片/相纸模拟烘焙出的 17³ 3D LUT，在本机显卡之外的 JavaScript 中逐像素插值。它是胶片调色，不包含胶片边框、日期后背或扫描颗粒合成。</p>
+              </div>
+            </details>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card film-result-card">
+          <div class="card-head">
+            <div class="card-title">冲印预览</div>
+            <div class="card-subtitle" id="filmResultStatus">等待上传</div>
+          </div>
+          <div class="film-result-body" id="filmResultBody">
+            <div class="result-empty">
+              <div class="result-empty-icon">◫</div>
+              <strong>上传照片后自动预览</strong>
+              <p>这里只做本机快速预览。点“冲印原图”后按原始分辨率处理，再手动保存。</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
   <main class="page" id="historyPage" hidden>
     <section class="page-heading">
       <p class="eyebrow">最近生成 · 自动保留 10 张</p>
@@ -1910,7 +2188,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.7.9</span>
+            <span class="version-text" id="versionText">当前版本 1.8.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -1991,6 +2269,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="film-luts.js"></script>
   <script>
     "use strict";
 
@@ -2602,6 +2881,65 @@
       effect.previewImage = `effect-${effect.id}.jpg`;
     });
 
+    const FILM_STOCKS = [
+      {
+        id: "portra",
+        name: "日光人像",
+        stock: "Portra 400 · Endura",
+        desc: "柔和肤色 · 奶油高光",
+        previewImage: "film-portra.jpg"
+      },
+      {
+        id: "gold",
+        name: "金色黄昏",
+        stock: "Gold 200 · Ultra Endura",
+        desc: "暖金日光 · 日常街头",
+        previewImage: "film-gold.jpg"
+      },
+      {
+        id: "ektar",
+        name: "高彩正片",
+        stock: "Ektar 100 · Supra Endura",
+        desc: "浓郁红蓝 · 干净层次",
+        previewImage: "film-ektar.jpg"
+      },
+      {
+        id: "pro400h",
+        name: "清透青绿",
+        stock: "Pro 400H · Crystal Archive",
+        desc: "薄荷青 · 柔粉高光",
+        previewImage: "film-pro400h.jpg"
+      },
+      {
+        id: "vision",
+        name: "夜色电影",
+        stock: "Vision3 500T · Kodak 2383",
+        desc: "冷调夜景 · 青橙分离",
+        previewImage: "film-vision.jpg"
+      },
+      {
+        id: "ultramax",
+        name: "街头快照",
+        stock: "UltraMax 400 · Supra Endura",
+        desc: "鲜活色块 · 日常街拍",
+        previewImage: "film-ultramax.jpg"
+      },
+      {
+        id: "c200",
+        name: "旧日胶卷",
+        stock: "C200 · Crystal Archive",
+        desc: "低饱和青绿 · 生活记录",
+        previewImage: "film-c200.jpg"
+      },
+      {
+        id: "portra160",
+        name: "柔光肤调",
+        stock: "Portra 160 · Endura Premier",
+        desc: "细腻低反差 · 清透肤色",
+        previewImage: "film-portra160.jpg"
+      }
+    ];
+
     const SIZE_OPTIONS = [
       ["1:1", "1:1 正方形"], ["3:4", "3:4 竖图"], ["4:3", "4:3 横图"],
       ["9:16", "9:16 竖屏"], ["16:9", "16:9 宽屏"], ["2:3", "2:3 竖图"],
@@ -2631,6 +2969,7 @@
     const imagePage = $("imagePage");
     const beautyPage = $("beautyPage");
     const effectPage = $("effectPage");
+    const filmPage = $("filmPage");
     const historyPage = $("historyPage");
     const imageActionDock = $("imageActionDock");
     const beautyActionDock = $("beautyActionDock");
@@ -2674,6 +3013,17 @@
     const effectGenerateBtn = $("effectGenerateBtn");
     const effectPriceTitle = $("effectPriceTitle");
     const effectPriceDetail = $("effectPriceDetail");
+    const filmPhotoZone = $("filmPhotoZone");
+    const filmPhotoPreview = $("filmPhotoPreview");
+    const filmPhotoImage = $("filmPhotoImage");
+    const filmPhotoInput = $("filmPhotoInput");
+    const filmPhotoInfo = $("filmPhotoInfo");
+    const filmGrid = $("filmGrid");
+    const filmStockLine = $("filmStockLine");
+    const filmStrength = $("filmStrength");
+    const filmStrengthValue = $("filmStrengthValue");
+    const filmResultBody = $("filmResultBody");
+    const filmResultStatus = $("filmResultStatus");
     const historyGrid = $("historyGrid");
     const historyStatus = $("historyStatus");
     const historyPending = $("historyPending");
@@ -2708,6 +3058,15 @@
     let effectPresetId = "ice-city";
     let effectSourceSize = "";
     let effectBusy = false;
+    let filmSourceImage = null;
+    let filmPhotoDataUrl = "";
+    let filmPhotoWidth = 0;
+    let filmPhotoHeight = 0;
+    let filmPresetId = "portra";
+    let filmBusy = false;
+    let filmFullDataUrl = "";
+    let filmPreviewTimer = 0;
+    let filmRenderVersion = 0;
     let generationMode = "image";
     let busy = false;
     let toastTimer = null;
@@ -2952,6 +3311,7 @@
       imagePage.hidden = pageId !== "imagePage";
       beautyPage.hidden = pageId !== "beautyPage";
       effectPage.hidden = pageId !== "effectPage";
+      filmPage.hidden = pageId !== "filmPage";
       historyPage.hidden = pageId !== "historyPage";
       imageActionDock.hidden = pageId !== "imagePage";
       beautyActionDock.hidden = pageId !== "beautyPage";
@@ -3358,6 +3718,389 @@
         JSON.stringify([effectPhotoDataUrl]),
         generationCallId
       );
+    }
+
+    const filmLutCache = new Map();
+
+    function currentFilmStock() {
+      return FILM_STOCKS.find((stock) => stock.id === filmPresetId)
+        || FILM_STOCKS[0];
+    }
+
+    function decodeFilmLut(stockId) {
+      if (filmLutCache.has(stockId)) return filmLutCache.get(stockId);
+      const bundle = window.MIAOJI_FILM_LUTS;
+      const encoded = bundle && bundle.stocks && bundle.stocks[stockId];
+      if (!bundle || !encoded) throw new Error("胶片 LUT 资源缺失");
+      const binary = atob(encoded);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index++) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      filmLutCache.set(stockId, bytes);
+      return bytes;
+    }
+
+    function renderFilmCards() {
+      filmGrid.replaceChildren();
+      for (const stock of FILM_STOCKS) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "film-card" + (stock.id === filmPresetId ? " selected" : "");
+        button.disabled = filmBusy;
+        button.setAttribute("aria-pressed", stock.id === filmPresetId ? "true" : "false");
+
+        const visual = document.createElement("div");
+        visual.className = "film-card-visual";
+        const image = document.createElement("img");
+        image.src = stock.previewImage;
+        image.alt = `${stock.name}胶片样片`;
+        const check = document.createElement("span");
+        check.className = "film-card-check";
+        check.textContent = "✓";
+        visual.append(image, check);
+
+        const copy = document.createElement("div");
+        copy.className = "film-card-copy";
+        const name = document.createElement("strong");
+        name.textContent = stock.name;
+        const desc = document.createElement("span");
+        desc.textContent = stock.stock;
+        copy.append(name, desc);
+        button.append(visual, copy);
+        button.addEventListener("click", () => {
+          if (filmBusy) return;
+          filmPresetId = stock.id;
+          renderFilmCards();
+          updateFilmStockLine();
+          scheduleFilmPreview(40);
+        });
+        filmGrid.appendChild(button);
+      }
+      updateFilmStockLine();
+    }
+
+    function updateFilmStockLine() {
+      const stock = currentFilmStock();
+      filmStockLine.textContent = `${stock.stock} · ${stock.desc}。这是一套底片与相纸的完整光谱组合，不是简单滤镜。`;
+    }
+
+    function showFilmEmpty() {
+      filmResultStatus.textContent = "等待上传";
+      filmResultBody.innerHTML = `
+        <div class="result-empty">
+          <div class="result-empty-icon">◫</div>
+          <strong>上传照片后自动预览</strong>
+          <p>这里只做本机快速预览。点“冲印原图”后按原始分辨率处理，再手动保存。</p>
+        </div>`;
+    }
+
+    function showFilmProcessing(label, progress = 0, detail = "不会上传，也不会扣费") {
+      filmResultBody.innerHTML = `
+        <div class="film-result-stage">
+          <div class="film-processing">
+            <div class="spinner"></div>
+            <strong>${label}</strong>
+            <p>${detail}</p>
+            <div class="film-progress"><span style="width:${Math.round(progress * 100)}%"></span></div>
+          </div>
+        </div>`;
+    }
+
+    function showFilmError(message) {
+      filmResultStatus.textContent = "本地冲印失败";
+      filmResultBody.innerHTML = `
+        <div class="error-panel">
+          <strong>没有完成冲印</strong>
+          <p>${message || "请更换照片或重新选择胶片后再试。"}</p>
+        </div>`;
+    }
+
+    function showFilmResult(dataUrl, fullResult, width, height) {
+      const stock = currentFilmStock();
+      filmResultStatus.textContent = fullResult
+        ? `原图完成 · ${width} × ${height}`
+        : `本地预览 · ${stock.name}`;
+      filmResultBody.replaceChildren();
+
+      const stage = document.createElement("div");
+      stage.className = "film-result-stage";
+      const image = document.createElement("img");
+      image.src = dataUrl;
+      image.alt = `${stock.name}胶片冲印结果`;
+      stage.appendChild(image);
+
+      const meta = document.createElement("div");
+      meta.className = "result-meta";
+      const badge = document.createElement("span");
+      badge.className = "film-preview-badge";
+      badge.textContent = fullResult ? "原图分辨率" : "本机预览";
+      const info = document.createElement("span");
+      info.textContent = `${stock.stock} · 强度 ${filmStrength.value}% · ${width}×${height}`;
+      meta.append(badge, info);
+
+      const actions = document.createElement("div");
+      actions.className = "result-actions";
+      const process = document.createElement("button");
+      process.type = "button";
+      process.className = "primary-button";
+      process.textContent = fullResult ? "重新冲印原图" : "冲印原图";
+      process.addEventListener("click", startFilmRender);
+      const save = document.createElement("button");
+      save.type = "button";
+      save.className = "secondary-button";
+      save.textContent = fullResult ? "保存到手机" : "请先冲印原图";
+      save.disabled = !fullResult;
+      save.addEventListener("click", () => saveFilmResult(save));
+      actions.append(process, save);
+
+      filmResultBody.append(stage, meta, actions);
+    }
+
+    function filmAxisTables(size) {
+      const low = new Uint8Array(256);
+      const high = new Uint8Array(256);
+      const weight = new Float32Array(256);
+      for (let value = 0; value < 256; value++) {
+        const position = value * (size - 1) / 255;
+        const lower = Math.floor(position);
+        low[value] = lower;
+        high[value] = Math.min(size - 1, lower + 1);
+        weight[value] = position - lower;
+      }
+      return { low, high, weight };
+    }
+
+    async function applyFilmPixels(canvas, stockId, strength, version, onProgress) {
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      const frame = context.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = frame.data;
+      const lut = decodeFilmLut(stockId);
+      const size = window.MIAOJI_FILM_LUTS.size;
+      const tables = filmAxisTables(size);
+      const rOffset = new Uint32Array(size);
+      const gOffset = new Uint32Array(size);
+      const bOffset = new Uint32Array(size);
+      for (let index = 0; index < size; index++) {
+        rOffset[index] = index * 3;
+        gOffset[index] = index * size * 3;
+        bOffset[index] = index * size * size * 3;
+      }
+
+      const mix = Math.max(0, Math.min(1, Number(strength) / 100));
+      const chunkRows = Math.max(1, Math.floor(180000 / canvas.width));
+      let row = 0;
+      while (row < canvas.height) {
+        if (version !== filmRenderVersion) return false;
+        const endRow = Math.min(canvas.height, row + chunkRows);
+        for (; row < endRow; row++) {
+          for (let column = 0; column < canvas.width; column++) {
+            const offset = (row * canvas.width + column) * 4;
+            const red = pixels[offset];
+            const green = pixels[offset + 1];
+            const blue = pixels[offset + 2];
+
+            const r0 = tables.low[red];
+            const r1 = tables.high[red];
+            const g0 = tables.low[green];
+            const g1 = tables.high[green];
+            const b0 = tables.low[blue];
+            const b1 = tables.high[blue];
+            const fr = tables.weight[red];
+            const fg = tables.weight[green];
+            const fb = tables.weight[blue];
+
+            const o000 = bOffset[b0] + gOffset[g0] + rOffset[r0];
+            const o100 = bOffset[b0] + gOffset[g0] + rOffset[r1];
+            const o010 = bOffset[b0] + gOffset[g1] + rOffset[r0];
+            const o110 = bOffset[b0] + gOffset[g1] + rOffset[r1];
+            const o001 = bOffset[b1] + gOffset[g0] + rOffset[r0];
+            const o101 = bOffset[b1] + gOffset[g0] + rOffset[r1];
+            const o011 = bOffset[b1] + gOffset[g1] + rOffset[r0];
+            const o111 = bOffset[b1] + gOffset[g1] + rOffset[r1];
+
+            for (let channel = 0; channel < 3; channel++) {
+              const original = channel === 0 ? red : channel === 1 ? green : blue;
+              const c000 = lut[o000 + channel];
+              const c100 = lut[o100 + channel];
+              const c010 = lut[o010 + channel];
+              const c110 = lut[o110 + channel];
+              const c001 = lut[o001 + channel];
+              const c101 = lut[o101 + channel];
+              const c011 = lut[o011 + channel];
+              const c111 = lut[o111 + channel];
+              const x00 = c000 + (c100 - c000) * fr;
+              const x10 = c010 + (c110 - c010) * fr;
+              const x01 = c001 + (c101 - c001) * fr;
+              const x11 = c011 + (c111 - c011) * fr;
+              const y0 = x00 + (x10 - x00) * fg;
+              const y1 = x01 + (x11 - x01) * fg;
+              const graded = y0 + (y1 - y0) * fb;
+              pixels[offset + channel] = Math.round(
+                original + (graded - original) * mix
+              );
+            }
+          }
+        }
+        if (onProgress) onProgress(row / canvas.height);
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+      context.putImageData(frame, 0, 0);
+      return true;
+    }
+
+    async function renderFilmCanvas(maxDimension, version, onProgress) {
+      if (!filmSourceImage) throw new Error("请先上传照片");
+      const scale = maxDimension
+        ? Math.min(1, maxDimension / Math.max(filmPhotoWidth, filmPhotoHeight))
+        : 1;
+      const width = Math.max(1, Math.round(filmPhotoWidth * scale));
+      const height = Math.max(1, Math.round(filmPhotoHeight * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      context.drawImage(filmSourceImage, 0, 0, width, height);
+      const completed = await applyFilmPixels(
+        canvas,
+        filmPresetId,
+        Number(filmStrength.value),
+        version,
+        onProgress
+      );
+      return completed ? { dataUrl: canvas.toDataURL("image/jpeg", .93), width, height } : null;
+    }
+
+    async function renderFilmPreview() {
+      if (!filmSourceImage || filmBusy) return;
+      const version = ++filmRenderVersion;
+      const stock = currentFilmStock();
+      filmFullDataUrl = "";
+      filmResultStatus.textContent = "正在生成本地预览";
+      showFilmProcessing(`正在冲印“${stock.name}”`, 0, "快速预览在本机计算，不会上传照片");
+      try {
+        const result = await renderFilmCanvas(760, version, (progress) => {
+          const bar = filmResultBody.querySelector(".film-progress span");
+          if (bar) bar.style.width = `${Math.round(progress * 100)}%`;
+        });
+        if (!result || version !== filmRenderVersion) return;
+        showFilmResult(result.dataUrl, false, result.width, result.height);
+      } catch (error) {
+        if (version === filmRenderVersion) showFilmError(error.message);
+      }
+    }
+
+    function scheduleFilmPreview(delay = 100) {
+      clearTimeout(filmPreviewTimer);
+      filmRenderVersion++;
+      if (!filmSourceImage) return;
+      filmPreviewTimer = setTimeout(renderFilmPreview, delay);
+    }
+
+    async function startFilmRender() {
+      if (filmBusy) return;
+      if (!filmSourceImage) {
+        filmPhotoZone.scrollIntoView({ behavior: "smooth", block: "center" });
+        showToast("请先上传一张照片");
+        return;
+      }
+      filmBusy = true;
+      filmStrength.disabled = true;
+      renderFilmCards();
+      const version = ++filmRenderVersion;
+      filmFullDataUrl = "";
+      filmResultStatus.textContent = "正在冲印原图";
+      showFilmProcessing(
+        `正在按 ${filmPhotoWidth} × ${filmPhotoHeight} 冲印原图`,
+        0,
+        "大图需要更久；中途不要切走应用，完成后仍需手动保存"
+      );
+      try {
+        const result = await renderFilmCanvas(null, version, (progress) => {
+          const bar = filmResultBody.querySelector(".film-progress span");
+          if (bar) bar.style.width = `${Math.round(progress * 100)}%`;
+        });
+        if (!result || version !== filmRenderVersion) return;
+        filmFullDataUrl = result.dataUrl;
+        showFilmResult(result.dataUrl, true, result.width, result.height);
+        showToast("原图冲印完成；点“保存到手机”才会写入相册");
+      } catch (error) {
+        showFilmError(error.message);
+      } finally {
+        filmBusy = false;
+        filmStrength.disabled = false;
+        renderFilmCards();
+      }
+    }
+
+    function saveFilmResult(button) {
+      if (!filmFullDataUrl) {
+        showToast("请先冲印原图");
+        return;
+      }
+      if (!bridge()) {
+        showToast("当前为网页预览；安装 APK 后可保存到相册");
+        return;
+      }
+      const callId = id("film_save");
+      saveCalls.set(callId, { save: button });
+      button.disabled = true;
+      button.textContent = "保存中…";
+      const stock = currentFilmStock();
+      bridge().saveImage(
+        filmFullDataUrl,
+        "image/jpeg",
+        `妙极胶片_${stock.name}_${timestampName()}.jpg`,
+        callId
+      );
+    }
+
+    function resetFilmPhoto() {
+      clearTimeout(filmPreviewTimer);
+      filmRenderVersion++;
+      filmSourceImage = null;
+      filmPhotoDataUrl = "";
+      filmPhotoWidth = 0;
+      filmPhotoHeight = 0;
+      filmFullDataUrl = "";
+      filmPhotoInput.value = "";
+      filmPhotoImage.removeAttribute("src");
+      filmPhotoPreview.hidden = true;
+      filmPhotoZone.hidden = false;
+      filmPhotoInfo.textContent = "等待读取尺寸";
+      showFilmEmpty();
+    }
+
+    function setFilmPhoto(file) {
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showToast("请选择图片文件");
+        return;
+      }
+      if (file.size > 50 * 1024 * 1024) {
+        showToast("照片不能超过 50 MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.onload = () => {
+          filmSourceImage = image;
+          filmPhotoDataUrl = String(reader.result || "");
+          filmPhotoWidth = image.naturalWidth || image.width;
+          filmPhotoHeight = image.naturalHeight || image.height;
+          filmFullDataUrl = "";
+          filmPhotoImage.src = filmPhotoDataUrl;
+          filmPhotoInfo.textContent = `${filmPhotoWidth} × ${filmPhotoHeight} · 原图尺寸`;
+          filmPhotoPreview.hidden = false;
+          filmPhotoZone.hidden = true;
+          scheduleFilmPreview(20);
+        };
+        image.onerror = () => showToast("照片读取失败，请换一张");
+        image.src = String(reader.result || "");
+      };
+      reader.onerror = () => showToast("照片读取失败");
+      reader.readAsDataURL(file);
     }
 
     function renderBeautyPresets() {
@@ -4424,6 +5167,21 @@
     effectSizeSelect.addEventListener("change", updateEffectSizeHint);
     effectGenerateBtn.addEventListener("click", startEffectGeneration);
 
+    filmPhotoZone.addEventListener("click", () => filmPhotoInput.click());
+    filmPhotoZone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        filmPhotoInput.click();
+      }
+    });
+    $("replaceFilmPhotoBtn").addEventListener("click", () => filmPhotoInput.click());
+    $("removeFilmPhotoBtn").addEventListener("click", resetFilmPhoto);
+    filmPhotoInput.addEventListener("change", () => setFilmPhoto(filmPhotoInput.files[0]));
+    filmStrength.addEventListener("input", () => {
+      filmStrengthValue.textContent = `${filmStrength.value}%`;
+      scheduleFilmPreview(120);
+    });
+
     historyViewerCloseBtn.addEventListener("click", () => {
       selectedHistoryTaskId = "";
       historyViewer.hidden = true;
@@ -4512,6 +5270,9 @@
       showBeautyEmpty();
       renderEffectCards();
       showEffectEmpty();
+      renderFilmCards();
+      updateFilmStockLine();
+      showFilmEmpty();
       renderStyleCards();
       renderReferences();
       updatePromptMode();
@@ -4519,7 +5280,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.7.9";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.8.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
