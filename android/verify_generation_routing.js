@@ -256,7 +256,7 @@ async function main() {
   }
 
   console.log("checking new image presets");
-  const presets = await evaluate(`(() => {
+  const presets = await evaluate(`(async () => {
     const foodIds = [
       "ingredient-atlas", "recipe-zine", "tabletop-diorama",
       "ingredient-section", "kitchen-moment", "visual-recipe"
@@ -270,7 +270,8 @@ async function main() {
       "pen-wash-travel", "watercolor-card", "impasto-diorama",
       "photo-relic", "zine-postcard", "gathered-zine",
       "heytea-doodle", "abstract-editorial", "geo-editorial", "mono-color",
-      "xxd-panel", "line-art-extension"
+      "xxd-panel", "line-art-extension", "travel-magnet-poster",
+      "knit-zine-poster", "travel-sticker-card"
     ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
     const transform = STYLE_CARDS.filter((style) => style.category === "transform");
@@ -281,6 +282,20 @@ async function main() {
     document.querySelector('[data-category="transform"]').click();
     const renderedTransformCards = styleGrid.children.length;
     document.querySelector('[data-category="skill"]').click();
+    const skillImages = [...styleGrid.querySelectorAll(".style-preview img")];
+    const imageReady = await Promise.all(skillImages.map((image) => new Promise((resolve) => {
+      if (image.complete) {
+        resolve(image.naturalWidth > 0);
+        return;
+      }
+      image.addEventListener("load", () => resolve(image.naturalWidth > 0), { once: true });
+      image.addEventListener("error", () => resolve(false), { once: true });
+    })));
+    const travelMagnet = STYLE_CARDS.find((style) => style.id === "travel-magnet-poster");
+    const knitZine = STYLE_CARDS.find((style) => style.id === "knit-zine-poster");
+    const travelSticker = STYLE_CARDS.find((style) => style.id === "travel-sticker-card");
+    const watercolorCard = STYLE_CARDS.find((style) => style.id === "watercolor-card");
+    const referenceStyleIds = ["travel-magnet-poster", "knit-zine-poster", "travel-sticker-card"];
     return {
       foodCount: food.length,
       foodIdsPresent: foodIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
@@ -297,6 +312,17 @@ async function main() {
       skillPrompts: skill.every((style) => style.prompt.length >= 260),
       skillPreviews: skill.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
       renderedSkillCards: styleGrid.children.length,
+      loadedSkillImages: imageReady.filter(Boolean).length,
+      referenceStyleIds: referenceStyleIds.every((id) =>
+        STYLE_CARDS.find((style) => style.id === id)?.requiresReference
+      ),
+      magnetSize: travelMagnet?.forceSize,
+      knitSize: knitZine?.forceSize,
+      stickerSize: travelSticker?.forceSize,
+      watercolorSize: watercolorCard?.forceSize,
+      watercolorUpdated: watercolorCard?.desc.includes("可撕齿边")
+        && watercolorCard?.prompt.includes("横向摆放")
+        && watercolorCard?.prompt.includes("配色圆点"),
       travelGeneric: travel
         && travel.name === "旅途手记拼贴"
         && travel.prompt.includes("不要预设海边")
@@ -315,11 +341,18 @@ async function main() {
     || !presets.transformPrompts
     || !presets.transformPreviews
     || presets.renderedTransformCards !== 6
-    || presets.skillCount !== 15
+    || presets.skillCount !== 18
     || !presets.skillIdsPresent
     || !presets.skillPrompts
     || !presets.skillPreviews
-    || presets.renderedSkillCards !== 15
+    || presets.renderedSkillCards !== 18
+    || presets.loadedSkillImages !== 18
+    || !presets.referenceStyleIds
+    || presets.magnetSize !== "2:3"
+    || presets.knitSize !== "3:4"
+    || presets.stickerSize !== "3:2"
+    || presets.watercolorSize !== "3:4"
+    || !presets.watercolorUpdated
     || !presets.travelGeneric
   ) {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);

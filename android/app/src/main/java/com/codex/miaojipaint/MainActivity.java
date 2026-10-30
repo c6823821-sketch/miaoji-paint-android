@@ -240,7 +240,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "1.8.1";
+                return "1.9.0";
             }
         }
 
@@ -868,7 +868,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "1.8.1";
+            return "1.9.0";
         }
     }
 

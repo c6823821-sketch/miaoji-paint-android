@@ -1760,7 +1760,7 @@
             <button class="filter-chip" type="button" data-category="photo">摄影质感</button>
             <button class="filter-chip" type="button" data-category="design">卡片设计</button>
             <button class="filter-chip" type="button" data-category="transform">创意重构 6</button>
-            <button class="filter-chip" type="button" data-category="skill">公开 Skill 15</button>
+            <button class="filter-chip" type="button" data-category="skill">公开 Skill 18</button>
             <button class="filter-chip" type="button" data-category="food">美食灵感</button>
             <button class="filter-chip" type="button" data-category="3d">3D 手办</button>
           </div>
@@ -2188,7 +2188,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.8.1</span>
+            <span class="version-text" id="versionText">当前版本 1.9.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2432,8 +2432,23 @@
       },
       {
         id: "watercolor-card", name: "水彩旅行档案卡", category: "skill", preview: "watercolor",
-        desc: "穿孔票根、编辑档案与棉花纸", requiresReference: true, forceSize: "3:4",
-        prompt: "把上传照片做成一张完整的水彩旅行档案卡，不是普通竖版海报。先读取照片最关键的景物、光线和方向，在水彩纸的视觉中心绘制一张准确但经过概括的透明水彩或淡彩速写，保留主体轮廓、环境关系和空气感，颜色从原图提取并通过透明叠色形成。画面下方或侧边加入一条干净的可撕票根／穿孔档案区，包含真实但非识别的抽象编号线、地点坐标占位和少量几何色票；只允许极简短、清楚、与原图有关的英文手写批注，不生成假大标题。纸面是冷压棉浆水彩纸，边缘有轻微纤维、颜料沉积和水痕，套色与打孔有少量手工错位。构图像收藏级旅行档案卡，留白充足，所有平面元素服从同一印刷语言；禁止拍立得堆叠、胶带、邮票森林、贴纸、浮夸复古做旧、密集文字和水印。"
+        desc: "横向票根、清新水彩与可撕齿边", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片重构成一张收藏级的水彩旅行票根纪念卡，成品保持3:4竖幅编辑画面，但中央只放一张横向摆放的精致票卡，不把整张照片直接贴在纸上。先从原图提取两到四个最关键的景物、光线和色彩关系，再重绘成清新、概括但可辨认的透明水彩旅行插画，完整放入奶油白票卡主体；人物只保留姿态与识别色，建筑和植物删去至少七成碎细节。票卡右侧加入真实可撕结构、圆角齿边和轻微厚度，撕线一侧放极短英文旅行短语；票卡左下角放置从原图准确提取的四到六枚配色圆点，主标题使用高级细衬线英文与克制的短副标题。背景是干净明亮的浅米白无涂层纸，带柔和留白、极轻纸纤维和一张自然投影，所有印刷元素共享低饱和清新旅行杂志语言。禁止原照片直接平铺、拍立得堆叠、胶带、邮票墙、密集路线图、夸张复古做旧、满屏装饰、假二维码、水印和无关景点。"
+      },
+      {
+        id: "travel-magnet-poster", name: "旅行冰箱贴", category: "skill", preview: "travel",
+        desc: "哑光旅行页 × 精致珐琅地标", requiresReference: true, forceSize: "2:3",
+        prompt: "把上传照片重构成一张2:3竖版、严格统一版式的旅行冰箱贴纪念海报，而非普通照片加边框。画面分成清楚的两段：上方约45%使用中等明度、低饱和的蓝紫或灰蓝哑光背景，背景保持平整安静，只在中央放一枚尺寸偏小、轮廓略不规则的高级珐琅冰箱贴。冰箱贴必须从照片中真实可见的地标、山川、海岸、街景或独特建筑提取造型，必要时把原图人物以很小的比例融入景观；表面是细腻珐琅与轻微金属描边，光泽克制，不能像廉价金属徽章、塑料纪念品或过度发光。下方约55%保留原照片的人物、景观、构图、色彩和真实摄影质感，只允许等比缩放及必要轻微裁切，不重绘主体、不换景。上下之间由一条细线分隔，配一枚极小的菱形符号；分隔区只写“城市名 + 国家名”或照片中可确认的简短英文地名，使用高级细衬线、宽字距和准确排版，不编造精确坐标。整体是quiet luxury旅行杂志与可收藏纪念品的结合，比例、冰箱贴尺寸、文字位置和留白都必须稳定；禁止罐头式风景、多个徽章、图钉、护照章、胶带、路线图、花哨渐变、密集文字、logo和水印。"
+      },
+      {
+        id: "knit-zine-poster", name: "针织旅行绘本", category: "skill", preview: "storybook",
+        desc: "毛线、羊毛毡与手作旅行绘本", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片彻底重构成一张3:4的针织旅行Zine绘本页，整幅场景都要像真实手工材料搭建，而不是在原图上加毛线滤镜。先识别主体、道路、建筑、山脊、水面、植物和前后空间，再用粗毛线、麻绳走向、钩针织物、羊毛毡片、刺绣针脚和贴布重建：山脊与沙丘由连续股线形成，道路像压进毡面的粗绳，建筑由编织块与毛毡片拼成，树木和叶片只保留少量大形，禁止逐片复刻。人物或动物简化成小型针织、钩织或毡制偶人，必须保留原图姿态、服装方向和识别色，不画清楚五官。背景使用暖米白或浅燕麦色手工纸，保留布料毛边、真实纤维、针脚、轻微接缝与凹凸投影；所有材料受同一柔光照射，层次靠毛线粗细和毡片厚度建立。颜色从原图提取但降低碎色数量，使用一个温柔的重点色。标题像用毛线绣出的二到五个英文单词，尺寸克制，可有少量儿童绘本式符号但整体要成熟、可收藏。禁止普通毛线拼贴、满屏仿制纹理、塑料3D、廉价卡通、复杂小字、品牌logo和水印。"
+      },
+      {
+        id: "travel-sticker-card", name: "旅行贴纸卡", category: "skill", preview: "papercard",
+        desc: "大幅编辑插画 × 六枚手剪贴纸", requiresReference: true, forceSize: "3:2",
+        prompt: "把上传照片重构成一张3:2横向的高级旅行记忆贴纸卡，成品不是照片拼贴，也不是普通手账页。整张放在暖米白、无涂层的厚纸上，四周连续保留约4%到5%的安静边距。左侧约三分之二放一张接近正方形的大幅平面编辑插画：先用五到八个大型哑光色族重建原照片，第一眼只读到三到六个大形体、主运动方向和一处自然留白；人物简化成无脸剪影，建筑与植物压缩成少量块面，不保留摄影连续调、镜面水波、细碎叶片或密集纹理。插画下方留白处只写三个与原场景有关的简短英文关键词，中间用小圆点分隔。右侧约三分之一放正好六枚手剪贴纸，全部从原图真实元素中提取；两到三枚较大，其余较小，贴纸带不规则暖白厚边、轻微平面纸张投影和手剪误差。整体采用扁平水粉、剪纸与孔版印刷语言，保留细微纸张颗粒和少量套色错位；构图像当代旅行编辑设计卡，克制、聪明、有收藏感。禁止照片残留、胶带、邮票、地址栏、地图、卡片套卡片、光滑矢量、动漫人物、满页装饰、假二维码、logo和水印。"
       },
       {
         id: "impasto-diorama", name: "厚涂油画微缩景", category: "skill", preview: "oil",
@@ -5285,7 +5300,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.8.1";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.9.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
