@@ -6,8 +6,8 @@ const edge = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
 const html = "file:///E:/Codex/work/miaoji-paint/android/app/src/main/assets/index.html?preview=1";
 const output = "E:\\Codex\\outputs\\妙极手机画图\\界面预览.png";
 const outputStyle = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_风格提示词.png";
-const outputSkills = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_公开Skill-v1.9.0.png";
-const outputTravelSkill = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_旅行Skill提示词-v1.9.0.png";
+const outputSkills = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_海报分类-v2.0.png";
+const outputTravelSkill = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_旅行分类提示词-v2.0.png";
 const outputBottom = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_下半页.png";
 const outputSettings = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_设置.png";
 const outputHelp = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_风格说明.png";
@@ -16,6 +16,7 @@ const outputEffects = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_热�
 const outputEffectLibrary = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_热门特效库.png";
 const outputEffectSize = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_特效比例.png";
 const outputFoodLibrary = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_美食灵感.png";
+const outputLibrary = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_独立作品库-v2.0.png";
 const profile = "E:\\Codex\\work\\miaoji-paint\\edge-mobile-profile";
 const port = 9337;
 
@@ -107,7 +108,7 @@ async function main() {
   });
   fs.writeFileSync(outputStyle, Buffer.from(styleShot.data, "base64"));
   await send("Runtime.evaluate", {
-    expression: "document.querySelector('[data-category=\"skill\"]').click(); document.querySelector('.style-library').scrollIntoView({block:'start'}); window.scrollBy(0,-330)"
+    expression: "document.querySelector('[data-category=\"poster\"]').click(); document.querySelector('.style-library').scrollIntoView({block:'start'}); window.scrollBy(0,-330)"
   });
   await sleep(450);
   await send("Runtime.evaluate", {
@@ -119,7 +120,7 @@ async function main() {
   });
   fs.writeFileSync(outputSkills, Buffer.from(skillsShot.data, "base64"));
   await send("Runtime.evaluate", {
-    expression: "const card=[...document.querySelectorAll('.style-card')].find((item)=>item.querySelector('strong')?.textContent==='旅行冰箱贴'); card.click(); document.getElementById('selectedStyleEditor').scrollIntoView({block:'center'})"
+    expression: "document.querySelector('[data-category=\"travel\"]').click(); const card=[...document.querySelectorAll('.style-card')].find((item)=>item.querySelector('strong')?.textContent==='旅行冰箱贴'); card.click(); document.getElementById('selectedStyleEditor').scrollIntoView({block:'center'})"
   });
   await sleep(450);
   await send("Runtime.evaluate", {
@@ -202,6 +203,15 @@ async function main() {
     captureBeyondViewport: false
   });
   fs.writeFileSync(outputEffectSize, Buffer.from(effectSizeShot.data, "base64"));
+  await send("Runtime.evaluate", {
+    expression: "document.getElementById('libraryBtn').click()"
+  });
+  await sleep(450);
+  const libraryShot = await send("Page.captureScreenshot", {
+    format: "png",
+    captureBeyondViewport: false
+  });
+  fs.writeFileSync(outputLibrary, Buffer.from(libraryShot.data, "base64"));
   console.log(output);
   socket.close();
 }

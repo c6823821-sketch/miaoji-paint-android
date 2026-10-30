@@ -85,6 +85,30 @@ generation still runs through the user's own MiaoJi API key.
 - Adapted preset: real-photo continuous line-art travel poster /
   实景延伸线稿.
 
+## v2.0.0 Photo-Skill References
+
+- Discovery sources:
+  - https://v.douyin.com/Axo1XTdbhkU/
+  - https://v.douyin.com/FuCs8f31kvY/
+- The 15-item carousel published by AI酋长Andy was read directly from its
+  three image pages. The public `collage-design` post was read from its 18
+  before/after pages and linked repository.
+- `collage-design`: https://github.com/polgarp/collage-design
+- Several names in the discovery carousel already correspond to locally
+  installed or previously credited Skill workflows:
+  `photo-abstract-editorial`, `photo-relic-editorial`, `scenes-gathered-zine-v1-3`,
+  and `heytea-style`. Those remain represented by their existing cards.
+- The app's `minimal-zine-poster`, `photo-revival`,
+  `scene-distillation`, `pixel-style-poster`, `kimi-tech-editorial`,
+  `mondo-cinema-poster`, `github-trending-poster`, `skill-index-board`,
+  `travel-photo-abstraction`, `crt-terminal-poster`,
+  `dreamcore-collage`, and `collage-design` prompts are compact rewrites for
+  this personal, non-commercial app. They are based on the visible shared
+  examples and the publicly named workflows, not on copied sample images.
+- No third-party sample image is bundled as a card preview. All v2.0.0
+  preview tiles were generated independently as one paid MiaoJi test sheet
+  and then cropped into individual cards.
+
 ## GPT Image 2 Gallery
 
 - Source: https://github.com/ChaosRealmsAI/gpt-image-2-gallery

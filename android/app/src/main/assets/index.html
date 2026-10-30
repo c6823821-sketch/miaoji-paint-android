@@ -146,6 +146,23 @@
       font-weight: 800;
       white-space: nowrap;
     }
+    .library-button {
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--ink);
+      background: rgba(255, 254, 250, .82);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    .library-button.active {
+      color: #fff;
+      border-color: var(--ink);
+      background: var(--ink);
+    }
 
     .page {
       max-width: 1180px;
@@ -883,6 +900,62 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
     }
+    .beauty-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .beauty-filter-card {
+      min-width: 0;
+      padding: 5px;
+      border: 1px solid rgba(23, 32, 30, .1);
+      border-radius: 13px;
+      color: var(--ink);
+      background: #f8f6f0;
+      cursor: pointer;
+      text-align: left;
+    }
+    .beauty-filter-card.selected {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(13, 118, 110, .1);
+    }
+    .beauty-filter-visual {
+      position: relative;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: 9px;
+      background:
+        linear-gradient(145deg, var(--filter-a, #d9d0bd), var(--filter-b, #355d68));
+    }
+    .beauty-filter-visual img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .beauty-filter-card strong {
+      display: block;
+      margin: 6px 2px 0;
+      overflow: hidden;
+      font-size: 9px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .sub-mode-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(23, 32, 30, .09);
+    }
+    .sub-mode-head strong { flex: 1; font-size: 11px; }
+    .sub-mode-head span {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 650;
+    }
     .beauty-preset {
       padding: 11px;
       border: 1px solid rgba(23, 32, 30, .1);
@@ -1448,6 +1521,7 @@
       line-height: 1.4;
     }
     #generateButton { min-width: 142px; }
+    #beautyFilterBtn { white-space: nowrap; }
 
     .modal-mask {
       position: fixed;
@@ -1656,6 +1730,7 @@
       .brand-copy span, .status-pill { display: none; }
       .brand-mark { width: 33px; height: 33px; border-radius: 11px; }
       .login-button { padding: 0 10px; }
+      .library-button { padding: 0 9px; }
       .page { padding: 18px 11px 118px; }
       .page-tabs { justify-content: flex-start; }
       .page-heading h1 { font-size: 27px; }
@@ -1669,11 +1744,13 @@
       .style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .effect-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .film-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .beauty-filter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .style-preview { height: auto; }
       .reference-preview { grid-template-columns: 78px minmax(0, 1fr); }
       .reference-preview img { width: 78px; height: 78px; }
       .action-dock { min-height: 68px; padding: 9px; }
       #generateButton { min-width: 122px; }
+      #beautyFilterBtn { padding: 0 9px; }
       .modal-mask { padding: 8px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
       .modal { max-height: 94vh; border-radius: 20px; }
       .modal-body { padding: 15px 15px 19px; }
@@ -1691,6 +1768,7 @@
     </div>
     <div class="app-actions">
       <span class="status-pill offline" id="connectionState">未连接</span>
+      <button class="library-button" id="libraryBtn" type="button" aria-label="打开作品库">作品库</button>
       <button class="icon-button" id="helpBtn" type="button" aria-label="风格卡片说明">?</button>
       <button class="icon-button" id="settingsBtn" type="button" aria-label="设置">⚙</button>
       <button class="login-button" id="loginBtn" type="button">登录 / 充值</button>
@@ -1699,10 +1777,9 @@
 
   <nav class="page-tabs" aria-label="功能板块">
     <button class="page-tab active" type="button" data-page="imagePage">AI 生图</button>
-    <button class="page-tab" type="button" data-page="beautyPage">一键美颜</button>
-    <button class="page-tab" type="button" data-page="effectPage">热门特效</button>
+    <button class="page-tab" type="button" data-page="beautyPage">人像质感</button>
+    <button class="page-tab" type="button" data-page="effectPage">风格大片</button>
     <button class="page-tab" type="button" data-page="filmPage">胶片冲印</button>
-    <button class="page-tab" type="button" data-page="historyPage">最近生成</button>
   </nav>
 
   <main class="page" id="imagePage">
@@ -1752,20 +1829,20 @@
         <section class="card style-library">
           <div class="card-head">
             <div class="card-title">风格卡片</div>
-            <div class="card-subtitle">公开 Skill 提示词 · 不切换模型</div>
+            <div class="card-subtitle">30 个公开提示词工作流 · 按用途分类</div>
           </div>
           <div class="style-filters" id="styleFilters">
-            <button class="filter-chip active" type="button" data-category="popular">热门</button>
+            <button class="filter-chip active" type="button" data-category="popular">精选</button>
+            <button class="filter-chip" type="button" data-category="portrait">人像氛围</button>
+            <button class="filter-chip" type="button" data-category="poster">海报版式</button>
+            <button class="filter-chip" type="button" data-category="travel">旅行记忆</button>
+            <button class="filter-chip" type="button" data-category="transform">创意重构</button>
             <button class="filter-chip" type="button" data-category="art">绘画插画</button>
-            <button class="filter-chip" type="button" data-category="photo">摄影质感</button>
-            <button class="filter-chip" type="button" data-category="design">卡片设计</button>
-            <button class="filter-chip" type="button" data-category="transform">创意重构 6</button>
-            <button class="filter-chip" type="button" data-category="skill">公开 Skill 18</button>
             <button class="filter-chip" type="button" data-category="food">美食灵感</button>
             <button class="filter-chip" type="button" data-category="3d">3D 手办</button>
           </div>
           <div class="style-grid" id="styleGrid"></div>
-          <p class="style-note">这些是公开 Skill 的提示词工作流，不是免费模型，也不会下载 LoRA 到手机。生成仍走妙极 API，费用按任务实际扣费。</p>
+          <p class="style-note">公开 Skill 是可复用的提示词工作流，不是免费模型，也不会下载 LoRA。分类是按实际用途整理；生成仍走妙极 API。</p>
           <div class="selected-style-editor" id="selectedStyleEditor" hidden>
             <div class="selected-style-head">
               <strong id="selectedStyleTitle">本风格追加的提示词</strong>
@@ -1825,8 +1902,8 @@
   <main class="page" id="beautyPage" hidden>
     <section class="page-heading">
       <p class="eyebrow">人像精修</p>
-      <h1>一键美颜</h1>
-      <p>保留原人物身份、骨相、表情、发型和构图，只在你选择的范围内精准生成自然妆感与轮廓调整。</p>
+      <h1>人像质感</h1>
+      <p>先用本机氛围滤镜做即时电影调色，零 API、零等待；需要局部妆面精修时，再选择 AI 方案并手动生成。</p>
     </section>
 
     <div class="beauty-layout">
@@ -1840,7 +1917,7 @@
             <div class="beauty-photo-zone" id="beautyPhotoZone" role="button" tabindex="0">
               <div class="upload-icon">＋</div>
               <strong>上传一张人像照片</strong>
-              <span>上传不会自动生成或扣费；选择方案后需点“一键美颜”</span>
+              <span>上传不会自动生成或扣费；可先试本机滤镜，再决定是否用 AI 精修</span>
             </div>
             <div class="beauty-photo-preview" id="beautyPhotoPreview" hidden>
               <img id="beautyPhotoImage" alt="待修人像照片">
@@ -1855,10 +1932,21 @@
 
         <section class="card">
           <div class="card-head">
-            <div class="card-title">美颜方案</div>
-            <div class="card-subtitle">先选一个主效果，再调整强度</div>
+            <div class="card-title">人像调色与精修</div>
+            <div class="card-subtitle">氛围滤镜本机秒出，AI 精修按需提交</div>
           </div>
           <div class="card-body">
+            <div class="sub-mode-head" style="margin-top:0;padding-top:0;border-top:0">
+              <strong>氛围滤镜</strong>
+              <span>本机处理 · 不扣费</span>
+            </div>
+            <div class="beauty-filter-grid" id="beautyFilters"></div>
+            <p class="help-copy">上传照片后可实时看调色；底部“应用滤镜”直接在本机输出完整图片。</p>
+
+            <div class="sub-mode-head">
+              <strong>AI 局部精修</strong>
+              <span>云端生成 · 手动提交</span>
+            </div>
             <div class="portrait-settings">
               <div class="field">
                 <label class="field-label" for="beautyModelSelect">修图模型</label>
@@ -1902,8 +1990,8 @@
           <div class="result-body beauty-result-body" id="beautyResultBody">
             <div class="result-empty">
               <div class="result-empty-icon">人</div>
-              <strong>美颜结果会显示在这里</strong>
-              <p>上传照片、选择方案后生成。结果不会自动保存到手机。</p>
+              <strong>人像结果会显示在这里</strong>
+              <p>本机滤镜立即完成；AI 精修需手动提交。结果都不会自动保存。</p>
             </div>
           </div>
         </section>
@@ -1914,8 +2002,8 @@
   <main class="page" id="effectPage" hidden>
     <section class="page-heading">
       <p class="eyebrow">人像玩法定向整理</p>
-      <h1>热门特效</h1>
-      <p>把公开热门的人像妆造做成可选项。上传后会先用你的照片免费预览，点生成才提交云端重绘。</p>
+      <h1>风格大片</h1>
+      <p>保留人物身份和姿势，改变妆发、服装、背景、光线与色调。上传后先看免费预览，点生成才提交云端重绘。</p>
     </section>
 
     <div class="trend-note">
@@ -1953,7 +2041,7 @@
 
         <section class="card">
           <div class="card-head">
-            <div class="card-title">热门特效库</div>
+            <div class="card-title">风格大片库</div>
             <div class="card-subtitle">26 种 · 12 种女生向 · 14 种男士向</div>
           </div>
           <div class="card-body">
@@ -2157,7 +2245,8 @@
       <strong id="beautyPriceTitle">按妙极任务预扣结算</strong>
       <span id="beautyPriceDetail">人像生成会按参考图输入成本计费</span>
     </div>
-    <button class="primary-button" id="beautyGenerateBtn" type="button">一键美颜</button>
+    <button class="secondary-button" id="beautyFilterBtn" type="button">应用滤镜</button>
+    <button class="primary-button" id="beautyGenerateBtn" type="button">AI 精修</button>
   </div>
   <div class="action-dock" id="effectActionDock" hidden>
     <div class="price-copy">
@@ -2188,7 +2277,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 1.9.0</span>
+            <span class="version-text" id="versionText">当前版本 2.0.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2225,7 +2314,7 @@
               <strong>热门特效</strong>
               <span class="badge neutral">独立人像板块</span>
             </div>
-            <p>卡片显示妙极实际生成的成品。选择特效后，上传照片可先在大图里免费预览色调；点“生成特效照片”才会上传并扣费。</p>
+              <p>卡片显示实际生成的成品。选择风格后，上传照片可先免费预览色调；点“生成大片”才会上传并扣费。</p>
           </div>
           <div class="guide-item">
             <div class="guide-title">
@@ -2260,7 +2349,7 @@
         <p class="help-copy">每次只选一个主风格。需要混搭时，直接在提示词里补充，例如“油画厚涂 + 电影逆光”。选择“不加额外风格”就完全按你写的生成。</p>
         <div class="button-row">
           <button class="secondary-button" id="helpCloseBtn" type="button">去选择风格</button>
-          <button class="secondary-button" id="openEffectsBtn" type="button">去看热门特效</button>
+          <button class="secondary-button" id="openEffectsBtn" type="button">去看风格大片</button>
           <button class="secondary-button" id="helpPromptBtn" type="button">去写提示词</button>
         </div>
       </div>
@@ -2501,6 +2590,66 @@
         prompt: "把上传照片制作成一张 3:4 的 Photo × Line Art 实景延伸线稿旅行海报，上下各约占一半，分界清楚但不做普通拼贴框。上半部直接使用原始照片，保留主体、人物、建筑、动物、光线、色彩、构图和清晰度，不得重绘、模糊、拉伸、镜像、重复或随意改变照片内容；只可等比轻微裁切。分析原图，选择一个真实存在的连续元素，例如海水、道路、绳索、缆线、光线、桥梁、码头、树枝、山坡、建筑轮廓或倒影，让它从照片中的准确位置连续穿过中线，逐步转化成简洁黑色钢笔线稿，并与下半部的小人物发生明确互动。下半部使用干净中性暖白象牙纸，只带极轻微纤维纹理；小人物约占画面高度百分之七到十，无清楚五官，服装和道具高度简化，动作可为拉、托、折、推、攀爬、观察或休息。连接处不能有空隙、错位或重新起笔。加入一句两到五个英文单词的温柔手写短句，尺寸很小。整体高级、克制、诗意、有编辑感和巧妙视觉隐喻；禁止上下完全断开、悬浮小人、Q版动漫、复杂五官、密集速写、完整场景复刻、拼贴网格、邮票、边框、水印和过黄纸面。"
       },
       {
+        id: "minimal-zine-poster", name: "极简情绪纸刊", category: "skill", preview: "editorial",
+        desc: "九成留白、一处照片残片与高饱和色锚", forceSize: "3:4",
+        prompt: "制作一张3:4竖版极简情绪纸刊海报。使用整幅暖米白、带极轻纸张纤维的扫描纸面，约80%保持安静空白；主体只占画面8%至20%，放在偏下、偏侧或不对称位置。把上传照片或用户主题压成一个小型旧照片残片、撕裂剪报、单一实物标本或极窄图像窗口，边缘有轻微复印柔化、网点与纸墨咬色，不保留完整大照片。只选择一个高饱和色作为明确视觉锚，例如钴蓝、朱红、梨绿或柠檬黄，让它以平涂剪影、纸张切块、局部照片色块或短句字的形态出现，面积虽小但在缩略图中清楚可见。使用细小衬线体或打字机字写一句不超过四个词的英文，可有极小日期与天气作为档案碎片；文字允许轻微错位、压边或不完全清晰。整体像日韩独立刊物被平扫下来的纸页，平面、克制、低对比，不出现商业标题、完整风景、二维码、标签、胶带、拍立得堆叠、彩色渐变、厚重阴影、3D、霓虹或水印。"
+      },
+      {
+        id: "photo-revival", name: "纸面手绘小景", category: "skill", preview: "storybook",
+        desc: "普通照片变成极小尺幅的手绘诗页", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片重画成一张3:4纸面手绘插画，不是给原照片加滤镜。先识别照片里最有记忆点的主体、环境与一到两个细节，再用水彩、彩色铅笔和细钢笔重新绘制，保留主体的姿态、相对位置和真实叙事，但去除摄影像素与机械细节。主体缩成只占页面10%至16%的小型视觉团块，允许放在偏侧或偏下的不对称位置；其余80%以上是一整张白色或极浅暖白纸，留白必须干净并有呼吸感。只在插画团块内部使用清楚、鲜活的局部颜色，不让色彩蔓延成满屏滤镜。线条要像真实手绘，带轻压、断续与少量纸纹；可加入极小日期、手写字或一个细窄纸片，但不能变成手账拼贴。画面安静、轻盈、像一本独立诗集的内页，禁止满版铺图、重海报字、粗胶带、夸张复古做旧、矢量平涂、密集装饰、长文字与水印。"
+      },
+      {
+        id: "scene-distillation", name: "影像蒸馏纸刊", category: "skill", preview: "ink",
+        desc: "不讲照片，只把关系蒸馏成一张新作品", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片只当作语义证据，重新创作一张3:4独立艺术纸刊，不得嵌入、裁切、描摹或保留任何摄影像素。先提炼一个最小的语义核心、一个核心动作和两到四个空间关系，再删去约80%的细节，把场景改写成原创插画、纸片、墨迹与排版。成品必须有68%至85%的安静纸面；主体群占12%至30%，使用一个视觉主形加一至三个辅助形。选择一个来自原图关系的张力，例如亲密与距离、微小与辽阔、庇护与封闭，并通过尺度、间距、方向、遮挡或材料对比让它在画面中直接可见。只使用一个高饱和色作为情绪事件，例如朱红色像余温、钴蓝像远处信号或梨绿像生命痕迹；纸张与其余图形保持中性墨色。文字可成为标题、私密笔记或视觉节奏，但要短、有作者判断。采用平扫纸面、纸纤维、干墨和轻印刷误差；禁止照片窗口、照片滤镜、直译小插画、通用几何图标、随机圆点、胶带、印章、商业海报标题、3D、玻璃、厚投影和水印。"
+      },
+      {
+        id: "pixel-style-poster", name: "点阵未来海报", category: "skill", preview: "pixel",
+        desc: "超细点阵、低分辨率印刷与科技排版", forceSize: "3:4",
+        prompt: "制作一张3:4当代点阵未来主义海报。把上传照片或主题中的主体先提炼成一个可识别的轮廓，再用大小、疏密和明度不同的圆形网点重建主体，形成从细密灰度到局部高饱和色的视觉过渡，不能只是把照片打马赛克。背景使用干净的黑、暖白或深石墨单色场，允许一处反向半色调彩色晕染，但主结构仍由点阵建立。排版采用像科研档案与独立科技刊物结合的网格，标题要大、短、准确，仅使用一个不超过两个词的英文词；周围可加入三到五个微型标签、短线、坐标碎片和数据节奏，但文字必须清楚、有限，不生成长篇乱码。主体占画面约50%至65%，边缘有清楚留白与一处刻意裁切。印刷质感包括低分辨率网点、轻微套色误差、纸张吸墨与扫描颗粒，整体高级、冷静、像实际印出来的实验海报，禁止廉价赛博霓虹、满屏代码、渐变塑料字、游戏UI和过多颜色。"
+      },
+      {
+        id: "kimi-tech-editorial", name: "计算科技海报", category: "skill", preview: "poster",
+        desc: "银色工业设计、空气感留白与参数排版", forceSize: "3:4",
+        prompt: "制作一张3:4高完成度科技编辑海报，像顶级工业设计品牌与计算实验室联合发布的视觉稿。画面主体只保留一个纯粹、精致的几何或产品形态，例如抛光铬环、半透明玻璃曲面、磨砂金属模块、精密芯片剖面或漂浮的银色球体；材质边缘必须有真实反射、细微划痕、柔和高光和环境遮蔽，不能是廉价3D塑料。背景使用大面积暖白、冷灰或雾银，形成70%左右的呼吸空间，通过一处极淡的冷暖渐变与阴影把主体托起。排版像技术档案：左上或右下安排短英文标题、型号、日期、两三条微型参数线和细网格，字号层级明确、拼写准确、总字数极少。构图偏轴、克制，主体与文字之间形成精确张力。整体像概念科技视觉与高端产品目录的混合，细节可放大看，禁止手机样机、品牌logo、蓝色科幻光效、满屏HUD、复杂炫光和未经要求的说明文字。"
+      },
+      {
+        id: "mondo-cinema-poster", name: "Mondo 电影海报", category: "skill", preview: "poster",
+        desc: "三色丝网、隐喻图形与收藏级电影版画", forceSize: "2:3",
+        prompt: "制作一张2:3收藏级电影丝网海报，用两到三种纯色油墨建立完整画面：暖象牙纸、墨黑，再选择朱红、钴蓝或芥末黄中的一种作为唯一强调色。不要复刻真实电影海报，把上传照片或用户主题提炼成一个清楚的电影隐喻和不超过三个大型图形元素，例如人物剪影与一扇门、月亮与塔楼、公路与眼睛；主体轮廓必须一眼可读，但内部只保留最必要的负形。使用丝网印刷的实色块、微细套色错位、油墨边缘、纸张纤维和极少磨损，允许一半以上画面是刻意的负空间。大标题只写一个简短、拼写准确的英文片名，放在边缘或与图形发生精确咬合；如无明确标题，不生成任何文字。构图像电影资料馆限量版画，平面、克制、有悬念，禁止照片贴图、写实人物五官、漫威式角色堆叠、镜头光晕、金属字、胶带、邮票与装饰性边框。"
+      },
+      {
+        id: "github-trending-poster", name: "开源趋势日报", category: "skill", preview: "poster",
+        desc: "深色数据版式、榜单层级与程序文化", forceSize: "3:4",
+        prompt: "制作一张3:4中文开源趋势日报海报，但只生成可读且准确的少量中文与英文文字，避免长篇乱码。使用深炭黑底或暖白底二选一，采用像开发者终端、技术杂志和数据看板结合的严格网格。顶部是一条清晰栏目名与日期；中部安排五条项目榜单，每条只有项目名、语言、星标数和一句不超过十二字的短说明，行高统一，数字与图标层级分明。右侧或底部放一个极简贡献热度图、折线图或代码括号图形作为辅助，不要用复杂背景插件。使用荧光绿、冰蓝或琥珀橙中的一种作为唯一信号色，强调排名、上升箭头和分隔线。整体应当像真正可发布的设计师日报，信息密度高但阅读秩序干净，细节体现在数字对齐、留白、细线和排版，而不是堆满代码。禁止大段乱码、虚构logo、过度赛博朋克、满屏代码、渐变霓虹与手机外壳。"
+      },
+      {
+        id: "skill-index-board", name: "灵感技能索引墙", category: "skill", preview: "papercard",
+        desc: "九宫格作品索引、纸张标题与策展气质", forceSize: "3:4",
+        prompt: "制作一张3:4高级创作技能索引海报，像设计工作室墙上真实印刷的 Skill Library 总览。画布为暖灰白美术纸，使用精确但略带手工感的排版：顶部写一个短而清楚的全大写英文栏目名，下面是一块三列三行的九宫格作品墙。九张缩略卡片必须各自展示完全不同的视觉语言，例如铅笔静物、叠色丝网、黑白摄影、纸张拼贴、流体金属、几何字体、植物标本、抽象3D和微型建筑；每张缩略图都要有完整构图、真实材质和清楚留白，而不是同一张图的滤镜变体。卡片尺寸统一但不做电子产品样机，边缘只有极轻纸张投影。四个角落安排简短可读的英文分类名与编号，使用小字号无衬线体和一条细线建立层级。整体像一本独立设计目录或画廊索引，克制、丰富、有收藏欲；禁止长篇乱码、UI按钮、真实品牌logo、满屏装饰、廉价贴纸、彩色渐变按钮与水印。"
+      },
+      {
+        id: "travel-photo-abstraction", name: "旅行照片抽象志", category: "skill", preview: "editorial",
+        desc: "真实照片在上，关系抽象成下半页记忆图", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片制作成一张3:4上下分区的旅行抽象编辑作品。上半部必须保留原照片的主体、光影、构图、色彩与真实摄影质感，不重画、不磨皮、不换景。下半部使用一整块完全均匀的象牙白背景，约80%为留白；只根据原照片提炼二到四个关系，并把它们重建成非具象的细小图形，例如两段表示山脊节奏的灰线、一块来自天空的淡蓝色面、一个代表人物方向的短竖线、一个来自道路弧度的细弧；每个标记都必须对应原图中的明确证据，不能随意画圆点、网格、箭头或装饰。抽象主体整体只占下半部宽度的30%至40%，高度不超过28%，放置在偏下或偏侧位置，保持清楚层级和呼吸空间。下半部只加入极小的编号、日期和一句一到三个词的英文短语，分别靠在安静的边缘。禁止把原片缩成插画、照片滤镜、完整重绘、通用图标、彩色装饰、纸张做旧、复杂纹理或额外文字。"
+      },
+      {
+        id: "crt-terminal-poster", name: "CRT 终端档案", category: "skill", preview: "pixel",
+        desc: "荧光绿终端、扫描线与复古计算机界面", forceSize: "3:4",
+        prompt: "制作一张3:4复古 CRT 终端视觉海报。整个画面是一块略弧面的深黑显像管屏幕，只有磷光绿或琥珀黄一种单色光；界面由严格的黑底细线网格、目录编号、项目标题、微型菜单、简短可读英文和一块低分辨率曲线图组成。把上传照片或主题提炼成一个极简的线框轮廓或像素化风景，放在界面右侧或下方作为背景窗口，不要覆盖排版。文字层级像真实早期计算机系统：一处大号终端标题、四到六行短菜单、少量系统时间与版本号，所有字符必须拼写准确，不生成密集乱码。加入轻微扫描线、荧光溢出、玻璃反光、电子束柔化和边缘暗角，让画面像真实可用的工业终端截图，而不是套滤镜的网页。构图规整但有不对称留白，禁止现代手机UI、彩色图标、赛博霓虹、满屏代码、过多窗口、3D眼镜和品牌logo。"
+      },
+      {
+        id: "dreamcore-collage", name: "梦核超现实拼贴", category: "skill", preview: "storybook",
+        desc: "老照片、巨物与不合逻辑的梦境空间", forceSize: "3:4",
+        prompt: "制作一张3:4梦核超现实拼贴海报。先从上上传照片或文字主题中提取一个普通主体，再把它放进一片看似合理、实际上尺度错位的梦境空间：例如门后出现云海、房间中央悬浮一座山、椅子通向另一个傍晚、旧相机变成月亮。最多保留一个巨大的不可能元素和一个小型动作，不能堆叠许多奇怪物体。采用真实老照片、旧杂志剪片、柔焦风景与细腻扫描颗粒混合的材料语言，颜色控制在奶油白、褪色蓝、灰绿和一处暖橙之间；主体边缘可以是轻微手剪或照相腐蚀，但不要贴纸白边。画面要有清楚景深错觉、自然投影与不合理空间之间的平衡，留出一块安静区域。可加入一句极短、似梦话的英文手写，但不要长诗和说明文字。整体像90年代超现实杂志内页，神秘、怀旧、略带不安，禁止廉价恐怖、血迹、密集眼睛、满屏拼贴、随机时钟、AI塑料3D和水印。"
+      },
+      {
+        id: "collage-design", name: "照片剪切重构", category: "skill", preview: "papercard",
+        desc: "把一张照片拆成碎片后重新组织空间", requiresReference: true, forceSize: "4:3",
+        prompt: "把上传照片真正拆解并重新剪辑成一张横向4:3当代纸面拼贴作品，不能只是原图加撕纸边框。先保留主体最容易识别的轮廓与真实照片质感，再沿屋顶、树冠、塔尖、道路、水面、桌沿、锅柄或枝条等清楚边界切成五到九块不规则碎片；主照片保持最大，其他碎片来自原图不同局部，必须互相遮挡并重新安排前后空间。碎片之间允许轻微错位、悬空、拉长或跨越，但应保持统一光源、真实投影和一致颗粒。背景使用暖象牙纸，可加入一块很克制的高饱和色片与一小段清楚的短英文标题，像 ORBIT、CURRENT 或 SAVOR，但不要写长句。整体像独立旅行杂志、艺术印刷品或真实手工剪贴，不像随手贴满照片的手账。禁止完整照片加滤镜、重复整张图、胶带森林、邮票、贴纸图标、夸张白边、塑料3D、长文字与品牌logo。"
+      },
+      {
         id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
         desc: "湿画晕染、留白与纸纤维",
         prompt: "传统透明水彩原作质感，使用冷压棉浆水彩纸。先以湿画法铺出大块空气感色面，再用干笔在视觉中心补充结构、纹理和少量铅笔线。颜色通过透明叠色形成，不靠厚重白颜料；高光利用纸张留白，边缘有自然水痕、轻微回渗和颜料沉积，但不弄脏画面。主色和邻近色保持和谐，只在一个小区域使用饱和度较高的暖色或冷色作为惊喜。构图有呼吸感，主体细节集中，背景逐渐虚化。避免数码渐变、塑料高光和均匀颗粒。除用户明确要求外，不出现文字或水印。"
@@ -2562,6 +2711,44 @@
       }
     });
 
+    const STYLE_GROUP_IDS = {
+      popular: [
+        "none", "cinematic", "minimal-zine-poster", "travel-memory",
+        "collage-design", "photo-revival", "papercard", "travel-magnet-poster",
+        "tabletop-diorama", "mondo-cinema-poster", "blindbox", "oil"
+      ],
+      portrait: [
+        "cinematic", "film", "editorial", "kimi-tech-editorial"
+      ],
+      poster: [
+        "papercard", "zine-postcard", "mono-color", "minimal-zine-poster",
+        "pixel-style-poster", "kimi-tech-editorial", "mondo-cinema-poster",
+        "github-trending-poster", "skill-index-board", "crt-terminal-poster"
+      ],
+      travel: [
+        "travel-memory", "travel-photo-abstraction", "gathered-zine",
+        "geo-editorial", "line-art-extension", "papercraft-travel",
+        "iso-block-world", "pixel-dissolve", "pen-wash-travel",
+        "watercolor-card", "travel-magnet-poster", "knit-zine-poster",
+        "travel-sticker-card"
+      ],
+      transform: [
+        "torn-cartoon", "double-exposure", "acrylic-relief", "screenprint",
+        "paper-diorama", "ink-deconstruct", "photo-relic", "abstract-editorial",
+        "heytea-doodle", "xxd-panel", "photo-revival", "scene-distillation",
+        "dreamcore-collage", "collage-design"
+      ],
+      art: [
+        "oil", "illustration", "watercolor", "ink", "anime", "manga",
+        "pixel", "fantasy", "impasto-diorama"
+      ],
+      food: [
+        "ingredient-atlas", "recipe-zine", "tabletop-diorama",
+        "ingredient-section", "kitchen-moment", "visual-recipe"
+      ],
+      "3d": ["clay", "blindbox", "iso-block-world", "papercraft-travel"]
+    };
+
     const BEAUTY_PRESETS = [
       {
         id: "natural-retouch", name: "自然精修",
@@ -2592,6 +2779,49 @@
         id: "face-contour", name: "轮廓小脸",
         desc: "轻微修容和下颌线，保留骨相",
         prompt: "仅通过轻微摄影修容和自然光影优化轮廓：少量收敛脸颊两侧阴影，强化下颌线和鼻梁高光，使脸型更干净上镜；必须保留原有颧骨、下颌骨、脸长宽比例、五官位置和身份特征，禁止直接液化缩脸、尖下巴、削骨式瘦脸或改变头肩比"
+      }
+    ];
+
+    const BEAUTY_FILTERS = [
+      {
+        id: "clean", name: "原生清透", colors: ["#e7e2d7", "#9eaea8"],
+        css: "brightness(1.02) contrast(1.02) saturate(1.02)",
+        tone: { color: "rgba(245,241,230,.10)", blend: "soft-light" }
+      },
+      {
+        id: "cinema-teal", name: "青橙电影", colors: ["#2f6873", "#d68b58"],
+        css: "brightness(.98) contrast(1.14) saturate(.9) sepia(.03) hue-rotate(-7deg)",
+        tone: { color: "rgba(24,99,110,.20)", blend: "soft-light" }
+      },
+      {
+        id: "warm-film", name: "暖调胶片", colors: ["#e8c39f", "#6c7165"],
+        css: "brightness(1.04) contrast(1.06) saturate(.92) sepia(.14) hue-rotate(3deg)",
+        tone: { color: "rgba(238,177,104,.13)", blend: "soft-light" }
+      },
+      {
+        id: "cold-noir", name: "冷黑影院", colors: ["#9aabb3", "#202a32"],
+        css: "brightness(.91) contrast(1.22) saturate(.72) sepia(.02) hue-rotate(-9deg)",
+        tone: { color: "rgba(65,96,118,.18)", blend: "multiply" }
+      },
+      {
+        id: "cream-glow", name: "奶油柔光", colors: ["#f2ded0", "#b59b8f"],
+        css: "brightness(1.08) contrast(.93) saturate(.88) sepia(.08)",
+        tone: { color: "rgba(255,227,201,.16)", blend: "screen" }
+      },
+      {
+        id: "forest-editorial", name: "森林画报", colors: ["#71836a", "#263b35"],
+        css: "brightness(.98) contrast(1.1) saturate(.88) sepia(.12) hue-rotate(16deg)",
+        tone: { color: "rgba(49,86,58,.16)", blend: "soft-light" }
+      },
+      {
+        id: "hk-neon", name: "港风夜色", colors: ["#a61b38", "#16687c"],
+        css: "brightness(.96) contrast(1.2) saturate(1.18) sepia(.05) hue-rotate(-4deg)",
+        tone: { color: "rgba(173,36,55,.13)", blend: "soft-light" }
+      },
+      {
+        id: "silver-mono", name: "黑白银盐", colors: ["#e6e2d9", "#242728"],
+        css: "grayscale(1) brightness(1.02) contrast(1.16)",
+        tone: { color: "rgba(255,255,255,.08)", blend: "soft-light" }
       }
     ];
 
@@ -3001,6 +3231,7 @@
     const beautyModelSelect = $("beautyModelSelect");
     const beautyQualitySelect = $("beautyQualitySelect");
     const beautyQualityField = $("beautyQualityField");
+    const beautyFilters = $("beautyFilters");
     const beautyPresets = $("beautyPresets");
     const beautyPresetPrompt = $("beautyPresetPrompt");
     const beautyStrength = $("beautyStrength");
@@ -3009,6 +3240,7 @@
     const beautyResultBody = $("beautyResultBody");
     const beautyResultStatus = $("beautyResultStatus");
     const beautyGenerateBtn = $("beautyGenerateBtn");
+    const beautyFilterBtn = $("beautyFilterBtn");
     const beautyPriceTitle = $("beautyPriceTitle");
     const beautyPriceDetail = $("beautyPriceDetail");
     const effectPhotoZone = $("effectPhotoZone");
@@ -3072,6 +3304,7 @@
     const MAX_REFERENCES = 6;
     let beautyPhotoDataUrl = "";
     let beautyPresetId = "natural-retouch";
+    let beautyFilterId = "cinema-teal";
     let beautyBusy = false;
     let effectPhotoDataUrl = "";
     let effectAudience = "all";
@@ -3142,15 +3375,10 @@
         button.classList.toggle("active", button.dataset.category === selectedStyleCategory);
       });
 
-      const popularIds = [
-        "none", "oil", "illustration", "cinematic", "papercard",
-        "torn-cartoon", "double-exposure", "acrylic-relief",
-        "travel-memory", "ingredient-atlas", "tabletop-diorama",
-        "recipe-zine", "watercolor", "anime", "blindbox"
-      ];
-      const cards = selectedStyleCategory === "popular"
-        ? STYLE_CARDS.filter((style) => popularIds.includes(style.id))
-        : STYLE_CARDS.filter((style) => style.category === selectedStyleCategory);
+      const styleById = new Map(STYLE_CARDS.map((style) => [style.id, style]));
+      const cards = (STYLE_GROUP_IDS[selectedStyleCategory] || [])
+        .map((styleId) => styleById.get(styleId))
+        .filter(Boolean);
 
       styleGrid.replaceChildren();
       for (const style of cards) {
@@ -3339,6 +3567,7 @@
       document.querySelectorAll(".page-tab").forEach((button) => {
         button.classList.toggle("active", button.dataset.page === pageId);
       });
+      $("libraryBtn").classList.toggle("active", pageId === "historyPage");
       if (pageId === "historyPage") renderHistory();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -3393,9 +3622,9 @@
       const cents = Number((values[quality] || values[""] || {})["1k"] || 0);
       const qualityLabel = QUALITY_LABELS[quality] || "默认档";
       beautyPriceTitle.textContent = cents > 0
-        ? `人像图生图 · ${qualityLabel} · 预扣约 ¥${(cents / 100).toFixed(2)}`
-        : `人像图生图 · ${qualityLabel} · 按任务预扣`;
-      beautyPriceDetail.textContent = "参考图和提示词长度会影响实扣，以结果页为准";
+        ? `AI 局部精修 · ${qualityLabel} · 预扣约 ¥${(cents / 100).toFixed(2)}`
+        : `AI 局部精修 · ${qualityLabel} · 按任务预扣`;
+      beautyPriceDetail.textContent = "本机滤镜免费；AI 精修才会上传并按实扣结算";
     }
 
     function selectedEffectModel() {
@@ -4123,6 +4352,49 @@
       reader.readAsDataURL(file);
     }
 
+    function currentBeautyFilter() {
+      return BEAUTY_FILTERS.find((filter) => filter.id === beautyFilterId)
+        || BEAUTY_FILTERS[0];
+    }
+
+    function applyBeautyFilterPreview() {
+      beautyPhotoImage.style.filter = beautyPhotoDataUrl
+        ? currentBeautyFilter().css
+        : "";
+    }
+
+    function renderBeautyFilters() {
+      beautyFilters.replaceChildren();
+      for (const filter of BEAUTY_FILTERS) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "beauty-filter-card"
+          + (filter.id === beautyFilterId ? " selected" : "");
+
+        const visual = document.createElement("div");
+        visual.className = "beauty-filter-visual";
+        visual.style.setProperty("--filter-a", filter.colors[0]);
+        visual.style.setProperty("--filter-b", filter.colors[1]);
+        if (beautyPhotoDataUrl) {
+          const image = document.createElement("img");
+          image.src = beautyPhotoDataUrl;
+          image.alt = `${filter.name}实时滤镜预览`;
+          image.style.filter = filter.css;
+          visual.appendChild(image);
+        }
+        const name = document.createElement("strong");
+        name.textContent = filter.name;
+        button.append(visual, name);
+        button.addEventListener("click", () => {
+          beautyFilterId = filter.id;
+          renderBeautyFilters();
+          applyBeautyFilterPreview();
+          showToast(`已选择滤镜：${filter.name}`);
+        });
+        beautyFilters.appendChild(button);
+      }
+    }
+
     function renderBeautyPresets() {
       beautyPresets.replaceChildren();
       for (const preset of BEAUTY_PRESETS) {
@@ -4137,6 +4409,7 @@
         button.addEventListener("click", () => {
           beautyPresetId = preset.id;
           renderBeautyPresets();
+          beautyPhotoImage.style.filter = "";
         });
         beautyPresets.appendChild(button);
       }
@@ -4153,8 +4426,10 @@
       beautyPhotoDataUrl = "";
       beautyPhotoInput.value = "";
       beautyPhotoImage.removeAttribute("src");
+      beautyPhotoImage.style.filter = "";
       beautyPhotoPreview.hidden = true;
       beautyPhotoZone.hidden = false;
+      renderBeautyFilters();
     }
 
     function processPortraitPhoto(file, onReady) {
@@ -4194,7 +4469,9 @@
         beautyPhotoImage.src = dataUrl;
         beautyPhotoPreview.hidden = false;
         beautyPhotoZone.hidden = true;
-        showToast("照片已加载，选择方案后点“一键美颜”");
+        renderBeautyFilters();
+        applyBeautyFilterPreview();
+        showToast("照片已加载；可直接试本机滤镜，或选择 AI 局部精修");
       });
     }
 
@@ -4203,8 +4480,8 @@
       beautyResultBody.innerHTML = `
         <div class="result-empty">
           <div class="result-empty-icon">人</div>
-          <strong>美颜结果会显示在这里</strong>
-          <p>上传照片、选择方案后生成。结果不会自动保存到手机。</p>
+          <strong>人像结果会显示在这里</strong>
+          <p>本机滤镜立即完成；AI 精修需手动提交。结果都不会自动保存。</p>
         </div>`;
     }
 
@@ -4245,8 +4522,47 @@
       beautyResultBody.appendChild(panel);
     }
 
+    function applyBeautyFilter() {
+      if (!beautyPhotoDataUrl) {
+        showToast("请先上传一张人像照片");
+        beautyPhotoZone.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      const filter = currentBeautyFilter();
+      const image = beautyPhotoImage;
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth || image.width;
+      canvas.height = image.naturalHeight || image.height;
+      const context = canvas.getContext("2d");
+      context.filter = filter.css;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      context.filter = "none";
+      context.globalCompositeOperation = filter.tone.blend;
+      context.globalAlpha = 1;
+      context.fillStyle = filter.tone.color;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.globalCompositeOperation = "source-over";
+      activeGenerationSettings = {
+        modelName: "本机滤镜",
+        size: "原图比例",
+        resolution: "原图尺寸",
+        quality: "",
+        hasReference: true,
+        referenceCount: 1,
+        styleName: filter.name,
+        strength: 100
+      };
+      showBeautyResult({
+        imageUrl: canvas.toDataURL("image/jpeg", .94),
+        mimeType: "image/jpeg",
+        chargedCents: 0,
+        localFilter: true
+      });
+      showToast(`${filter.name}已在本机完成，没有调用 API`);
+    }
+
     function showBeautyResult(data) {
-      beautyResultStatus.textContent = "修图完成";
+      beautyResultStatus.textContent = data.localFilter ? "本机滤镜完成" : "修图完成";
       beautyResultBody.replaceChildren();
       const image = document.createElement("img");
       image.className = "result-image";
@@ -4257,11 +4573,15 @@
       const meta = document.createElement("div");
       meta.className = "result-meta";
       const cost = document.createElement("strong");
-      cost.textContent = `本次实扣 ${formatMoney(data.chargedCents)}`;
+      cost.textContent = data.localFilter
+        ? "本机处理 · 未扣费"
+        : `本次实扣 ${formatMoney(data.chargedCents)}`;
       const info = document.createElement("span");
       const settings = activeGenerationSettings;
       info.textContent = settings
-        ? `${settings.modelName} · ${settings.styleName} · ${settings.strength}%`
+        ? data.localFilter
+          ? `${settings.styleName} · ${settings.size} · 立即输出`
+          : `${settings.modelName} · ${settings.styleName} · ${settings.strength}%`
         : "美颜修图";
       meta.append(cost, info);
 
@@ -4274,8 +4594,11 @@
       const again = document.createElement("button");
       again.type = "button";
       again.className = "secondary-button";
-      again.textContent = "再修一次";
-      again.addEventListener("click", startBeautyGeneration);
+      again.textContent = data.localFilter ? "换个滤镜" : "再修一次";
+      again.addEventListener(
+        "click",
+        data.localFilter ? applyBeautyFilter : startBeautyGeneration
+      );
       actions.append(save, again);
       save.addEventListener("click", () => {
         if (!bridge()) return;
@@ -4286,7 +4609,7 @@
         bridge().saveImage(
           data.imageUrl,
           data.mimeType || "image/png",
-          "妙极美颜_" + timestampName(),
+          (data.localFilter ? "妙极氛围_" : "妙极美颜_") + timestampName(),
           callId
         );
       });
@@ -4296,7 +4619,8 @@
     function finishBeautyBusy() {
       beautyBusy = false;
       beautyGenerateBtn.disabled = false;
-      beautyGenerateBtn.textContent = "一键美颜";
+      beautyFilterBtn.disabled = false;
+      beautyGenerateBtn.textContent = "AI 精修";
     }
 
     function startBeautyGeneration() {
@@ -4334,11 +4658,12 @@
         `Effect strength: ${strength}% (${strengthText}).`,
         beautyPrompt.value.trim()
       ].filter(Boolean).join("\n\n");
-      if (!confirmPortraitCharge(model, quality, "一键美颜")) return;
+      if (!confirmPortraitCharge(model, quality, "AI 局部精修")) return;
 
       beautyBusy = true;
       beautyGenerateBtn.disabled = true;
-      beautyGenerateBtn.textContent = "修图中…";
+      beautyFilterBtn.disabled = true;
+      beautyGenerateBtn.textContent = "AI 精修中…";
       showBeautyGenerating();
       generationMode = "beauty";
       activeGenerationSettings = {
@@ -4574,8 +4899,8 @@
     }
 
     function generationModeLabel(mode) {
-      if (mode === "beauty") return "一键美颜";
-      if (mode === "effect") return "热门特效";
+      if (mode === "beauty") return "人像质感";
+      if (mode === "effect") return "风格大片";
       return "AI 生图";
     }
 
@@ -5162,6 +5487,7 @@
       updateBeautyPrice();
     });
     beautyQualitySelect.addEventListener("change", updateBeautyPrice);
+    beautyFilterBtn.addEventListener("click", applyBeautyFilter);
     beautyGenerateBtn.addEventListener("click", startBeautyGeneration);
 
     effectPhotoZone.addEventListener("click", () => effectPhotoInput.click());
@@ -5218,6 +5544,7 @@
     $("loginBtn").addEventListener("click", () => {
       if (bridge()) bridge().openLogin();
     });
+    $("libraryBtn").addEventListener("click", () => showAppPage("historyPage"));
     $("settingsBtn").addEventListener("click", () => {
       openModal(settingsModal);
       updateConnectionState();
@@ -5285,6 +5612,7 @@
         "source"
       );
       updateEffectSizeHint();
+      renderBeautyFilters();
       renderBeautyPresets();
       updateBeautyStrengthLabel();
       showBeautyEmpty();
@@ -5300,7 +5628,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 1.9.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.0.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

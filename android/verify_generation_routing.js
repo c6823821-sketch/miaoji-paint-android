@@ -134,6 +134,43 @@ async function main() {
     throw new Error("Beauty result leaked into the AI image result card");
   }
 
+  console.log("checking local portrait filters");
+  const beautyFilters = await evaluate(`(async () => {
+    const pixel = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    beautyPhotoDataUrl = pixel;
+    beautyPhotoImage.src = pixel;
+    await beautyPhotoImage.decode();
+    beautyFilterId = "cinema-teal";
+    renderBeautyFilters();
+    const cards = beautyFilters.children.length;
+    const filterBefore = beautyPhotoImage.style.filter;
+    applyBeautyFilterPreview();
+    const previewChanged = filterBefore !== beautyPhotoImage.style.filter;
+    const callsBefore = window.__nativeCount;
+    applyBeautyFilter();
+    return {
+      cards,
+      previewChanged,
+      callsUnchanged: window.__nativeCount === callsBefore,
+      status: beautyResultStatus.textContent,
+      hasSave: beautyResultBody.textContent.includes("保存到手机"),
+      saysFree: beautyResultBody.textContent.includes("未扣费"),
+      imageStatus: resultStatus.textContent
+    };
+  })()`);
+
+  if (
+    beautyFilters.cards !== 8
+    || !beautyFilters.previewChanged
+    || !beautyFilters.callsUnchanged
+    || beautyFilters.status !== "本机滤镜完成"
+    || !beautyFilters.hasSave
+    || !beautyFilters.saysFree
+    || beautyFilters.imageStatus === "生成完成"
+  ) {
+    throw new Error(`Local portrait filter check failed: ${JSON.stringify(beautyFilters)}`);
+  }
+
   console.log("checking effect route");
   const effect = await evaluate(`(() => {
     effectPhotoDataUrl = "";
@@ -149,6 +186,7 @@ async function main() {
     effectQualitySelect.value = "high";
     const qualityOptions = effectQualitySelect.options.length;
     const callsBeforePreview = window.__nativeCount;
+    const beautyStatusBefore = beautyResultStatus.textContent;
     renderEffectCards();
     const beforeFilter = effectPhotoImage.style.filter;
     effectPresetId = "hong-kong-red";
@@ -196,7 +234,7 @@ async function main() {
       generatedQuality: window.__nativeGenerate[4],
       effectStatus: effectResultStatus.textContent,
       effectHasSave: effectResultBody.textContent.includes("保存到手机"),
-      beautyStatus: beautyResultStatus.textContent,
+      beautyStatusUnchanged: beautyResultStatus.textContent === beautyStatusBefore,
       imageStatus: resultStatus.textContent
     };
   })()`);
@@ -233,7 +271,7 @@ async function main() {
   if (effect.effectStatus !== "特效生成完成" || !effect.effectHasSave) {
     throw new Error("Effect result was not rendered in the effect result card");
   }
-  if (effect.beautyStatus !== "修图完成" || effect.imageStatus === "生成完成") {
+  if (!effect.beautyStatusUnchanged || effect.imageStatus === "生成完成") {
     throw new Error("Effect result leaked into another result card");
   }
 
@@ -271,7 +309,12 @@ async function main() {
       "photo-relic", "zine-postcard", "gathered-zine",
       "heytea-doodle", "abstract-editorial", "geo-editorial", "mono-color",
       "xxd-panel", "line-art-extension", "travel-magnet-poster",
-      "knit-zine-poster", "travel-sticker-card"
+      "knit-zine-poster", "travel-sticker-card", "minimal-zine-poster",
+      "photo-revival", "scene-distillation", "pixel-style-poster",
+      "kimi-tech-editorial", "mondo-cinema-poster",
+      "github-trending-poster", "skill-index-board",
+      "travel-photo-abstraction", "crt-terminal-poster",
+      "dreamcore-collage", "collage-design"
     ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
     const transform = STYLE_CARDS.filter((style) => style.category === "transform");
@@ -281,7 +324,7 @@ async function main() {
     const renderedFoodCards = styleGrid.children.length;
     document.querySelector('[data-category="transform"]').click();
     const renderedTransformCards = styleGrid.children.length;
-    document.querySelector('[data-category="skill"]').click();
+    document.querySelector('[data-category="poster"]').click();
     const skillImages = [...styleGrid.querySelectorAll(".style-preview img")];
     const imageReady = await Promise.all(skillImages.map((image) => new Promise((resolve) => {
       if (image.complete) {
@@ -295,7 +338,11 @@ async function main() {
     const knitZine = STYLE_CARDS.find((style) => style.id === "knit-zine-poster");
     const travelSticker = STYLE_CARDS.find((style) => style.id === "travel-sticker-card");
     const watercolorCard = STYLE_CARDS.find((style) => style.id === "watercolor-card");
-    const referenceStyleIds = ["travel-magnet-poster", "knit-zine-poster", "travel-sticker-card"];
+    const referenceStyleIds = [
+      "travel-magnet-poster", "knit-zine-poster", "travel-sticker-card",
+      "photo-revival", "scene-distillation", "travel-photo-abstraction",
+      "collage-design"
+    ];
     return {
       foodCount: food.length,
       foodIdsPresent: foodIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
@@ -311,7 +358,7 @@ async function main() {
       skillIdsPresent: skillIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
       skillPrompts: skill.every((style) => style.prompt.length >= 260),
       skillPreviews: skill.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
-      renderedSkillCards: styleGrid.children.length,
+      renderedPosterCards: styleGrid.children.length,
       loadedSkillImages: imageReady.filter(Boolean).length,
       referenceStyleIds: referenceStyleIds.every((id) =>
         STYLE_CARDS.find((style) => style.id === id)?.requiresReference
@@ -319,6 +366,8 @@ async function main() {
       magnetSize: travelMagnet?.forceSize,
       knitSize: knitZine?.forceSize,
       stickerSize: travelSticker?.forceSize,
+      minimalSize: STYLE_CARDS.find((style) => style.id === "minimal-zine-poster")?.forceSize,
+      collageSize: STYLE_CARDS.find((style) => style.id === "collage-design")?.forceSize,
       watercolorSize: watercolorCard?.forceSize,
       watercolorUpdated: watercolorCard?.desc.includes("可撕齿边")
         && watercolorCard?.prompt.includes("横向摆放")
@@ -340,17 +389,19 @@ async function main() {
     || !presets.transformIdsPresent
     || !presets.transformPrompts
     || !presets.transformPreviews
-    || presets.renderedTransformCards !== 6
-    || presets.skillCount !== 18
+    || presets.renderedTransformCards !== 14
+    || presets.skillCount !== 30
     || !presets.skillIdsPresent
     || !presets.skillPrompts
     || !presets.skillPreviews
-    || presets.renderedSkillCards !== 18
-    || presets.loadedSkillImages !== 18
+    || presets.renderedPosterCards !== 10
+    || presets.loadedSkillImages !== 10
     || !presets.referenceStyleIds
     || presets.magnetSize !== "2:3"
     || presets.knitSize !== "3:4"
     || presets.stickerSize !== "3:2"
+    || presets.minimalSize !== "3:4"
+    || presets.collageSize !== "4:3"
     || presets.watercolorSize !== "3:4"
     || !presets.watercolorUpdated
     || !presets.travelGeneric
@@ -451,6 +502,9 @@ async function main() {
     showAppPage("historyPage");
     const countCapped = loadHistoryRecords().length;
     const renderedCards = historyGrid.querySelectorAll(".history-card").length;
+    const historyIsSeparate = !historyPage.hidden
+      && document.querySelectorAll(".page-tab.active").length === 0
+      && document.getElementById("libraryBtn").classList.contains("active");
 
     const pending = {
       taskId: "resume-task-12345678",
@@ -504,6 +558,7 @@ async function main() {
       tabCount: document.querySelectorAll(".page-tab").length,
       countCapped,
       renderedCards,
+      historyIsSeparate,
       resumeCalled: Boolean(resumeCall),
       modeAfterResume,
       recoveredInHistory: loadHistoryRecords().some(
@@ -516,9 +571,10 @@ async function main() {
   })()`);
 
   if (
-    history.tabCount !== 5
+    history.tabCount !== 4
     || history.countCapped !== 10
     || history.renderedCards !== 10
+    || !history.historyIsSeparate
     || !history.resumeCalled
     || history.modeAfterResume !== "effect"
     || !history.recoveredInHistory

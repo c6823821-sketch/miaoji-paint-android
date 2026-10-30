@@ -1,0 +1,25 @@
+{
+  "task_id": "150112a61bc4458dbf6f2e00e382e261",
+  "charged_cents": 8,
+  "max_charged_cents": 500,
+  "model": "gpt-image-2.5-flare",
+  "resolution": "1k",
+  "quality": "low",
+  "size": "4:3",
+  "output": "E:\\Codex\\work\\miaoji-paint\\skill-pack-v2-sheet.jpg",
+  "bytes": 1143917,
+  "tiles": [
+    "minimal-zine-poster",
+    "photo-revival",
+    "scene-distillation",
+    "pixel-style-poster",
+    "kimi-tech-editorial",
+    "mondo-cinema-poster",
+    "github-trending-poster",
+    "skill-index-board",
+    "travel-photo-abstraction",
+    "crt-terminal-poster",
+    "dreamcore-collage",
+    "collage-design"
+  ]
+}
