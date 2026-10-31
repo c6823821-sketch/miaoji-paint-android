@@ -1829,7 +1829,7 @@
         <section class="card style-library">
           <div class="card-head">
             <div class="card-title">风格卡片</div>
-            <div class="card-subtitle">30 个公开提示词工作流 · 按用途分类</div>
+            <div class="card-subtitle">37 个公开提示词工作流 · 按用途分类</div>
           </div>
           <div class="style-filters" id="styleFilters">
             <button class="filter-chip active" type="button" data-category="popular">精选</button>
@@ -2277,7 +2277,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 2.0.0</span>
+            <span class="version-text" id="versionText">当前版本 2.1.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2541,8 +2541,9 @@
       },
       {
         id: "impasto-diorama", name: "厚涂油画微缩景", category: "skill", preview: "oil",
-        desc: "油彩地形、刀痕云层与实体光线", requiresReference: true, forceSize: "3:4",
-        prompt: "把上传照片重构为一座真正有体积的厚涂油画微缩景观，不是给照片加油画滤镜。先识别主体、地平线、山脊、建筑、道路和空气层次，再用刮刀与厚颜料重新堆出地形；山脉、屋顶、树冠、云层、衣褶和水面都像可以被侧面看见的实体油彩，但主体轮廓和照片空间关系仍清楚。近景使用最厚的颜料峰、拖拽边和刮刀切面，中景保留可读结构，远景减少笔触并交给空气透视。光线像照射真实浮雕一样从一侧进入，亮部有颜料厚度，暗部保持透明层次与有色阴影。颜色从原图提取，允许高饱和小面积强调，不能变成俗艳滤镜。最终像美术馆收藏的实体油画模型被专业拍摄，背景克制；禁止数码平滑、塑料3D、漫画化、满屏乱笔、文字、签名和水印。"
+        previewImage: "style-impasto-diorama-v2.jpg",
+        desc: "3D 油彩地形、刮刀浮雕与真实投影", requiresReference: true, forceSize: "3:4",
+        prompt: "使用3:4竖版构图，把上传照片里最容易识别的主题、轮廓、姿态和叙事关系重构成一张3D厚涂油画微缩景观，不是给照片套油画滤镜。保留主体身份、服装色彩和关键环境关系，把山脊、水体、道路、建筑、树木或人物转成有真实厚度、刮刀刀痕、起伏边缘和手工塑形的立体油彩块面。主体放在暖白哑光纹理纸上，保留大面积安静留白；地面、水面、路径、云层或光带可以用半透明颜料层与主体自然相接，并加入少量真实反射、波纹、光斑和延伸笔触。颜色从原图提取最明亮、有生命力的色相，以清新、温暖、治愈的自然色为主，杜绝灰暗脏色和廉价糖果色。画面必须有颜料堆积的峰、拖拽边、纸纹与柔和真实投影，像一件被专业棚拍的实体油画模型；不要机械复制照片、流体塑料、数码平滑、复杂背景、文字或水印。"
       },
       {
         id: "photo-relic", name: "纸上记忆版画", category: "skill", preview: "editorial",
@@ -2650,6 +2651,41 @@
         prompt: "把上传照片真正拆解并重新剪辑成一张横向4:3当代纸面拼贴作品，不能只是原图加撕纸边框。先保留主体最容易识别的轮廓与真实照片质感，再沿屋顶、树冠、塔尖、道路、水面、桌沿、锅柄或枝条等清楚边界切成五到九块不规则碎片；主照片保持最大，其他碎片来自原图不同局部，必须互相遮挡并重新安排前后空间。碎片之间允许轻微错位、悬空、拉长或跨越，但应保持统一光源、真实投影和一致颗粒。背景使用暖象牙纸，可加入一块很克制的高饱和色片与一小段清楚的短英文标题，像 ORBIT、CURRENT 或 SAVOR，但不要写长句。整体像独立旅行杂志、艺术印刷品或真实手工剪贴，不像随手贴满照片的手账。禁止完整照片加滤镜、重复整张图、胶带森林、邮票、贴纸图标、夸张白边、塑料3D、长文字与品牌logo。"
       },
       {
+        id: "y2k-doodle-poster", name: "Y2K 涂鸦海报", category: "skill", preview: "storybook",
+        desc: "闪光自拍、贴纸涂鸦与千禧年排版", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片制作成一张独立的3:4竖版Y2K手绘涂鸦海报，不拼屏、不做九宫格。保留人物身份、脸型、五官、表情、发型、服装和真实摄影质感，只强化清楚动人的眼神、光泽皮肤和闪光摄影高光。围绕主体加入白色猫耳、胡须、素描式外轮廓、星星、箭头、潦草涂写和一只正在喷火的绿色卡通小恐龙；粗体手写字 RAWR! 和 NOPE, STILL NOT NORMAL 分散在四周，文字必须拼写准确。颜色使用鲜艳但不脏的粉、蓝、绿和荧光色，形成高对比闪光自拍、社交媒体贴纸艺术、Y2K美学与青春活力并存的构图。允许异想天开的热闹，但主体不能变形、五官不能错位，不能变成廉价大头贴；背景可联想城市夜晚帐篷或彩色派对空间。细节集中在贴纸边缘、笔触、皮肤高光和排版权衡，禁止密集无意义装饰、重复人脸、塑料3D、长文字和品牌logo。"
+      },
+      {
+        id: "watercolor-ink-reconstruct", name: "极简水墨重构", category: "skill", preview: "watercolor",
+        desc: "留白、松弛块面与学术刊物气质", requiresReference: true, forceSize: "3:4",
+        prompt: "参考上传照片的画面比例，生成一张米白哑光特种纸质感的水墨扁平重构插画，不直接保留摄影像素。先识别主体、前中后景、主要色温和一到两处识别细节，再保留原图整体色彩关系，把景物简化为松弛柔和的块面造型；分层平涂，搭配随性淡墨晕染笔触，轮廓自然松散，删掉生硬轮廓线、细碎纹理、杂物和厚重光影，只留下景物的原生结构神韵。画面必须大面积留白，主体放在居中偏上位置，周围有安静呼吸空间。底部居中排布两级文字：第一行是优雅衬线手写英文标题，第二行是小号无衬线英文短句，文字要短且拼写准确。整体依托米白哑光纸张底色，兼具随性水墨气韵、干净克制的学术刊物感和现代编辑设计，不添加多余装饰，不做普通水彩滤镜，不生成复杂边框、印章或水印。"
+      },
+      {
+        id: "silly-marker-cartoon", name: "搞怪马克笔漫画", category: "skill", preview: "storybook",
+        desc: "歪扭透视、涂色出界与沙雕表情", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片改成一幅风格笨拙又搞笑的马克笔涂鸦插画，追求像用平价马克笔和蜡笔随手画出来的潦草速写质感。保留人物身份、主要表情和姿态，但允许五官适度夸张、透视轻微扭曲、整体比例故意不协调，形成滑稽喜感。线条杂乱随性，充满孩子气；添加简约漫画背景、无意义但有趣的小乱涂和零碎小细节。颜色可用平涂并故意留下上色不均、涂色稍微出界和明显笔触痕迹。整体必须像敷衍潦草、毫无包袱地随手画出的网络表情包，不要写实，不要精致细腻，不要专业规整的插画效果。人物仍然一眼可认，表情滑稽但不过度恐怖；禁止密集文字、错别手指、重复人物、复杂光影、品牌logo和水印。"
+      },
+      {
+        id: "geometric-facet-collage", name: "几何块面拼贴", category: "skill", preview: "poster",
+        desc: "七大色块、阶梯轮廓与极简肖像", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片单独制作成一张3:4竖版极简抽象几何拼贴海报，不做碎照片拼接。提炼主体轮廓、姿态、表情和身份特征，再用少量大型方块、矩形、梯形、圆形与不规则多边形重塑二维形象，强调大色块、比例夸张、错位与不对称；保留神韵，不追求写实。五官用粗糙几何色块概括，头发和胡须用厚重块面与阶梯轮廓表现，服饰和道具简化成大面积纯色。背景使用暖米白哑光纸，删去复杂环境，主体居中并保留大面积留白。从原图提取三到五种标志色，采用复古现代配色、纯色平涂和少量叠压；加入细微纸纹、轻微油墨磨损和不规则剪边，保持完全二维平贴。整体七分抽象、三分具象，简洁朴拙但有高级感；禁止密集小色块、低多边形碎片、写实五官、渐变、复杂阴影、3D、长文字和水印。"
+      },
+      {
+        id: "fashion-fragment-collage", name: "时尚碎片拼贴", category: "skill", preview: "editorial",
+        desc: "人物照片切块、便签手写与杂志封面", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传人物照制作成一张3:4竖版高级时尚照片拼贴海报，一图一报，不做多图拼接。浅灰蓝哑光纸背景带细腻纸纹和轻微胶片颗粒，人物居中保留呼吸空间。必须保留人物五官、表情、发型、服饰、配饰和真实摄影质感，不改变身份和骨相；再把人物视觉切成12到20块大小不同的矩形碎片，横竖交错拼贴，保留清楚缝隙，部分轻微错位、轻微翘起并带柔和纸片投影。四周加入5到8张奶黄色或米白色便签、少量窄胶带和英文手写短句，不能遮住眼睛、鼻子和嘴。搭配一个大号衬线英文标题、一两条细线、小字说明和底部编辑署名。整体冷淡、极简、文艺手账和现代时尚杂志封面结合；禁止人物变形、五官错位、碎片过小、杂乱拼贴、过度美颜、卡通、高饱和、重阴影、乱码文字和水印。"
+      },
+      {
+        id: "embroidered-patchwork", name: "刺绣布贴再造", category: "skill", preview: "clay",
+        desc: "棉麻毛毡、锁链针脚与手作温度", requiresReference: true, forceSize: "3:4",
+        prompt: "把整张上传照片统一转成刺绣拼布风插画，不保留原图摄影区域。先提取主体轮廓、姿态、表情、服饰与关键道具，保留人物身份和叙事，让人一眼可辨；随后把主体与少量必要环境全部重建成棉布、亚麻、毛毡和布片拼接，必须有清楚针脚、锁链针、毛边、线头、纤维纹理、层叠褶皱与柔和阴影。只保留少量代表性环境和空间关系，适度概括，不要让配角或杂物抢走主体，也不要把人物缩成脚下一小块装饰。使用暖白亚麻布底，保留合理留白，主体大小适中，边缘可逐渐散成稀疏布片和针脚。配色从原图主色提取，整体质朴、复古、治愈，有真实手工织物温度；可以加入极小的英文布标。禁止原图残留、照片碎片拼接、塑料3D、针脚过细、环境过满或太空、色彩杂乱、满屏装饰和水印。"
+      },
+      {
+        id: "black-crayon-sketch", name: "黑白炭笔速写", category: "skill", preview: "manga",
+        desc: "粗粝蜡笔、断续飞白与表现主义", requiresReference: true, forceSize: "3:4",
+        prompt: "采用黑白表现主义粗蜡笔速写风格，把上传人物或场景重画为原创纸本插画，而不是照片素描滤镜。使用粗颗粒黑色蜡笔、炭笔和干刷混合绘制，以凌乱奔放、断续交错的黑色笔触塑造主体；重点夸张原图最具辨识度的表情、眼神、嘴巴、发型和姿态，保留人物神韵，弱化写实细节。头发、服饰等区域用密集、粗糙、不规则的笔触交叠，形成强烈黑白视觉对比；脸部只用极少量线条与留白塑造表情。保留明显蜡笔颗粒、擦痕、断线、飞白与粗糙纸张纹理，线条可以自由延伸、交错甚至局部越界，呈现未经修饰的手工速写感。整体使用米白纸张背景和大面积留白，具有复古艺术绘本、表现主义人物速写与独立艺术杂志气质；禁止写实素描、细腻铅笔排线、平滑数字线稿、均匀轮廓和过度精密的五官。"
+      },
+      {
         id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
         desc: "湿画晕染、留白与纸纤维",
         prompt: "传统透明水彩原作质感，使用冷压棉浆水彩纸。先以湿画法铺出大块空气感色面，再用干笔在视觉中心补充结构、纹理和少量铅笔线。颜色通过透明叠色形成，不靠厚重白颜料；高光利用纸张留白，边缘有自然水痕、轻微回渗和颜料沉积，但不弄脏画面。主色和邻近色保持和谐，只在一个小区域使用饱和度较高的暖色或冷色作为惊喜。构图有呼吸感，主体细节集中，背景逐渐虚化。避免数码渐变、塑料高光和均匀颗粒。除用户明确要求外，不出现文字或水印。"
@@ -2706,7 +2742,7 @@
       }
     ];
     STYLE_CARDS.forEach((style) => {
-      if (style.id !== "none") {
+      if (style.id !== "none" && !style.previewImage) {
         style.previewImage = `style-${style.id}.jpg`;
       }
     });
@@ -2715,15 +2751,18 @@
       popular: [
         "none", "cinematic", "minimal-zine-poster", "travel-memory",
         "collage-design", "photo-revival", "papercard", "travel-magnet-poster",
-        "tabletop-diorama", "mondo-cinema-poster", "blindbox", "oil"
+        "tabletop-diorama", "mondo-cinema-poster", "blindbox", "oil",
+        "y2k-doodle-poster", "fashion-fragment-collage"
       ],
       portrait: [
-        "cinematic", "film", "editorial", "kimi-tech-editorial"
+        "cinematic", "film", "editorial", "kimi-tech-editorial",
+        "y2k-doodle-poster", "fashion-fragment-collage"
       ],
       poster: [
         "papercard", "zine-postcard", "mono-color", "minimal-zine-poster",
         "pixel-style-poster", "kimi-tech-editorial", "mondo-cinema-poster",
-        "github-trending-poster", "skill-index-board", "crt-terminal-poster"
+        "github-trending-poster", "skill-index-board", "crt-terminal-poster",
+        "geometric-facet-collage", "fashion-fragment-collage"
       ],
       travel: [
         "travel-memory", "travel-photo-abstraction", "gathered-zine",
@@ -2736,11 +2775,12 @@
         "torn-cartoon", "double-exposure", "acrylic-relief", "screenprint",
         "paper-diorama", "ink-deconstruct", "photo-relic", "abstract-editorial",
         "heytea-doodle", "xxd-panel", "photo-revival", "scene-distillation",
-        "dreamcore-collage", "collage-design"
+        "dreamcore-collage", "collage-design", "silly-marker-cartoon"
       ],
       art: [
         "oil", "illustration", "watercolor", "ink", "anime", "manga",
-        "pixel", "fantasy", "impasto-diorama"
+        "pixel", "fantasy", "impasto-diorama", "watercolor-ink-reconstruct",
+        "embroidered-patchwork", "black-crayon-sketch"
       ],
       food: [
         "ingredient-atlas", "recipe-zine", "tabletop-diorama",
@@ -5628,7 +5668,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.0.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.1.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

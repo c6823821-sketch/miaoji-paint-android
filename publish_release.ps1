@@ -1,22 +1,22 @@
 $ErrorActionPreference = "Stop"
 
 $repo = "c6823821-sketch/miaoji-paint-android"
-$tag = "v2.0.0"
+$tag = "v2.1.0"
 $releaseName = (-join @(
     0x5999, 0x6781, 0x753B, 0x56FE | ForEach-Object { [char]$_ }
-)) + " v2.0.0"
+)) + " v2.1.0"
 $outputFolder = -join @(
     0x5999, 0x6781, 0x624B, 0x673A, 0x753B, 0x56FE | ForEach-Object { [char]$_ }
 )
 $apkName = -join @(
     0x5999, 0x6781, 0x753B, 0x56FE | ForEach-Object { [char]$_ }
-) + "-v2.0.0.apk"
+) + "-v2.1.0.apk"
 $asset = Join-Path (Join-Path "E:\Codex\outputs" $outputFolder) $apkName
 if (-not (Test-Path -LiteralPath $asset)) {
     throw "Versioned APK not found"
 }
 $notes = [System.IO.File]::ReadAllText(
-    "E:\Codex\work\miaoji-paint\release-notes-v2.0.0.md",
+    "E:\Codex\work\miaoji-paint\release-notes-v2.1.0.md",
     [System.Text.Encoding]::UTF8
 )
 
@@ -76,7 +76,7 @@ if ($release) {
 }
 
 $uploadBase = "https://uploads.github.com/repos/$repo/releases/$($release.id)/assets"
-$assetName = "miaoji-paint-v2.0.0.apk"
+$assetName = "miaoji-paint-v2.1.0.apk"
 $existingAssets = Invoke-RestMethod `
     -Method Get `
     -Uri "https://api.github.com/repos/$repo/releases/$($release.id)/assets" `

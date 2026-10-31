@@ -1,0 +1,21 @@
+{
+  "task_id": "66b2a3c5696c40b3941f5cca55ec47c0",
+  "charged_cents": 8,
+  "max_charged_cents": 500,
+  "model": "gpt-image-2.5-flare",
+  "resolution": "1k",
+  "quality": "low",
+  "size": "4:3",
+  "output": "E:\\Codex\\work\\miaoji-paint\\eight-prompts-sheet-v1.jpg",
+  "bytes": 1619061,
+  "tiles": [
+    "style-y2k-doodle-poster.jpg",
+    "style-impasto-diorama-v2.jpg",
+    "style-watercolor-ink-reconstruct.jpg",
+    "style-silly-marker-cartoon.jpg",
+    "style-geometric-facet-collage.jpg",
+    "style-fashion-fragment-collage.jpg",
+    "style-embroidered-patchwork.jpg",
+    "style-black-crayon-sketch.jpg"
+  ]
+}

@@ -96,7 +96,7 @@ if (-not (Test-Path -LiteralPath $Keystore)) {
     if ($LASTEXITCODE -ne 0) { throw "Keystore creation failed" }
 }
 
-$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.0.0.apk"
+$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.1.0.apk"
 & $ApkSigner sign `
     --ks $Keystore `
     --ks-key-alias $Alias `

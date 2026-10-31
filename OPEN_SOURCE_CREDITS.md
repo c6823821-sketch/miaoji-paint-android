@@ -109,6 +109,22 @@ generation still runs through the user's own MiaoJi API key.
   preview tiles were generated independently as one paid MiaoJi test sheet
   and then cropped into individual cards.
 
+## v2.1.0 Image Prompt Video
+
+- Discovery source: https://v.douyin.com/YOs1oWO_c2Y/
+- Author: 一只野生龙.
+- The source is a 53-second image-prompt tutorial. Its eight prompt panels
+  were read directly from the original video at full resolution.
+- Seven prompts became new cards: Y2K doodle poster, minimal ink-watercolor
+  reconstruction, silly marker cartoon, geometric facet collage, fashion
+  photo-fragment collage, embroidered patchwork, and expressive black crayon
+  sketch.
+- The 3D impasto prompt already corresponded to `impasto-diorama`, so that
+  card was upgraded instead of duplicated.
+- The app uses concise Chinese prompt rewrites suitable for its prompt editor.
+  All eight preview tiles were generated independently as a single MiaoJi
+  preview sheet; no video frame is bundled as a card preview.
+
 ## GPT Image 2 Gallery
 
 - Source: https://github.com/ChaosRealmsAI/gpt-image-2-gallery

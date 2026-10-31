@@ -314,7 +314,10 @@ async function main() {
       "kimi-tech-editorial", "mondo-cinema-poster",
       "github-trending-poster", "skill-index-board",
       "travel-photo-abstraction", "crt-terminal-poster",
-      "dreamcore-collage", "collage-design"
+      "dreamcore-collage", "collage-design", "y2k-doodle-poster",
+      "watercolor-ink-reconstruct", "silly-marker-cartoon",
+      "geometric-facet-collage", "fashion-fragment-collage",
+      "embroidered-patchwork", "black-crayon-sketch"
     ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
     const transform = STYLE_CARDS.filter((style) => style.category === "transform");
@@ -341,7 +344,10 @@ async function main() {
     const referenceStyleIds = [
       "travel-magnet-poster", "knit-zine-poster", "travel-sticker-card",
       "photo-revival", "scene-distillation", "travel-photo-abstraction",
-      "collage-design"
+      "collage-design", "y2k-doodle-poster", "watercolor-ink-reconstruct",
+      "silly-marker-cartoon", "geometric-facet-collage",
+      "fashion-fragment-collage", "embroidered-patchwork",
+      "black-crayon-sketch"
     ];
     return {
       foodCount: food.length,
@@ -357,7 +363,7 @@ async function main() {
       skillCount: skill.length,
       skillIdsPresent: skillIds.every((id) => STYLE_CARDS.some((style) => style.id === id)),
       skillPrompts: skill.every((style) => style.prompt.length >= 260),
-      skillPreviews: skill.every((style) => style.previewImage === \`style-\${style.id}.jpg\`),
+      skillPreviews: skill.every((style) => Boolean(style.previewImage)),
       renderedPosterCards: styleGrid.children.length,
       loadedSkillImages: imageReady.filter(Boolean).length,
       referenceStyleIds: referenceStyleIds.every((id) =>
@@ -368,6 +374,7 @@ async function main() {
       stickerSize: travelSticker?.forceSize,
       minimalSize: STYLE_CARDS.find((style) => style.id === "minimal-zine-poster")?.forceSize,
       collageSize: STYLE_CARDS.find((style) => style.id === "collage-design")?.forceSize,
+      impastoPreview: STYLE_CARDS.find((style) => style.id === "impasto-diorama")?.previewImage,
       watercolorSize: watercolorCard?.forceSize,
       watercolorUpdated: watercolorCard?.desc.includes("可撕齿边")
         && watercolorCard?.prompt.includes("横向摆放")
@@ -389,19 +396,20 @@ async function main() {
     || !presets.transformIdsPresent
     || !presets.transformPrompts
     || !presets.transformPreviews
-    || presets.renderedTransformCards !== 14
-    || presets.skillCount !== 30
+    || presets.renderedTransformCards !== 15
+    || presets.skillCount !== 37
     || !presets.skillIdsPresent
     || !presets.skillPrompts
     || !presets.skillPreviews
-    || presets.renderedPosterCards !== 10
-    || presets.loadedSkillImages !== 10
+    || presets.renderedPosterCards !== 12
+    || presets.loadedSkillImages !== 12
     || !presets.referenceStyleIds
     || presets.magnetSize !== "2:3"
     || presets.knitSize !== "3:4"
     || presets.stickerSize !== "3:2"
     || presets.minimalSize !== "3:4"
     || presets.collageSize !== "4:3"
+    || presets.impastoPreview !== "style-impasto-diorama-v2.jpg"
     || presets.watercolorSize !== "3:4"
     || !presets.watercolorUpdated
     || !presets.travelGeneric

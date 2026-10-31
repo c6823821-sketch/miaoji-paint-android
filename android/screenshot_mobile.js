@@ -6,8 +6,8 @@ const edge = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
 const html = "file:///E:/Codex/work/miaoji-paint/android/app/src/main/assets/index.html?preview=1";
 const output = "E:\\Codex\\outputs\\妙极手机画图\\界面预览.png";
 const outputStyle = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_风格提示词.png";
-const outputSkills = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_海报分类-v2.0.png";
-const outputTravelSkill = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_旅行分类提示词-v2.0.png";
+const outputSkills = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_几何拼贴-v2.1.png";
+const outputTravelSkill = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_旅行分类提示词-v2.1.png";
 const outputBottom = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_下半页.png";
 const outputSettings = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_设置.png";
 const outputHelp = "E:\\Codex\\outputs\\妙极手机画图\\界面预览_风格说明.png";
@@ -108,7 +108,7 @@ async function main() {
   });
   fs.writeFileSync(outputStyle, Buffer.from(styleShot.data, "base64"));
   await send("Runtime.evaluate", {
-    expression: "document.querySelector('[data-category=\"poster\"]').click(); document.querySelector('.style-library').scrollIntoView({block:'start'}); window.scrollBy(0,-330)"
+    expression: "(()=>{document.querySelector('[data-category=\"poster\"]').click(); const card=[...document.querySelectorAll('.style-card')].find((item)=>item.querySelector('strong')?.textContent==='几何块面拼贴'); card.click(); document.getElementById('selectedStyleEditor').scrollIntoView({block:'center'});})()"
   });
   await sleep(450);
   await send("Runtime.evaluate", {
@@ -120,7 +120,7 @@ async function main() {
   });
   fs.writeFileSync(outputSkills, Buffer.from(skillsShot.data, "base64"));
   await send("Runtime.evaluate", {
-    expression: "document.querySelector('[data-category=\"travel\"]').click(); const card=[...document.querySelectorAll('.style-card')].find((item)=>item.querySelector('strong')?.textContent==='旅行冰箱贴'); card.click(); document.getElementById('selectedStyleEditor').scrollIntoView({block:'center'})"
+    expression: "(()=>{document.querySelector('[data-category=\"travel\"]').click(); const card=[...document.querySelectorAll('.style-card')].find((item)=>item.querySelector('strong')?.textContent==='旅行冰箱贴'); card.click(); document.getElementById('selectedStyleEditor').scrollIntoView({block:'center'});})()"
   });
   await sleep(450);
   await send("Runtime.evaluate", {
