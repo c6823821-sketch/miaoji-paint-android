@@ -231,6 +231,13 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void openSpectralLab() {
+            Intent intent = new Intent(MainActivity.this, app.spektralab.MainActivity.class);
+            intent.putExtra("miaoji_embedded", true);
+            startActivity(intent);
+        }
+
+        @JavascriptInterface
         public void openGithub() {
             openExternal(Uri.parse(GITHUB_REPO_URL));
         }
@@ -240,7 +247,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "2.1.0";
+                return "2.2.0";
             }
         }
 
@@ -868,7 +875,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "2.1.0";
+            return "2.2.0";
         }
     }
 

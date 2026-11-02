@@ -79,6 +79,32 @@ async function main() {
   await send("Page.navigate", { url: html });
   await sleep(1200);
 
+  console.log("checking spectral lab route");
+  const spectral = await evaluate(`(() => {
+    let opened = 0;
+    window.Android = {
+      hasKey: () => true,
+      openSpectralLab: () => { opened += 1; }
+    };
+    showAppPage("spectralPage");
+    return {
+      opened,
+      tabCount: document.querySelectorAll(".page-tab").length,
+      tabLabel: document.querySelector('[data-page="spectralPage"]').textContent.trim(),
+      oldBeautyTab: Boolean(document.querySelector('[data-page="beautyPage"]')),
+      oldFilmTab: Boolean(document.querySelector('[data-page="filmPage"]'))
+    };
+  })()`);
+  if (
+    spectral.opened !== 1
+    || spectral.tabCount !== 3
+    || spectral.tabLabel !== "光谱冲印"
+    || spectral.oldBeautyTab
+    || spectral.oldFilmTab
+  ) {
+    throw new Error(`Spectral route check failed: ${JSON.stringify(spectral)}`);
+  }
+
   console.log("checking beauty route");
   const beauty = await evaluate(`(() => {
     window.Android = {
@@ -579,7 +605,7 @@ async function main() {
   })()`);
 
   if (
-    history.tabCount !== 4
+    history.tabCount !== 3
     || history.countCapped !== 10
     || history.renderedCards !== 10
     || !history.historyIsSeparate
@@ -593,7 +619,7 @@ async function main() {
     throw new Error(`History/recovery check failed: ${JSON.stringify(history)}`);
   }
 
-  console.log("PASS: routes stay separate; presets and local film processing are present");
+  console.log("PASS: routes stay separate; spectral lab, presets and hidden legacy processing are present");
   socket.close();
 }
 

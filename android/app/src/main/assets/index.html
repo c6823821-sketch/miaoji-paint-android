@@ -1777,9 +1777,8 @@
 
   <nav class="page-tabs" aria-label="功能板块">
     <button class="page-tab active" type="button" data-page="imagePage">AI 生图</button>
-    <button class="page-tab" type="button" data-page="beautyPage">人像质感</button>
     <button class="page-tab" type="button" data-page="effectPage">风格大片</button>
-    <button class="page-tab" type="button" data-page="filmPage">胶片冲印</button>
+    <button class="page-tab" type="button" data-page="spectralPage">光谱冲印</button>
   </nav>
 
   <main class="page" id="imagePage">
@@ -2277,7 +2276,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 2.1.0</span>
+            <span class="version-text" id="versionText">当前版本 2.2.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -3596,6 +3595,14 @@
     }
 
     function showAppPage(pageId) {
+      if (pageId === "spectralPage") {
+        if (bridge() && bridge().openSpectralLab) {
+          bridge().openSpectralLab();
+        } else {
+          showToast("光谱冲印只能在手机应用中使用");
+        }
+        return;
+      }
       imagePage.hidden = pageId !== "imagePage";
       beautyPage.hidden = pageId !== "beautyPage";
       effectPage.hidden = pageId !== "effectPage";
@@ -5668,7 +5675,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.1.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

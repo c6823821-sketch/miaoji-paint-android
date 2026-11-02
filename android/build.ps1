@@ -79,6 +79,23 @@ try {
     Pop-Location
 }
 
+$NativeStage = Join-Path $BuildRoot "native-libs"
+$NativeTarget = Join-Path $NativeStage "lib\arm64-v8a"
+New-Item -ItemType Directory -Force -Path $NativeTarget | Out-Null
+$NativeSource = Join-Path $SourceRoot "jniLibs\arm64-v8a"
+$NativeLibraries = @(Get-ChildItem -LiteralPath $NativeSource -Filter "*.so" -File)
+if ($NativeLibraries.Count -eq 0) { throw "SpektraLab native libraries are missing" }
+foreach ($library in $NativeLibraries) {
+    Copy-Item -LiteralPath $library.FullName -Destination (Join-Path $NativeTarget $library.Name)
+}
+Push-Location $NativeStage
+try {
+    & $Jar uf $WithDexApk "lib"
+    if ($LASTEXITCODE -ne 0) { throw "Adding native libraries failed" }
+} finally {
+    Pop-Location
+}
+
 $AlignedApk = Join-Path $BuildRoot "app-aligned.apk"
 & $ZipAlign -f 4 $WithDexApk $AlignedApk
 if ($LASTEXITCODE -ne 0) { throw "zipalign failed" }
@@ -96,7 +113,7 @@ if (-not (Test-Path -LiteralPath $Keystore)) {
     if ($LASTEXITCODE -ne 0) { throw "Keystore creation failed" }
 }
 
-$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.1.0.apk"
+$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.2.0.apk"
 & $ApkSigner sign `
     --ks $Keystore `
     --ks-key-alias $Alias `

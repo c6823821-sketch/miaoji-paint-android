@@ -4,18 +4,23 @@ The visual presets adapt publicly available prompt workflows. They do
 not bundle model weights, LoRA files, or third-party applications. Image
 generation still runs through the user's own MiaoJi API key.
 
-## Spektrafilm
+## SpektraLab Android
 
-- Source: https://github.com/andreavolpato/spektrafilm
-- Author: Andrea Volpato
-- License: CC BY-SA 4.0
-- Adapted component: eight 17x17x17 3D LUTs baked from spectral film and
-  paper combinations (Portra, Gold, Ektar, Pro 400H, Vision3, UltraMax,
-  C200, and Portra 160).
-- Modification: the Android version applies the LUTs locally to preserve the
-  uploaded photograph's dimensions and aspect ratio. The film feature does
-  not upload source images, call the MiaoJi API, or save automatically.
-- The derived LUT data remains available under CC BY-SA 4.0.
+- Source: https://github.com/SAINTTaiYi/SpektraLab-Android
+- Engine upstream: https://github.com/JamesQiu2005/SpektraLab
+- Film model: https://github.com/andreavolpato/spektrafilm
+- Authors: SAINTTaiYi, JamesQiu2005, Andrea Volpato and their contributors.
+- License: code is GPL-3.0-or-later; film and paper profiles remain under
+  their stated CC BY-SA 4.0 terms.
+- Integrated component: the native arm64 Vulkan editor, JNI bridge, 25 film
+  profiles, nine paper profiles, stock catalogue, shaders, fonts and native
+  decoder libraries from the public SpektraLab Android 1.3.4 release.
+- Modification: the editor is opened from the MiaoJi app as an embedded
+  activity, with the upstream self-update and feedback prompts disabled in
+  that embedded mode. The photon-to-photo processing remains local and does
+  not call the MiaoJi API.
+- The previous eight baked 3D LUTs remain in the asset bundle for source
+  compatibility, but their old visible tabs were removed in v2.2.0.
 
 ## Photo-to-poster Skills
 
