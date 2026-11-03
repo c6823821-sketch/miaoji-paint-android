@@ -1828,7 +1828,7 @@
         <section class="card style-library">
           <div class="card-head">
             <div class="card-title">风格卡片</div>
-            <div class="card-subtitle">37 个公开提示词工作流 · 按用途分类</div>
+            <div class="card-subtitle">40 个公开提示词工作流 · 按用途分类</div>
           </div>
           <div class="style-filters" id="styleFilters">
             <button class="filter-chip active" type="button" data-category="popular">精选</button>
@@ -2276,7 +2276,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 2.2.0</span>
+            <span class="version-text" id="versionText">当前版本 2.2.1</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2685,6 +2685,27 @@
         prompt: "采用黑白表现主义粗蜡笔速写风格，把上传人物或场景重画为原创纸本插画，而不是照片素描滤镜。使用粗颗粒黑色蜡笔、炭笔和干刷混合绘制，以凌乱奔放、断续交错的黑色笔触塑造主体；重点夸张原图最具辨识度的表情、眼神、嘴巴、发型和姿态，保留人物神韵，弱化写实细节。头发、服饰等区域用密集、粗糙、不规则的笔触交叠，形成强烈黑白视觉对比；脸部只用极少量线条与留白塑造表情。保留明显蜡笔颗粒、擦痕、断线、飞白与粗糙纸张纹理，线条可以自由延伸、交错甚至局部越界，呈现未经修饰的手工速写感。整体使用米白纸张背景和大面积留白，具有复古艺术绘本、表现主义人物速写与独立艺术杂志气质；禁止写实素描、细腻铅笔排线、平滑数字线稿、均匀轮廓和过度精密的五官。"
       },
       {
+        id: "cutlight-poem", name: "镂光辞", category: "skill", preview: "editorial",
+        desc: "镂空纸字、穿过文字的光与诗景生长", forceSize: "3:4",
+        promptLabel: "输入诗词或主题",
+        promptPlaceholder: "例如：明月松间照（王维《山居秋暝》）；也可以只写“秋夜听雨”，让我选一句合适的诗",
+        promptHint: "这张卡不用上传照片。写一首诗、一句诗或一个主题即可；AI 生成中文偶尔错字，出图后请核对这些诗句。",
+        prompt: "以我在主提示词中提供的中国古典诗句为唯一文字核心，创作一张3:4竖版「镂光辞」诗词光影艺术作品，不是普通国风插画，也不是把字叠在照片上。先把诗句镂空刻进一张有真实厚度、纤维、毛边和自然卷曲的纸张，纸的形态必须从诗意中生长：可以是展开的长卷、被风吹起的纸带、圆形月纸、折叠屏风或不规则花瓣纸，禁止每张都用同一张平放纸。让一束来源明确的暖光穿过镂空字洞，在纸面、桌面、墙面或地面上投下可辨认的汉字光影；光影不是装饰，而要继续延伸成诗中的场景，例如雨丝、竹叶、梅枝、江面、远处人物、窗棂或薄雾。文字、纸、投影和景物必须共享同一透视、焦点与光源，形成自然连续的视觉因果。大面积保留安静留白，纸张只是一部分画面，环境有深色或低饱和背景来衬托光。字体使用清雅、瘦长、易读的中文传统书写风格，严格保持我给出的诗句与作者原文，不擅改、不遗漏、不重复、不添加无关长句；需要作者时用小字放在诗句侧边。颜色从诗意提取两到四种，主色可为象牙白、墨黑、灰青、暖金或竹绿，光线有细腻衰减和真实尘埃，材料具有手工纸的纤维、压痕与微小不规则。禁止廉价发光文字、霓虹、塑料3D、规则模板边框、满屏装饰、假书法、乱码、英文长句、logo和水印。"
+      },
+      {
+        id: "photo-crayon-memory", name: "摄影蜡笔手帐", category: "skill", preview: "storybook",
+        desc: "上半真实照片，下半蜡笔粗纸与松弛英文", requiresReference: true, forceSize: "3:4",
+        prompt: "把上传照片制作成一张3:4竖版「摄影蜡笔手帐」双层编辑作品，明显区别于普通拍立得拼贴和照片滤镜。画布垂直分为上下两部分：上半部约占45%，完整保留原照片的主体、构图、色彩、光影、人物身份和真实摄影质感，只做等比缩放与必要轻微裁切，并加一圈极细的白色相纸边框；不得重画、换景、磨皮或给照片做风格化。下半部约占55%，使用温暖米白色、可见细小纤维与轻微旧化肌理的手工厚纸，叠加非常克制的Risograph颗粒噪点。先从原片提取三到六个最有辨识度的形体、方向与光影色彩，例如树、山、建筑、道路、人物轮廓、水面或天空；在纸面中央偏下位置用彩色蜡笔和哑光色粉笔重画成一块边缘不规则、像手撕纸或随手涂抹的横向小景。色块不能铺满下半页，四周必须保留大面积空纸，造型稚拙概括，但空间关系和主体仍可辨。颜色从照片提取并降低饱和度，保留暖黄、雾蓝、灰绿等通透层次，彻底避免纯黑、脏污暗部、厚重阴影和糖果色。只在上方或下方加入两到三组极短、柔软、略微歪斜的手写英文，例如从画面情绪提炼的两个词，拼写准确，不做大标题。整体安静、克制、治愈，像真实手作明信片和当代摄影小志；禁止把整张照片再次画一遍、复杂手账贴纸、胶带、邮票墙、地图、密集文字、塑料3D、数码渐变、logo和水印。"
+      },
+      {
+        id: "poetic-relief-diorama", name: "诗中境浮雕", category: "skill", preview: "clay",
+        desc: "暖白石膏墙、诗景微缩浮雕与竖排书法", forceSize: "3:4",
+        promptLabel: "输入诗词或主题",
+        promptPlaceholder: "例如：江雪 柳宗元，千山鸟飞绝，万径人踪灭；也可以只写诗名和作者",
+        promptHint: "这张卡不用上传照片。输入诗词、诗名和作者；浮雕内容会随诗句重新设计，出图后请核对竖排文字。",
+        prompt: "以我在主提示词中提供的中国古典诗词为内容，创作一张3:4竖版「诗中境」中式微缩浮雕艺术海报，不是平面国风插画，也不是普通3D渲染。背景使用暖象牙白、米白色、有真实砂质颗粒、细裂纹、刮刀痕和局部起伏的石膏墙面，墙本身就是构图的重要大面积留白，通常占画面60%到75%。先分析诗词的情绪、空间关系、核心意象和人物动作，再独立设计一个像从墙体内部自然生长出来的微缩浮雕世界，放在画面右侧或右下方，约占25%到40%，禁止铺满整面墙。浮雕外轮廓必须由诗意决定，不可机械套用同一座悬崖、山峰、长条底座或斜向刮痕：江河用蜿蜒水面，庭院用精巧门窗，花木用枝条与花瓣，山岳用高低层叠，边塞用极辽远的尺度对比。景观必须有真实前景、中景、远景和遮挡关系；人物极小，只占画面高度约2%到4%，用优雅剪影或微缩造景表现，正在撑舟、独行、远眺、听雨、登楼或做诗中的动作。材质使用真实厚度的手工石膏、矿物颜料、细砂和薄层材料，浮雕边缘自然破碎、逐渐变薄，柔和融入墙面，并投下细腻真实的侧向阴影；纹理必须服从山体、流水、云雾、植物和建筑的形态，不能机械重复。颜色限制在暖白、米白和两到四种低饱和主色，如灰青、深靛、墨灰、浅沙金、自然朱红；像矿物颜料附着在真实材料上，禁止艳丽渐变、镜面、塑料和高饱和。左侧做克制精致的竖排中文排版：标题用清雅行楷或传统书法韵味的字体，作者用更小字号，正文用纤细则易读的竖排字，列距均匀，朱红小印章只占很小的视觉重量。严格使用我提供的诗词原文、作者姓名和阅读顺序，不擅改、不遗漏、不重复、不添加无关文字；若文字空间不足，宁可减少装饰也不能牺牲诗词准确性。采用柔和侧上方自然光，突出浮雕厚度和边缘投影，整体像高端艺术装置摄影与东方展览海报；禁止满幅浮雕、杂乱元素、写实大头人物、廉价3D、过度锐化、厚重黑阴影、乱码、logo和水印。"
+      },
+      {
         id: "watercolor", name: "透明水彩", category: "art", preview: "watercolor",
         desc: "湿画晕染、留白与纸纤维",
         prompt: "传统透明水彩原作质感，使用冷压棉浆水彩纸。先以湿画法铺出大块空气感色面，再用干笔在视觉中心补充结构、纹理和少量铅笔线。颜色通过透明叠色形成，不靠厚重白颜料；高光利用纸张留白，边缘有自然水痕、轻微回渗和颜料沉积，但不弄脏画面。主色和邻近色保持和谐，只在一个小区域使用饱和度较高的暖色或冷色作为惊喜。构图有呼吸感，主体细节集中，背景逐渐虚化。避免数码渐变、塑料高光和均匀颗粒。除用户明确要求外，不出现文字或水印。"
@@ -2748,7 +2769,8 @@
 
     const STYLE_GROUP_IDS = {
       popular: [
-        "none", "cinematic", "minimal-zine-poster", "travel-memory",
+        "none", "cutlight-poem", "photo-crayon-memory",
+        "poetic-relief-diorama", "cinematic", "minimal-zine-poster", "travel-memory",
         "collage-design", "photo-revival", "papercard", "travel-magnet-poster",
         "tabletop-diorama", "mondo-cinema-poster", "blindbox", "oil",
         "y2k-doodle-poster", "fashion-fragment-collage"
@@ -2761,14 +2783,15 @@
         "papercard", "zine-postcard", "mono-color", "minimal-zine-poster",
         "pixel-style-poster", "kimi-tech-editorial", "mondo-cinema-poster",
         "github-trending-poster", "skill-index-board", "crt-terminal-poster",
-        "geometric-facet-collage", "fashion-fragment-collage"
+        "geometric-facet-collage", "fashion-fragment-collage",
+        "cutlight-poem", "poetic-relief-diorama"
       ],
       travel: [
         "travel-memory", "travel-photo-abstraction", "gathered-zine",
         "geo-editorial", "line-art-extension", "papercraft-travel",
         "iso-block-world", "pixel-dissolve", "pen-wash-travel",
         "watercolor-card", "travel-magnet-poster", "knit-zine-poster",
-        "travel-sticker-card"
+        "travel-sticker-card", "photo-crayon-memory"
       ],
       transform: [
         "torn-cartoon", "double-exposure", "acrylic-relief", "screenprint",
@@ -3573,6 +3596,15 @@
 
     function updatePromptMode() {
       const canGenerateFromReference = referenceItems.length > 0 && selectedStyleId !== "none";
+      const selectedStyle = STYLE_CARDS.find((style) => style.id === selectedStyleId);
+      if (selectedStyle && selectedStyle.promptPlaceholder) {
+        $("promptTitle").textContent = selectedStyle.promptLabel || "输入创作内容";
+        promptInput.placeholder = selectedStyle.promptPlaceholder;
+        $("promptHint").textContent = selectedStyle.promptHint
+          || "这段文字会和所选风格一起提交，仅作用于本次。";
+        updatePrice();
+        return;
+      }
       $("promptTitle").textContent = canGenerateFromReference
         ? "补充要求（可选）" : "你希望生成什么？";
       promptInput.placeholder = canGenerateFromReference
@@ -5675,7 +5707,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.0";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.1";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

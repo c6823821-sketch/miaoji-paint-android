@@ -1,4 +1,4 @@
-const { spawn } = require("child_process");
+const { spawn, spawnSync } = require("child_process");
 const os = require("os");
 const path = require("path");
 
@@ -343,7 +343,8 @@ async function main() {
       "dreamcore-collage", "collage-design", "y2k-doodle-poster",
       "watercolor-ink-reconstruct", "silly-marker-cartoon",
       "geometric-facet-collage", "fashion-fragment-collage",
-      "embroidered-patchwork", "black-crayon-sketch"
+      "embroidered-patchwork", "black-crayon-sketch", "cutlight-poem",
+      "photo-crayon-memory", "poetic-relief-diorama"
     ];
     const food = STYLE_CARDS.filter((style) => style.category === "food");
     const transform = STYLE_CARDS.filter((style) => style.category === "transform");
@@ -367,13 +368,20 @@ async function main() {
     const knitZine = STYLE_CARDS.find((style) => style.id === "knit-zine-poster");
     const travelSticker = STYLE_CARDS.find((style) => style.id === "travel-sticker-card");
     const watercolorCard = STYLE_CARDS.find((style) => style.id === "watercolor-card");
+    selectedStyleId = "cutlight-poem";
+    updatePromptMode();
+    const poemPromptUi = document.getElementById("promptTitle").textContent === "输入诗词或主题"
+      && promptInput.placeholder.includes("明月松间照")
+      && document.getElementById("promptHint").textContent.includes("核对");
+    selectedStyleId = "none";
+    updatePromptMode();
     const referenceStyleIds = [
       "travel-magnet-poster", "knit-zine-poster", "travel-sticker-card",
       "photo-revival", "scene-distillation", "travel-photo-abstraction",
       "collage-design", "y2k-doodle-poster", "watercolor-ink-reconstruct",
       "silly-marker-cartoon", "geometric-facet-collage",
       "fashion-fragment-collage", "embroidered-patchwork",
-      "black-crayon-sketch"
+      "black-crayon-sketch", "photo-crayon-memory"
     ];
     return {
       foodCount: food.length,
@@ -405,6 +413,7 @@ async function main() {
       watercolorUpdated: watercolorCard?.desc.includes("可撕齿边")
         && watercolorCard?.prompt.includes("横向摆放")
         && watercolorCard?.prompt.includes("配色圆点"),
+      poemPromptUi,
       travelGeneric: travel
         && travel.name === "旅途手记拼贴"
         && travel.prompt.includes("不要预设海边")
@@ -423,12 +432,12 @@ async function main() {
     || !presets.transformPrompts
     || !presets.transformPreviews
     || presets.renderedTransformCards !== 15
-    || presets.skillCount !== 37
+    || presets.skillCount !== 40
     || !presets.skillIdsPresent
     || !presets.skillPrompts
     || !presets.skillPreviews
-    || presets.renderedPosterCards !== 12
-    || presets.loadedSkillImages !== 12
+    || presets.renderedPosterCards !== 14
+    || presets.loadedSkillImages !== 14
     || !presets.referenceStyleIds
     || presets.magnetSize !== "2:3"
     || presets.knitSize !== "3:4"
@@ -438,6 +447,7 @@ async function main() {
     || presets.impastoPreview !== "style-impasto-diorama-v2.jpg"
     || presets.watercolorSize !== "3:4"
     || !presets.watercolorUpdated
+    || !presets.poemPromptUi
     || !presets.travelGeneric
   ) {
     throw new Error(`New image presets check failed: ${JSON.stringify(presets)}`);
@@ -629,6 +639,7 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    child.kill();
+    spawnSync("taskkill", ["/PID", String(child.pid), "/T", "/F"], { stdio: "ignore" });
     await sleep(400);
+    process.exit(process.exitCode || 0);
   });

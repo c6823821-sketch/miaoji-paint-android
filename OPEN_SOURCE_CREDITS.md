@@ -142,6 +142,25 @@ generation still runs through the user's own MiaoJi API key.
 Third-party licenses remain the property of their respective authors. This
 self-use app does not claim ownership of the source prompt methodologies.
 
+## v2.2.1 Poetry and Photo-Skill Sources
+
+- 镂光辞: https://v.douyin.com/3p4w94NR8uo/
+  - Author: Starryear年.
+  - Source workflow name: `【V.012】Starryear-Louguangci丨年·镂光辞`.
+  - The public caption provides a concise instruction; this app expands it into
+    a detailed, reusable prompt without bundling the author's sample images.
+- 诗境微缩浮雕:
+  - https://v.douyin.com/6_-cdkPe0Q4/ (Starryear年, `【V.010】...浮世雕`)
+  - https://v.douyin.com/UDi5ZP_lXgQ/ (李大埜,「诗中有境」)
+  - Both posts describe the same miniature-relief-on-plaster family. The app
+    merges them into one card and uses the fuller public instruction as its base.
+- 摄影蜡笔手帐: https://v.douyin.com/2k20EK2blB8/
+  - Author: 成分复杂的炀.
+  - The complete public layout instruction was rewritten for this app's compact
+    prompt editor.
+- The three preview tiles were generated independently as one MiaoJi low-quality
+  test sheet and then cropped locally. No creator sample image is bundled.
+
 ## Research note
 
 The first supplied Douyin post did not name its Skill in the public caption.
