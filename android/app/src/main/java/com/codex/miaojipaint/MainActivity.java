@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "2.2.3";
+                return "2.2.4";
             }
         }
 
@@ -691,10 +691,12 @@ public class MainActivity extends Activity {
         JSONObject result = new JSONObject();
         String outputFormat = task.optString("output_format", "").toLowerCase(Locale.ROOT);
         String fallbackMime = "gif".equals(outputFormat) ? "image/gif" : "image/png";
+        String declaredMime = image == null ? "" : image.optString("mime_type", "");
+        String detectedMime = detectRemoteImageMime(imageUrl,
+                safe(declaredMime, fallbackMime));
         result.put("taskId", taskId);
         result.put("imageUrl", imageUrl);
-        result.put("mimeType", image == null
-                ? fallbackMime : safe(image.optString("mime_type", ""), fallbackMime));
+        result.put("mimeType", detectedMime);
         result.put("chargedCents", task.optInt("charged_cents", 0));
         result.put("estimatedCents", task.optInt("estimated_cents", estimated));
         result.put("model", task.optString("model", model));
@@ -897,7 +899,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "2.2.3";
+            return "2.2.4";
         }
     }
 
@@ -986,6 +988,7 @@ public class MainActivity extends Activity {
                 imageBytes = readBytes(connection.getInputStream());
             }
 
+            contentType = sniffImageMime(imageBytes, contentType);
             String extension = extensionFor(contentType);
             String name = safeFileName(suggestedName, extension);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -996,8 +999,15 @@ public class MainActivity extends Activity {
 
             JSONObject result = new JSONObject();
             result.put("filename", name);
-            emit(callId, "saved", "已保存到相册：妙极画图/" + name, result);
-            showToast("已保存到手机相册");
+            result.put("mimeType", contentType);
+            boolean requestedGif = "image/gif".equalsIgnoreCase(safe(mimeType, ""));
+            boolean savedGif = "image/gif".equalsIgnoreCase(contentType);
+            String message = requestedGif && !savedGif
+                    ? "妙极返回的是 " + extension.toUpperCase(Locale.ROOT)
+                      + " 静态图，已按实际格式保存"
+                    : "已保存到相册：妙极画图/" + name;
+            emit(callId, "saved", message, result);
+            showToast(message);
         } catch (Exception error) {
             emit(callId, "save_error", friendlyError(error), null);
         } finally {
@@ -1127,6 +1137,58 @@ public class MainActivity extends Activity {
         if ("image/gif".equalsIgnoreCase(mime)) return "gif";
         String guessed = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
         return guessed == null || guessed.isEmpty() ? "png" : guessed;
+    }
+
+    private static String detectRemoteImageMime(String imageUrl, String fallback) {
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(imageUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(8000);
+            connection.setReadTimeout(8000);
+            connection.setInstanceFollowRedirects(true);
+            connection.setRequestProperty("Range", "bytes=0-31");
+            connection.setRequestProperty("User-Agent", "MiaoJiPaint/1.0");
+            int status = connection.getResponseCode();
+            if (status < 200 || status >= 400) return fallback;
+            try (InputStream input = connection.getInputStream()) {
+                byte[] probe = new byte[32];
+                int total = 0;
+                while (total < probe.length) {
+                    int read = input.read(probe, total, probe.length - total);
+                    if (read < 0) break;
+                    total += read;
+                }
+                return sniffImageMime(java.util.Arrays.copyOf(probe, total), fallback);
+            }
+        } catch (Exception ignored) {
+            return fallback;
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    }
+
+    private static String sniffImageMime(byte[] bytes, String fallback) {
+        if (bytes == null || bytes.length < 6) return fallback;
+        if (bytes[0] == 'G' && bytes[1] == 'I' && bytes[2] == 'F'
+                && bytes[3] == '8' && (bytes[4] == '7' || bytes[4] == '9')
+                && bytes[5] == 'a') {
+            return "image/gif";
+        }
+        if (bytes.length >= 8 && (bytes[0] & 0xff) == 0x89
+                && bytes[1] == 'P' && bytes[2] == 'N' && bytes[3] == 'G') {
+            return "image/png";
+        }
+        if (bytes.length >= 3 && (bytes[0] & 0xff) == 0xff
+                && (bytes[1] & 0xff) == 0xd8 && (bytes[2] & 0xff) == 0xff) {
+            return "image/jpeg";
+        }
+        if (bytes.length >= 12 && bytes[0] == 'R' && bytes[1] == 'I'
+                && bytes[2] == 'F' && bytes[3] == 'F' && bytes[8] == 'W'
+                && bytes[9] == 'E' && bytes[10] == 'B' && bytes[11] == 'P') {
+            return "image/webp";
+        }
+        return fallback;
     }
 
     private static String safeFileName(String suggested, String extension) {

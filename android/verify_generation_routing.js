@@ -349,6 +349,18 @@ async function main() {
     promptInput.value = "一只橘猫眨眼并轻轻摇尾巴，背景稳定，循环动画";
     startGeneration();
     const args = window.__nativeGenerate;
+    const pixel = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    window.__miaoNative(JSON.stringify({
+      callId: args[8],
+      event: "result",
+      data: {
+        taskId: "gif-task-static",
+        imageUrl: pixel,
+        mimeType: "image/png",
+        outputFormat: "gif",
+        chargedCents: 29
+      }
+    }));
     return {
       formatVisible: !formatField.hidden,
       format: args[7],
@@ -359,7 +371,8 @@ async function main() {
       references: args[6],
       referenceCount: referenceItems.length,
       defaults,
-      settingsFormat: activeGenerationSettings.outputFormat
+      settingsFormat: activeGenerationSettings.outputFormat,
+      resultMeta: resultBody.querySelector(".result-meta span").textContent
     };
   })()`);
 
@@ -378,6 +391,7 @@ async function main() {
     || gif.defaults.price !== "GIF 预扣 ¥0.90"
     || !gif.defaults.controlsEnabled
     || gif.settingsFormat !== "gif"
+    || !gif.resultMeta.includes("请求 GIF（实际为静态图）")
   ) {
     throw new Error(`GIF route check failed: ${JSON.stringify(gif)}`);
   }

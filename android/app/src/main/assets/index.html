@@ -2283,7 +2283,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 2.2.3</span>
+            <span class="version-text" id="versionText">当前版本 2.2.4</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -5014,10 +5014,12 @@
       cost.textContent = `本次实扣 ${formatMoney(data.chargedCents)}`;
       const info = document.createElement("span");
       const settings = activeGenerationSettings;
+      const requestedGif = settings && settings.outputFormat === "gif";
+      const actualGif = data.mimeType === "image/gif";
       info.textContent = settings
         ? `${settings.modelName} · ${settings.size} · ${settings.resolution.toUpperCase()}`
           + `${settings.quality ? " · " + settings.quality : ""}`
-          + `${settings.outputFormat === "gif" ? " · GIF" : ""}`
+          + `${actualGif ? " · GIF" : requestedGif ? " · 请求 GIF（实际为静态图）" : ""}`
           + ` · ${settings.hasReference
             ? `图生图 ×${settings.referenceCount || 1}` : "文生图"}`
           + `${settings.styleName ? " · " + settings.styleName : ""}`
@@ -5146,7 +5148,8 @@
       const parts = [
         generationModeLabel(record.mode),
         record.title && record.title !== generationModeLabel(record.mode) ? record.title : "",
-        record.outputFormat === "gif" ? "GIF" : "",
+        record.mimeType === "image/gif"
+          ? "GIF" : record.outputFormat === "gif" ? "请求 GIF（实际为静态图）" : "",
         when,
         record.chargedCents > 0 ? `实扣 ${formatMoney(record.chargedCents)}` : ""
       ].filter(Boolean);
@@ -5806,7 +5809,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.3";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.4";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

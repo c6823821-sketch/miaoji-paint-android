@@ -104,7 +104,7 @@ if (-not (Test-Path -LiteralPath $Keystore)) {
     throw "Stable signing keystore missing: $Keystore"
 }
 
-$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.2.3.apk"
+$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.2.4.apk"
 & $ApkSigner sign `
     --ks $Keystore `
     --ks-key-alias $Alias `
