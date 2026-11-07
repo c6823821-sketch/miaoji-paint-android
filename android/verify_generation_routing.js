@@ -3,7 +3,10 @@ const os = require("os");
 const path = require("path");
 
 const edge = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
-const html = "file:///E:/Codex/work/miaoji-paint/android/app/src/main/assets/index.html?preview=1";
+const html = "file:///" + path.resolve(
+  __dirname,
+  "app/src/main/assets/index.html"
+).replace(/\\/g, "/") + "?preview=1";
 const profile = path.join(os.tmpdir(), `miaoji-routing-check-${process.pid}`);
 const port = 9341;
 
@@ -318,6 +321,61 @@ async function main() {
   if (image.mode !== "image" || !image.hasGenerateCall || !image.referenceFirst) {
     throw new Error("AI image route or reference placement check failed");
   }
+
+  console.log("checking GPT Image 2.6 GIF route");
+  const gif = await evaluate(`(() => {
+    finishBusy();
+    generationCallId = "";
+    window.confirm = () => true;
+    currentModel = models.find((model) => model.model === "gpt-image-2.6-flare");
+    modelSelect.value = currentModel.model;
+    renderModelControls();
+    formatSelect.value = "gif";
+    referenceItems = [{
+      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+      name: "reference.png"
+    }];
+    syncFormatControls();
+    promptInput.value = "一只橘猫眨眼并轻轻摇尾巴，背景稳定，循环动画";
+    startGeneration();
+    const args = window.__nativeGenerate;
+    return {
+      formatVisible: !formatField.hidden,
+      format: args[7],
+      model: args[1],
+      size: args[2],
+      resolution: args[3],
+      quality: args[4],
+      references: args[6],
+      referenceCleared: referenceItems.length === 0,
+      price: priceTitle.textContent,
+      settingsFormat: activeGenerationSettings.outputFormat
+    };
+  })()`);
+
+  if (
+    !gif.formatVisible
+    || gif.format !== "gif"
+    || gif.model !== "gpt-image-2.6-flare"
+    || gif.size !== "1:1"
+    || gif.resolution !== "1k"
+    || gif.quality !== "low"
+    || gif.references !== "[]"
+    || !gif.referenceCleared
+    || gif.price !== "GIF 预扣 ¥0.90"
+    || gif.settingsFormat !== "gif"
+  ) {
+    throw new Error(`GIF route check failed: ${JSON.stringify(gif)}`);
+  }
+
+  await evaluate(`(() => {
+    finishBusy();
+    generationCallId = "";
+    formatSelect.value = "";
+    currentModel = models.find((model) => model.model === "gpt-image-2.5-flare");
+    modelSelect.value = currentModel.model;
+    renderModelControls();
+  })()`);
 
   console.log("checking new image presets");
   const presets = await evaluate(`(async () => {

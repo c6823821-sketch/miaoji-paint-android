@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "2.2.1";
+                return "2.2.2";
             }
         }
 
@@ -317,7 +317,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void generate(String prompt, String model, String size, String resolution,
                              String quality, int count, String referenceImagesJson,
-                             String callId) {
+                             String outputFormat, String callId) {
             final String key = apiKey().trim();
             if (key.isEmpty()) {
                 emit(callId, "error", "请先填写妙极 API Key", errorData("NO_API_KEY", false));
@@ -332,16 +332,43 @@ public class MainActivity extends Activity {
                 return;
             }
 
+            String cleanModel = safe(model, "gpt-image-2.5-flare");
+            String cleanOutputFormat = safe(outputFormat, "").toLowerCase(Locale.ROOT);
+            if (!cleanOutputFormat.isEmpty() && !"gif".equals(cleanOutputFormat)) {
+                emit(callId, "error", "不支持的输出格式", null);
+                return;
+            }
+            if ("gif".equals(cleanOutputFormat)
+                    && !cleanModel.startsWith("gpt-image-2.6-")) {
+                emit(callId, "error", "GIF 仅支持 GPT Image 2.6 模型", null);
+                return;
+            }
+            if ("gif".equals(cleanOutputFormat)) {
+                try {
+                    JSONArray references = referenceImagesJson == null
+                            || referenceImagesJson.trim().isEmpty()
+                            ? new JSONArray() : new JSONArray(referenceImagesJson);
+                    if (references.length() > 0) {
+                        emit(callId, "error", "GIF 仅支持文生图，请先移除参考图", null);
+                        return;
+                    }
+                } catch (JSONException error) {
+                    emit(callId, "error", "参考图数据格式异常", null);
+                    return;
+                }
+            }
+
             emit(callId, "status", "请求已收到，正在准备照片…", null);
             executor.execute(() -> runGeneration(
                     key,
                     prompt.trim(),
-                    safe(model, "gpt-image-2.5-flare"),
+                    cleanModel,
                     safe(size, "1:1"),
                     safe(resolution, "1k"),
                     quality == null ? "" : quality.trim(),
                     Math.max(1, count),
                     referenceImagesJson == null ? "[]" : referenceImagesJson,
+                    cleanOutputFormat,
                     callId
             ));
         }
@@ -411,6 +438,7 @@ public class MainActivity extends Activity {
                     if (pending != null
                             && cleanTaskId.equals(pending.optString("taskId", ""))) {
                         result.put("mode", pending.optString("mode", "image"));
+                        result.put("outputFormat", pending.optString("outputFormat", ""));
                         result.put("createdAt", pending.optLong("createdAt",
                                 System.currentTimeMillis()));
                     }
@@ -452,9 +480,17 @@ public class MainActivity extends Activity {
 
     private void runGeneration(String key, String prompt, String model, String size,
                                String resolution, String quality, int count,
-                               String referenceImagesJson, String callId) {
+                               String referenceImagesJson, String outputFormat,
+                               String callId) {
         HttpURLConnection connection = null;
         try {
+            boolean gif = "gif".equals(outputFormat);
+            if (gif) {
+                size = "1:1";
+                resolution = "1k";
+                quality = "low";
+                referenceImagesJson = "[]";
+            }
             JSONObject request = new JSONObject();
             request.put("model", model);
             request.put("prompt", prompt);
@@ -462,6 +498,7 @@ public class MainActivity extends Activity {
             request.put("resolution", resolution);
             request.put("n", count);
             if (!quality.isEmpty()) request.put("quality", quality);
+            if (gif) request.put("output_format", "gif");
             JSONArray referenceImages = referenceImagesJson == null
                     || referenceImagesJson.trim().isEmpty()
                     ? new JSONArray()
@@ -530,6 +567,7 @@ public class MainActivity extends Activity {
             pending.put("size", size);
             pending.put("resolution", resolution);
             pending.put("quality", quality);
+            pending.put("outputFormat", outputFormat);
             pending.put("state", "submitted");
             savePendingTask(pending);
 
@@ -604,6 +642,9 @@ public class MainActivity extends Activity {
 
                 if ("succeeded".equals(status)) {
                     JSONObject result = resultFromTask(task, taskId, "", "", "", "", 0);
+                    if (result.optString("outputFormat", "").isEmpty()) {
+                        result.put("outputFormat", pending.optString("outputFormat", ""));
+                    }
                     result.put("mode", mode);
                     result.put("createdAt", createdAt);
 
@@ -615,6 +656,7 @@ public class MainActivity extends Activity {
                     pending.put("size", result.optString("size", ""));
                     pending.put("resolution", result.optString("resolution", ""));
                     pending.put("quality", result.optString("quality", ""));
+                    pending.put("outputFormat", result.optString("outputFormat", ""));
                     savePendingTask(pending);
                     emit(callId, "result", "图片已从云端取回", result);
                     return;
@@ -672,16 +714,19 @@ public class MainActivity extends Activity {
             throw new IllegalStateException("任务已成功，但没有图片地址");
         }
         JSONObject result = new JSONObject();
+        String outputFormat = task.optString("output_format", "").toLowerCase(Locale.ROOT);
+        String fallbackMime = "gif".equals(outputFormat) ? "image/gif" : "image/png";
         result.put("taskId", taskId);
         result.put("imageUrl", imageUrl);
         result.put("mimeType", image == null
-                ? "image/png" : safe(image.optString("mime_type", ""), "image/png"));
+                ? fallbackMime : safe(image.optString("mime_type", ""), fallbackMime));
         result.put("chargedCents", task.optInt("charged_cents", 0));
         result.put("estimatedCents", task.optInt("estimated_cents", estimated));
         result.put("model", task.optString("model", model));
         result.put("size", task.optString("size", size));
         result.put("resolution", task.optString("resolution", resolution));
         result.put("quality", task.optString("quality", quality));
+        result.put("outputFormat", outputFormat);
         return result;
     }
 
@@ -690,13 +735,15 @@ public class MainActivity extends Activity {
         try {
             result.put("taskId", pending.optString("taskId", ""));
             result.put("imageUrl", pending.optString("imageUrl", ""));
-            result.put("mimeType", "image/png");
+            String outputFormat = pending.optString("outputFormat", "");
+            result.put("mimeType", "gif".equals(outputFormat) ? "image/gif" : "image/png");
             result.put("chargedCents", pending.optInt("chargedCents", 0));
             result.put("estimatedCents", pending.optInt("estimatedCents", 0));
             result.put("model", pending.optString("model", ""));
             result.put("size", pending.optString("size", ""));
             result.put("resolution", pending.optString("resolution", ""));
             result.put("quality", pending.optString("quality", ""));
+            result.put("outputFormat", outputFormat);
             result.put("mode", pending.optString("mode", "image"));
             result.put("createdAt", pending.optLong("createdAt",
                     System.currentTimeMillis()));
@@ -875,7 +922,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "2.2.1";
+            return "2.2.2";
         }
     }
 
@@ -959,7 +1006,8 @@ public class MainActivity extends Activity {
                 if (status < 200 || status >= 300) {
                     throw new IllegalStateException("图片下载失败（HTTP " + status + "）");
                 }
-                contentType = safe(connection.getContentType(), contentType).split(";")[0].trim();
+                String responseType = safe(connection.getContentType(), "").split(";")[0].trim();
+                if (responseType.startsWith("image/")) contentType = responseType;
                 imageBytes = readBytes(connection.getInputStream());
             }
 
@@ -1101,6 +1149,7 @@ public class MainActivity extends Activity {
     private static String extensionFor(String mime) {
         if ("image/jpeg".equalsIgnoreCase(mime)) return "jpg";
         if ("image/webp".equalsIgnoreCase(mime)) return "webp";
+        if ("image/gif".equalsIgnoreCase(mime)) return "gif";
         String guessed = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
         return guessed == null || guessed.isEmpty() ? "png" : guessed;
     }

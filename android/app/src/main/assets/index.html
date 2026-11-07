@@ -1862,6 +1862,13 @@
                 <label for="modelSelect">模型</label>
                 <select id="modelSelect"></select>
               </div>
+              <div class="field full" id="formatField" hidden>
+                <label for="formatSelect">输出格式</label>
+                <select id="formatSelect">
+                  <option value="">静态图片</option>
+                  <option value="gif">GIF 动图</option>
+                </select>
+              </div>
               <div class="field">
                 <label for="sizeSelect">画面比例</label>
                 <select id="sizeSelect"></select>
@@ -2276,7 +2283,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 2.2.1</span>
+            <span class="version-text" id="versionText">当前版本 2.2.2</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2383,6 +2390,36 @@
         estimate_cents: {
           low: {"1k":24,"2k":36,"4k":36},
           medium: {"1k":36,"2k":60,"4k":60},
+          high: {"1k":96,"2k":179,"4k":179},
+          xhigh: {"1k":167,"2k":310,"4k":310},
+          max: {"1k":346,"2k":679,"4k":679}
+        }
+      },
+      {
+        model: "gpt-image-2.6-flare", display_name: "GPT Image 2.6 Flare",
+        allowed_resolutions: ["1k", "2k", "4k"],
+        allowed_qualities: ["low", "medium", "high", "xhigh", "max"],
+        allowed_output_formats: ["png", "jpeg", "webp", "gif", "svg"],
+        default_quality: "medium", default_output_format: "png",
+        format_estimate: {gif: {resolution: "1k", multiplier: 1.5}},
+        estimate_cents: {
+          low: {"1k":60,"2k":96,"4k":96},
+          medium: {"1k":84,"2k":155,"4k":155},
+          high: {"1k":96,"2k":179,"4k":179},
+          xhigh: {"1k":167,"2k":310,"4k":310},
+          max: {"1k":346,"2k":679,"4k":679}
+        }
+      },
+      {
+        model: "gpt-image-2.6-sunburst", display_name: "GPT Image 2.6 Sunburst",
+        allowed_resolutions: ["1k", "2k", "4k"],
+        allowed_qualities: ["low", "medium", "high", "xhigh", "max"],
+        allowed_output_formats: ["png", "jpeg", "webp", "gif", "svg"],
+        default_quality: "medium", default_output_format: "png",
+        format_estimate: {gif: {resolution: "1k", multiplier: 1.5}},
+        estimate_cents: {
+          low: {"1k":60,"2k":96,"4k":96},
+          medium: {"1k":84,"2k":155,"4k":155},
           high: {"1k":96,"2k":179,"4k":179},
           xhigh: {"1k":167,"2k":310,"4k":310},
           max: {"1k":346,"2k":679,"4k":679}
@@ -3263,6 +3300,8 @@
     const $ = (id) => document.getElementById(id);
     const promptInput = $("prompt");
     const modelSelect = $("modelSelect");
+    const formatField = $("formatField");
+    const formatSelect = $("formatSelect");
     const styleGrid = $("styleGrid");
     const styleFilters = $("styleFilters");
     const selectedStyleEditor = $("selectedStyleEditor");
@@ -3522,6 +3561,8 @@
     const MODEL_DESCRIPTIONS = {
       "gpt-image-2.5-flare": "综合效果与价格较平衡，适合日常写实、插画和海报。",
       "gpt-image-2.5-sunburst": "画面色彩和光影更丰富，适合需要更强氛围感的图片。",
+      "gpt-image-2.6-flare": "GPT Image 2.6 快速款，支持静态图片、SVG 和动画 GIF。",
+      "gpt-image-2.6-sunburst": "GPT Image 2.6 精细款，支持静态图片、SVG 和动画 GIF。",
       "gpt-image-2": "通用模型，适合稳定生成常见题材和构图。",
       "gemini-3-pro-image-preview": "擅长中文内容、复杂排版和多元素画面。",
       "gemini-3.1-flash-image-preview": "生成速度较快，适合日常草稿和快速出图。"
@@ -3533,7 +3574,47 @@
       return model.default_quality || model.allowed_qualities[0];
     }
 
+    function supportsGif(model) {
+      const formats = model && Array.isArray(model.allowed_output_formats)
+        ? model.allowed_output_formats : [];
+      return Boolean(model && String(model.model).startsWith("gpt-image-2.6-")
+        && formats.includes("gif"));
+    }
+
+    function gifSelected() {
+      return !formatField.hidden && formatSelect.value === "gif";
+    }
+
+    function formatMultiplier(format) {
+      const estimate = currentModel && currentModel.format_estimate
+        && currentModel.format_estimate[format];
+      const multiplier = estimate ? Number(estimate.multiplier) : 1;
+      return multiplier > 0 ? multiplier : 1;
+    }
+
+    function syncFormatControls() {
+      const isGif = gifSelected();
+      if (isGif && referenceItems.length) {
+        referenceItems = [];
+        referenceInput.value = "";
+        renderReferences();
+        showToast("GIF 仅支持文生图，已移除参考图");
+      }
+      sizeSelect.disabled = isGif;
+      qualitySelect.disabled = isGif;
+      resolutionSelect.disabled = isGif;
+      if (isGif) {
+        sizeSelect.value = "1:1";
+        resolutionSelect.value = "1k";
+        if (currentModel.allowed_qualities.includes("low")) qualitySelect.value = "low";
+      }
+      referenceZone.hidden = isGif || referenceItems.length >= MAX_REFERENCES;
+      updatePromptMode();
+    }
+
     function renderModelControls() {
+      formatField.hidden = !supportsGif(currentModel);
+      if (formatField.hidden) formatSelect.value = "";
       qualityField.hidden = currentModel.allowed_qualities.length === 0;
       fillSelect(
         qualitySelect,
@@ -3552,7 +3633,7 @@
       );
       fillSelect(sizeSelect, SIZE_OPTIONS, sizeSelect.value || "1:1");
       renderModelNote();
-      updatePrice();
+      syncFormatControls();
     }
 
     function renderModelNote() {
@@ -3568,11 +3649,17 @@
       const quality = qualityField.hidden ? "" : qualitySelect.value;
       const resolution = resolutionSelect.value || "1k";
       const values = currentModel.estimate_cents || {};
-      return Number((values[quality] || values[""] || {})[resolution] || 0);
+      const base = Number((values[quality] || values[""] || {})[resolution] || 0);
+      return Math.ceil(base * formatMultiplier(formatSelect.value || "png"));
     }
 
     function updatePrice() {
       const cents = estimateCents();
+      if (gifSelected()) {
+        priceTitle.textContent = `GIF 预扣 ¥${(cents / 100).toFixed(2)}`;
+        priceDetail.textContent = "固定 512×512、9 帧、200ms/帧；仅文生图，实际费用以结果页为准";
+        return;
+      }
       if (currentModel.model === "gpt-image-2.5-flare"
           && qualitySelect.value === "low" && resolutionSelect.value === "1k") {
         if (referenceItems.length) {
@@ -3595,6 +3682,13 @@
     }
 
     function updatePromptMode() {
+      if (gifSelected()) {
+        $("promptTitle").textContent = "GIF 动画描述";
+        promptInput.placeholder = "描述主体与连续动作，例如：一只橘猫眨眼并轻轻摇尾巴，背景保持稳定";
+        $("promptHint").textContent = "GIF 仅支持文生图，固定 9 帧；不要上传参考图。";
+        updatePrice();
+        return;
+      }
       const canGenerateFromReference = referenceItems.length > 0 && selectedStyleId !== "none";
       const selectedStyle = STYLE_CARDS.find((style) => style.id === selectedStyleId);
       if (selectedStyle && selectedStyle.promptPlaceholder) {
@@ -4044,6 +4138,7 @@
         quality,
         1,
         JSON.stringify([effectPhotoDataUrl]),
+        "",
         generationCallId
       );
     }
@@ -4764,6 +4859,7 @@
         quality,
         1,
         JSON.stringify([beautyPhotoDataUrl]),
+        "",
         generationCallId
       );
     }
@@ -4800,7 +4896,7 @@
         tile.append(image, number, remove);
         referencePreview.appendChild(tile);
       }
-      referenceZone.hidden = referenceItems.length >= MAX_REFERENCES;
+      referenceZone.hidden = gifSelected() || referenceItems.length >= MAX_REFERENCES;
       uploadTitle.textContent = referenceItems.length ? "继续添加参考图" : "上传参考图";
       uploadHint.textContent = `已添加 ${referenceItems.length}/${MAX_REFERENCES} 张 · 单张自动压缩至最长边 1024`;
     }
@@ -4850,6 +4946,10 @@
     }
 
     async function addReferenceFiles(files) {
+      if (gifSelected()) {
+        showToast("GIF 仅支持文生图，请先切回静态图片");
+        return;
+      }
       const available = Math.max(0, MAX_REFERENCES - referenceItems.length);
       const selected = Array.from(files || []).slice(0, available);
       if (files && files.length > available) {
@@ -4930,6 +5030,7 @@
       info.textContent = settings
         ? `${settings.modelName} · ${settings.size} · ${settings.resolution.toUpperCase()}`
           + `${settings.quality ? " · " + settings.quality : ""}`
+          + `${settings.outputFormat === "gif" ? " · GIF" : ""}`
           + ` · ${settings.hasReference
             ? `图生图 ×${settings.referenceCount || 1}` : "文生图"}`
           + `${settings.styleName ? " · " + settings.styleName : ""}`
@@ -5030,6 +5131,7 @@
         size: data.size || settings.size || "",
         resolution: data.resolution || settings.resolution || "",
         quality: data.quality || settings.quality || "",
+        outputFormat: data.outputFormat || settings.outputFormat || "",
         chargedCents: Number(data.chargedCents || 0),
         createdAt: Number(data.createdAt || Date.now())
       };
@@ -5057,6 +5159,7 @@
       const parts = [
         generationModeLabel(record.mode),
         record.title && record.title !== generationModeLabel(record.mode) ? record.title : "",
+        record.outputFormat === "gif" ? "GIF" : "",
         when,
         record.chargedCents > 0 ? `实扣 ${formatMoney(record.chargedCents)}` : ""
       ].filter(Boolean);
@@ -5204,6 +5307,7 @@
         size: pending.size || "",
         resolution: pending.resolution || "",
         quality: pending.quality || "",
+        outputFormat: pending.outputFormat || "",
         hasReference: mode !== "image",
         referenceCount: mode === "image" ? 0 : 1,
         styleName: ""
@@ -5282,7 +5386,10 @@
       const selectedStyle = STYLE_CARDS.find((style) => style.id === selectedStyleId)
         || STYLE_CARDS[0];
       const hasStyle = selectedStyle.id !== "none";
-      const referenceCount = referenceItems.length;
+      const outputFormat = gifSelected() ? "gif" : "";
+      const outputReferences = outputFormat
+        ? [] : referenceItems.map((item) => item.dataUrl);
+      const referenceCount = outputReferences.length;
       const canUseStyleOnly = referenceCount > 0 && hasStyle;
       if (!prompt && !canUseStyleOnly) {
         promptInput.focus();
@@ -5304,6 +5411,10 @@
       }
 
       const style = hasStyle ? stylePromptEditor.value.trim() : "";
+      const outputSize = outputFormat ? "1:1" : sizeSelect.value;
+      const outputResolution = outputFormat ? "1k" : resolutionSelect.value;
+      const outputQuality = outputFormat
+        ? "low" : (qualityField.hidden ? "" : qualitySelect.value);
       const referencePrefix = referenceCount
         ? `共有 ${referenceCount} 张参考图，请按编号理解它们。严格保留参考图中的主体身份、姿势、主要物体、构图和关键细节，再按下面的风格要求完成改图。`
         : "";
@@ -5317,9 +5428,10 @@
 
       activeGenerationSettings = {
         modelName: currentModel.display_name,
-        size: sizeSelect.value,
-        resolution: resolutionSelect.value,
-        quality: qualityField.hidden ? "" : qualitySelect.value,
+        size: outputSize,
+        resolution: outputResolution,
+        quality: outputQuality,
+        outputFormat,
         hasReference: referenceCount > 0,
         referenceCount,
         styleName: hasStyle ? selectedStyle.name : ""
@@ -5342,11 +5454,12 @@
       bridge().generate(
         fullPrompt,
         currentModel.model,
-        sizeSelect.value,
-        resolutionSelect.value,
-        qualityField.hidden ? "" : qualitySelect.value,
+        outputSize,
+        outputResolution,
+        outputQuality,
         1,
-        JSON.stringify(referenceItems.map((item) => item.dataUrl)),
+        JSON.stringify(outputReferences),
+        outputFormat,
         generationCallId
       );
     }
@@ -5526,6 +5639,7 @@
     qualitySelect.addEventListener("change", updatePrice);
     resolutionSelect.addEventListener("change", updatePrice);
     sizeSelect.addEventListener("change", updatePrice);
+    formatSelect.addEventListener("change", syncFormatControls);
     document.querySelectorAll(".page-tab").forEach((button) => {
       button.addEventListener("click", () => showAppPage(button.dataset.page));
     });
@@ -5707,7 +5821,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.1";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.2";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
