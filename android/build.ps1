@@ -14,7 +14,7 @@ $JavaHome = "C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot"
 $Javac = Join-Path $JavaHome "bin\javac.exe"
 $Jar = Join-Path $JavaHome "bin\jar.exe"
 $KeyTool = Join-Path $JavaHome "bin\keytool.exe"
-$Keystore = Join-Path $ProjectRoot "miaojipaint.keystore"
+$Keystore = "E:\Codex\config\miaoji-paint.keystore"
 $KeystorePassword = "miaojipaint2026"
 $Alias = "miaojipaint"
 
@@ -101,19 +101,10 @@ $AlignedApk = Join-Path $BuildRoot "app-aligned.apk"
 if ($LASTEXITCODE -ne 0) { throw "zipalign failed" }
 
 if (-not (Test-Path -LiteralPath $Keystore)) {
-    & $KeyTool -genkeypair `
-        -keystore $Keystore `
-        -alias $Alias `
-        -keyalg RSA `
-        -keysize 2048 `
-        -validity 10000 `
-        -storepass $KeystorePassword `
-        -keypass $KeystorePassword `
-        -dname "CN=MiaoJi Paint, OU=Personal, O=Codex, L=Shanghai, ST=Shanghai, C=CN"
-    if ($LASTEXITCODE -ne 0) { throw "Keystore creation failed" }
+    throw "Stable signing keystore missing: $Keystore"
 }
 
-$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.2.2.apk"
+$SignedApk = Join-Path $BuildRoot "miaoji-paint-v2.2.3.apk"
 & $ApkSigner sign `
     --ks $Keystore `
     --ks-key-alias $Alias `

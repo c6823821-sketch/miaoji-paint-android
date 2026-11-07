@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "2.2.2";
+                return "2.2.3";
             }
         }
 
@@ -337,25 +337,6 @@ public class MainActivity extends Activity {
             if (!cleanOutputFormat.isEmpty() && !"gif".equals(cleanOutputFormat)) {
                 emit(callId, "error", "不支持的输出格式", null);
                 return;
-            }
-            if ("gif".equals(cleanOutputFormat)
-                    && !cleanModel.startsWith("gpt-image-2.6-")) {
-                emit(callId, "error", "GIF 仅支持 GPT Image 2.6 模型", null);
-                return;
-            }
-            if ("gif".equals(cleanOutputFormat)) {
-                try {
-                    JSONArray references = referenceImagesJson == null
-                            || referenceImagesJson.trim().isEmpty()
-                            ? new JSONArray() : new JSONArray(referenceImagesJson);
-                    if (references.length() > 0) {
-                        emit(callId, "error", "GIF 仅支持文生图，请先移除参考图", null);
-                        return;
-                    }
-                } catch (JSONException error) {
-                    emit(callId, "error", "参考图数据格式异常", null);
-                    return;
-                }
             }
 
             emit(callId, "status", "请求已收到，正在准备照片…", null);
@@ -485,12 +466,6 @@ public class MainActivity extends Activity {
         HttpURLConnection connection = null;
         try {
             boolean gif = "gif".equals(outputFormat);
-            if (gif) {
-                size = "1:1";
-                resolution = "1k";
-                quality = "low";
-                referenceImagesJson = "[]";
-            }
             JSONObject request = new JSONObject();
             request.put("model", model);
             request.put("prompt", prompt);
@@ -922,7 +897,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "2.2.2";
+            return "2.2.3";
         }
     }
 

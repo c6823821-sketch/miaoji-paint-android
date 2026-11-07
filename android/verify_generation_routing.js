@@ -336,6 +336,16 @@ async function main() {
       name: "reference.png"
     }];
     syncFormatControls();
+    const defaults = {
+      size: sizeSelect.value,
+      resolution: resolutionSelect.value,
+      quality: qualitySelect.value,
+      price: priceTitle.textContent,
+      controlsEnabled: !sizeSelect.disabled && !resolutionSelect.disabled && !qualitySelect.disabled
+    };
+    qualitySelect.value = "medium";
+    sizeSelect.value = "3:4";
+    resolutionSelect.value = "2k";
     promptInput.value = "一只橘猫眨眼并轻轻摇尾巴，背景稳定，循环动画";
     startGeneration();
     const args = window.__nativeGenerate;
@@ -347,8 +357,8 @@ async function main() {
       resolution: args[3],
       quality: args[4],
       references: args[6],
-      referenceCleared: referenceItems.length === 0,
-      price: priceTitle.textContent,
+      referenceCount: referenceItems.length,
+      defaults,
       settingsFormat: activeGenerationSettings.outputFormat
     };
   })()`);
@@ -357,12 +367,16 @@ async function main() {
     !gif.formatVisible
     || gif.format !== "gif"
     || gif.model !== "gpt-image-2.6-flare"
-    || gif.size !== "1:1"
-    || gif.resolution !== "1k"
-    || gif.quality !== "low"
-    || gif.references !== "[]"
-    || !gif.referenceCleared
-    || gif.price !== "GIF 预扣 ¥0.90"
+    || gif.size !== "3:4"
+    || gif.resolution !== "2k"
+    || gif.quality !== "medium"
+    || JSON.parse(gif.references).length !== 1
+    || gif.referenceCount !== 1
+    || gif.defaults.size !== "1:1"
+    || gif.defaults.resolution !== "1k"
+    || gif.defaults.quality !== "low"
+    || gif.defaults.price !== "GIF 预扣 ¥0.90"
+    || !gif.defaults.controlsEnabled
     || gif.settingsFormat !== "gif"
   ) {
     throw new Error(`GIF route check failed: ${JSON.stringify(gif)}`);

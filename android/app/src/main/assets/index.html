@@ -2283,7 +2283,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 2.2.2</span>
+            <span class="version-text" id="versionText">当前版本 2.2.3</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -3594,21 +3594,12 @@
 
     function syncFormatControls() {
       const isGif = gifSelected();
-      if (isGif && referenceItems.length) {
-        referenceItems = [];
-        referenceInput.value = "";
-        renderReferences();
-        showToast("GIF 仅支持文生图，已移除参考图");
-      }
-      sizeSelect.disabled = isGif;
-      qualitySelect.disabled = isGif;
-      resolutionSelect.disabled = isGif;
       if (isGif) {
         sizeSelect.value = "1:1";
         resolutionSelect.value = "1k";
         if (currentModel.allowed_qualities.includes("low")) qualitySelect.value = "low";
       }
-      referenceZone.hidden = isGif || referenceItems.length >= MAX_REFERENCES;
+      referenceZone.hidden = referenceItems.length >= MAX_REFERENCES;
       updatePromptMode();
     }
 
@@ -3657,7 +3648,7 @@
       const cents = estimateCents();
       if (gifSelected()) {
         priceTitle.textContent = `GIF 预扣 ¥${(cents / 100).toFixed(2)}`;
-        priceDetail.textContent = "固定 512×512、9 帧、200ms/帧；仅文生图，实际费用以结果页为准";
+        priceDetail.textContent = "默认最低价；比例、清晰度、质量和参考图均可调整，结果以妙极接口为准";
         return;
       }
       if (currentModel.model === "gpt-image-2.5-flare"
@@ -3682,10 +3673,10 @@
     }
 
     function updatePromptMode() {
-      if (gifSelected()) {
+      if (gifSelected() && referenceItems.length === 0) {
         $("promptTitle").textContent = "GIF 动画描述";
         promptInput.placeholder = "描述主体与连续动作，例如：一只橘猫眨眼并轻轻摇尾巴，背景保持稳定";
-        $("promptHint").textContent = "GIF 仅支持文生图，固定 9 帧；不要上传参考图。";
+        $("promptHint").textContent = "默认使用最低价设置；可上传参考图尝试图生图，是否可用以妙极返回为准。";
         updatePrice();
         return;
       }
@@ -4896,7 +4887,7 @@
         tile.append(image, number, remove);
         referencePreview.appendChild(tile);
       }
-      referenceZone.hidden = gifSelected() || referenceItems.length >= MAX_REFERENCES;
+      referenceZone.hidden = referenceItems.length >= MAX_REFERENCES;
       uploadTitle.textContent = referenceItems.length ? "继续添加参考图" : "上传参考图";
       uploadHint.textContent = `已添加 ${referenceItems.length}/${MAX_REFERENCES} 张 · 单张自动压缩至最长边 1024`;
     }
@@ -4946,10 +4937,6 @@
     }
 
     async function addReferenceFiles(files) {
-      if (gifSelected()) {
-        showToast("GIF 仅支持文生图，请先切回静态图片");
-        return;
-      }
       const available = Math.max(0, MAX_REFERENCES - referenceItems.length);
       const selected = Array.from(files || []).slice(0, available);
       if (files && files.length > available) {
@@ -5387,8 +5374,7 @@
         || STYLE_CARDS[0];
       const hasStyle = selectedStyle.id !== "none";
       const outputFormat = gifSelected() ? "gif" : "";
-      const outputReferences = outputFormat
-        ? [] : referenceItems.map((item) => item.dataUrl);
+      const outputReferences = referenceItems.map((item) => item.dataUrl);
       const referenceCount = outputReferences.length;
       const canUseStyleOnly = referenceCount > 0 && hasStyle;
       if (!prompt && !canUseStyleOnly) {
@@ -5411,10 +5397,9 @@
       }
 
       const style = hasStyle ? stylePromptEditor.value.trim() : "";
-      const outputSize = outputFormat ? "1:1" : sizeSelect.value;
-      const outputResolution = outputFormat ? "1k" : resolutionSelect.value;
-      const outputQuality = outputFormat
-        ? "low" : (qualityField.hidden ? "" : qualitySelect.value);
+      const outputSize = sizeSelect.value;
+      const outputResolution = resolutionSelect.value;
+      const outputQuality = qualityField.hidden ? "" : qualitySelect.value;
       const referencePrefix = referenceCount
         ? `共有 ${referenceCount} 张参考图，请按编号理解它们。严格保留参考图中的主体身份、姿势、主要物体、构图和关键细节，再按下面的风格要求完成改图。`
         : "";
@@ -5821,7 +5806,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.2";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.3";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);
