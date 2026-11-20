@@ -2283,7 +2283,7 @@
         <div class="update-box">
           <div class="update-head">
             <strong>应用更新</strong>
-            <span class="version-text" id="versionText">当前版本 2.2.4</span>
+            <span class="version-text" id="versionText">当前版本 2.3.0</span>
           </div>
           <p class="update-message" id="updateMessage">从 GitHub Releases 检查新版本。</p>
           <div class="button-row">
@@ -2367,6 +2367,18 @@
   <script src="film-luts.js"></script>
   <script>
     "use strict";
+
+    if (!Element.prototype.replaceChildren) {
+      Element.prototype.replaceChildren = function (...nodes) {
+        while (this.firstChild) this.removeChild(this.firstChild);
+        for (const node of nodes) {
+          this.appendChild(node instanceof Node ? node : document.createTextNode(String(node)));
+        }
+      };
+    }
+
+    const DEFAULT_MODEL_ID = "gpt-image-2.6-sunburst";
+    const DEFAULT_SIZE = "3:4";
 
     const MIAOJI_MODELS = [
       {
@@ -3398,7 +3410,8 @@
 
     const isPreview = new URLSearchParams(location.search).has("preview");
     let models = MIAOJI_MODELS;
-    let currentModel = models[0];
+    let currentModel = models.find((model) => model.model === DEFAULT_MODEL_ID) || models[0];
+    let sizeSelectionMode = "auto";
     let selectedStyleId = "none";
     let selectedStyleCategory = "popular";
     let referenceItems = [];
@@ -3513,7 +3526,10 @@
 
         button.addEventListener("click", () => {
           selectedStyleId = style.id;
-          if (style.forceSize) sizeSelect.value = style.forceSize;
+          if (style.forceSize) {
+            sizeSelect.value = style.forceSize;
+            sizeSelectionMode = "manual";
+          }
           renderStyleCards();
           updatePromptMode();
           if (style.requiresReference && !referenceItems.length) {
@@ -3552,7 +3568,7 @@
       }
       modelSelect.appendChild(group);
 
-      const wanted = preferred || "gpt-image-2.5-flare";
+      const wanted = preferred || DEFAULT_MODEL_ID;
       currentModel = models.find((model) => model.model === wanted) || models[0];
       modelSelect.value = currentModel.model;
       renderModelControls();
@@ -3592,6 +3608,22 @@
       return multiplier > 0 ? multiplier : 1;
     }
 
+    function sizeFromPrompt(text) {
+      const matches = String(text || "").matchAll(
+        /(?:^|[^\d])(\d{1,2})\s*[:：]\s*(\d{1,2})(?!\d)/g
+      );
+      for (const match of matches) {
+        const candidate = `${Number(match[1])}:${Number(match[2])}`;
+        if (SIZE_OPTIONS.some(([value]) => value === candidate)) return candidate;
+      }
+      return "";
+    }
+
+    function syncSizeFromPrompt() {
+      if (sizeSelectionMode !== "auto") return;
+      sizeSelect.value = sizeFromPrompt(promptInput.value) || DEFAULT_SIZE;
+    }
+
     function syncFormatControls() {
       const isGif = gifSelected();
       if (isGif) {
@@ -3622,7 +3654,7 @@
         currentModel.allowed_resolutions.map((value) => [value, RESOLUTION_LABELS[value] || value]),
         resolution
       );
-      fillSelect(sizeSelect, SIZE_OPTIONS, sizeSelect.value || "1:1");
+      fillSelect(sizeSelect, SIZE_OPTIONS, sizeSelect.value || DEFAULT_SIZE);
       renderModelNote();
       syncFormatControls();
     }
@@ -3746,7 +3778,7 @@
       fillSelect(
         beautyModelSelect,
         models.map((model) => [model.model, model.display_name]),
-        previous || "gpt-image-2.5-flare"
+        previous || DEFAULT_MODEL_ID
       );
       fillPortraitQualitySelect(
         beautyQualitySelect,
@@ -3801,7 +3833,7 @@
       fillSelect(
         effectModelSelect,
         models.map((model) => [model.model, model.display_name]),
-        previous || "gpt-image-2.5-flare"
+        previous || DEFAULT_MODEL_ID
       );
       fillPortraitQualitySelect(
         effectQualitySelect,
@@ -5400,6 +5432,7 @@
       }
 
       const style = hasStyle ? stylePromptEditor.value.trim() : "";
+      syncSizeFromPrompt();
       const outputSize = sizeSelect.value;
       const outputResolution = resolutionSelect.value;
       const outputQuality = qualityField.hidden ? "" : qualitySelect.value;
@@ -5466,7 +5499,7 @@
         modelCalls.delete(event.callId);
         if (event.event === "models" && event.data && Array.isArray(event.data.items)) {
           models = event.data.items;
-          renderModels("gpt-image-2.5-flare");
+          renderModels(DEFAULT_MODEL_ID);
           fillBeautyModelSelect();
           fillEffectModelSelect();
         }
@@ -5626,14 +5659,22 @@
     });
     qualitySelect.addEventListener("change", updatePrice);
     resolutionSelect.addEventListener("change", updatePrice);
-    sizeSelect.addEventListener("change", updatePrice);
+    sizeSelect.addEventListener("change", () => {
+      sizeSelectionMode = "manual";
+      updatePrice();
+    });
     formatSelect.addEventListener("change", syncFormatControls);
     document.querySelectorAll(".page-tab").forEach((button) => {
       button.addEventListener("click", () => showAppPage(button.dataset.page));
     });
-    promptInput.addEventListener("input", updateCharCount);
+    promptInput.addEventListener("input", () => {
+      updateCharCount();
+      syncSizeFromPrompt();
+    });
     $("clearPromptBtn").addEventListener("click", () => {
       promptInput.value = "";
+      sizeSelectionMode = "auto";
+      syncSizeFromPrompt();
       updateCharCount();
       promptInput.focus();
     });
@@ -5783,8 +5824,8 @@
     });
 
     function initialize() {
-      fillSelect(sizeSelect, SIZE_OPTIONS, "1:1");
-      renderModels("gpt-image-2.5-flare");
+      fillSelect(sizeSelect, SIZE_OPTIONS, DEFAULT_SIZE);
+      renderModels(DEFAULT_MODEL_ID);
       fillBeautyModelSelect();
       fillEffectModelSelect();
       fillSelect(
@@ -5809,7 +5850,7 @@
       updateConnectionState();
       renderHistory();
       $("versionText").textContent = bridge()
-        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.2.4";
+        ? `当前版本 ${bridge().currentVersion()}` : "当前版本 2.3.0";
 
       if (!isPreview && bridge() && !bridge().hasKey()) {
         openModal(settingsModal);

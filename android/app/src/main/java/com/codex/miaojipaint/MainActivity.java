@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception error) {
-                return "2.2.4";
+                return "2.3.0";
             }
         }
 
@@ -332,7 +332,7 @@ public class MainActivity extends Activity {
                 return;
             }
 
-            String cleanModel = safe(model, "gpt-image-2.5-flare");
+            String cleanModel = safe(model, "gpt-image-2.6-sunburst");
             String cleanOutputFormat = safe(outputFormat, "").toLowerCase(Locale.ROOT);
             if (!cleanOutputFormat.isEmpty() && !"gif".equals(cleanOutputFormat)) {
                 emit(callId, "error", "不支持的输出格式", null);
@@ -344,7 +344,7 @@ public class MainActivity extends Activity {
                     key,
                     prompt.trim(),
                     cleanModel,
-                    safe(size, "1:1"),
+                    safe(size, "3:4"),
                     safe(resolution, "1k"),
                     quality == null ? "" : quality.trim(),
                     Math.max(1, count),
@@ -899,7 +899,7 @@ public class MainActivity extends Activity {
         try {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception error) {
-            return "2.2.4";
+            return "2.3.0";
         }
     }
 

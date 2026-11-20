@@ -82,6 +82,45 @@ async function main() {
   await send("Page.navigate", { url: html });
   await sleep(1200);
 
+  console.log("checking default model and prompt-driven size");
+  const defaults = await evaluate(`(() => {
+    const initial = {
+      model: modelSelect.value,
+      size: sizeSelect.value
+    };
+    promptInput.value = "生成一张 16:9 宽银幕电影构图，主角位于画面右侧";
+    promptInput.dispatchEvent(new Event("input", { bubbles: true }));
+    const promptSize = sizeSelect.value;
+    sizeSelect.value = "1:1";
+    sizeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    promptInput.value = "改成 2:3 竖版海报，人物居中";
+    promptInput.dispatchEvent(new Event("input", { bubbles: true }));
+    const manualSize = sizeSelect.value;
+    sizeSelectionMode = "auto";
+    promptInput.value = "生成一张 4：3 横幅插画";
+    promptInput.dispatchEvent(new Event("input", { bubbles: true }));
+    const fullWidthColonSize = sizeSelect.value;
+    promptInput.value = "";
+    syncSizeFromPrompt();
+    return {
+      initial,
+      promptSize,
+      manualSize,
+      fullWidthColonSize,
+      restoredDefault: sizeSelect.value
+    };
+  })()`);
+  if (
+    defaults.initial.model !== "gpt-image-2.6-sunburst"
+    || defaults.initial.size !== "3:4"
+    || defaults.promptSize !== "16:9"
+    || defaults.manualSize !== "1:1"
+    || defaults.fullWidthColonSize !== "4:3"
+    || defaults.restoredDefault !== "3:4"
+  ) {
+    throw new Error(`Default model/size check failed: ${JSON.stringify(defaults)}`);
+  }
+
   console.log("checking spectral lab route");
   const spectral = await evaluate(`(() => {
     let opened = 0;
@@ -715,7 +754,7 @@ async function main() {
     throw new Error(`History/recovery check failed: ${JSON.stringify(history)}`);
   }
 
-  console.log("PASS: routes stay separate; spectral lab, presets and hidden legacy processing are present");
+  console.log("PASS: defaults and prompt-driven size work; routes and features stay intact");
   socket.close();
 }
 
